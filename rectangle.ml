@@ -7,3 +7,5 @@ let contains ((x,y),w,h) (px,py) =
   y < py && py < y+.h
 
 let area (_,w,h) = w *. h 
+
+let permiter (_,w,h) = 2. *. (w+.h)

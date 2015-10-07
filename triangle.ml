@@ -20,3 +20,6 @@ let area (pa,pb,pc) =
   and c = Point.distance pc pa in
   let s = 0.5 *. (a+.b+.c) in 
   sqrt (s *. (s-.a) *. (s-.b) *.(s-.c))
+
+let perimeter (pa,pb,pc) =   
+  Point.distance pa pb +. Point.distance pb pc +. Point.distance pc pa 
