@@ -2,6 +2,8 @@ CC = ocamlc
 
 MLFILES = \
   point.ml \
+  line.ml \
+  segment.ml \
   triangle.ml \
   circle.ml \
   vector.ml \
