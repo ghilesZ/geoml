@@ -15,8 +15,11 @@ CMOFILES = $(MLFILES:%.ml=%.cmo)
 all: $(CMOFILES)
 	$(CC) -a -o geom.cma $(CMOFILES)
 
+doc:
+	ocamldoc -html -d ../doc $(MLFILES)
+
 %.cmo: %.ml
 	$(CC) -c $<
 
 clean:
-	rm -f a.out *.cma *.cmo *.cmi *~
+	rm -f a.out *.cma *.cmo *.cmi *~ ../doc/*.html ../doc/*.css
