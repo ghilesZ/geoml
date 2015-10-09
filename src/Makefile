@@ -16,7 +16,7 @@ all: $(CMOFILES)
 	$(CC) -a -o geom.cma $(CMOFILES)
 
 doc:
-	ocamldoc -html -d ../doc $(MLFILES)
+	ocamldoc -m A -html -d ../doc $(MLFILES)
 
 %.cmo: %.ml
 	$(CC) -c $<

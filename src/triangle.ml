@@ -13,7 +13,7 @@ let translate ((p1,p2,p3):t) dx dy : t =
    (Point.translate p2 dx dy),
    (Point.translate p3 dx dy))
 
-(* tests if a point is in a triangle with barycenter method *)
+(** tests if a point is in a triangle with barycenter method *)
 let contains (((ax,ay), (bx,by), (cx,cy)):t) ((px,py):Point.t) = 
   let l1 = 
     ((by -. cy) *. (px -. cx) +. (cx -. bx) *. (py -. cy)) /.

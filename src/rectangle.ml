@@ -1,6 +1,9 @@
-type t = Point.t * float * float (* bottom left corner, width, height *)
+(** Specification module for 2d rectangles  *)
 
-(* where p is the bottom-left corner of the rectangle *)
+(** rectangle type *)
+type t = Point.t * float * float
+
+(** where p is the bottom-left corner of the rectangle *)
 let make p w h : t = (p,w,h)
 
 let bottom_left_corner ((p,_,_):t) = p
@@ -34,3 +37,19 @@ let intersects (s1:t) (s2:t) =
     (a<d && b>c)
   else false
 
+(** given a rectangle and point, returns the smallest rectangle that
+   contains the points and the rectangle given as parameters*)
+let encompass (p1,w,h) p2 =
+  let l = min (Point.x_coord p1) (Point.x_coord p2)
+  and t = max (Point.y_coord p1 +. h) (Point.y_coord p2)
+  and r = max (Point.x_coord p1 +. w) (Point.x_coord p2)
+  and b = min (Point.y_coord p1) (Point.y_coord p2)
+  in ((Point.make l b),r-.l,t-.b)
+
+(** given a list of point, returns the smallest rectangle that
+   contains all the points of the list *)
+let bounding (pts : Point.t list) : t =
+  match pts with
+  | [x] -> (x,0.,0.)
+  | x::tl -> List.fold_left encompass (x,0.,0.) tl
+  | [] -> failwith "can't build a bounding rectangle with an empty list"
