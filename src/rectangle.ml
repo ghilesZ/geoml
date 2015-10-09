@@ -1,4 +1,4 @@
-(** Specification module for 2d rectangles  *)
+(** This module provides the basic operations over 2D rectangles *)
 
 (** rectangle type *)
 type t = Point.t * float * float
