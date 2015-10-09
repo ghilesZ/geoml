@@ -21,4 +21,4 @@ type coordinate = Xc | Yc
 let x = Xc
 let y = Yc
 let ( // ) (p:t) x_or_y = match x_or_y with | Xc -> fst p | _ -> snd p
-(* this allows to write p$x (resp. p$y) to get the x (resp. y) coordinate *)
+(* this allows to write p//x (resp. p//y) to get the x (resp. y) coordinate *)

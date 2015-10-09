@@ -20,10 +20,15 @@ let area ((_,w,h):t) = w *. h
 
 let permiter ((_,w,h):t) = 2. *. (w+.h)
 
-let proj_x = failwith "todo"
+let proj_x r = let open Point in (bottom_left_corner r)//x,(bottom_right_corner r)//x
 
-let proj_y = failwith "todo"
+let proj_y r = let open Point in (bottom_left_corner r)//y,(top_right_corner r)//y
 
-let intersects (r1:t) (r2:t) = failwith "todo"
-
+let intersects (s1:t) (s2:t) =
+  let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
+  if (a<d && b>c) then
+    let (a,b) = proj_y s1
+    and (c,d) = proj_y s2 in
+    (a<d && b>c)
+  else false
 

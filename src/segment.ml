@@ -21,7 +21,7 @@ let proj_y ((a,b):t) =
   if a//y > b//y then b//y,a//y
   else a//y,b//y
 
-let intersects s1 s2 = 
+let intersects (s1:t) (s2:t) = 
   let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
   if (a<d && b>c) then
     let (a,b) = proj_y s1

@@ -24,11 +24,22 @@ let area ((pa,pb,pc):t) =
 let perimeter ((pa,pb,pc):t) =   
   Point.distance pa pb +. Point.distance pb pc +. Point.distance pc pa 
 
-(*let proj_x ((pa,pb,pc):t) =
+let proj_x ((pa,pb,pc):t) =
   let open Point in
-  (min (min pa//x pb//x) pc//x),(max (max pa//x pb//x) pc//x)
+  let inf = min (pa//x) (pb//x) |> min (pc//x) 
+  and max = max (pa//x) (pb//x) |> max (pc//x)
+  in inf,max
 
 let proj_y ((pa,pb,pc):t) =
   let open Point in  
-  (min (min pa//y pb//y) pc//y),(max (max pa//y pb//y) pc//y)*)
+  let inf = min (pa//y) (pb//y) |> min (pc//y) 
+  and max = max (pa//y) (pb//y) |> max (pc//y)
+  in (inf,max)
 
+let intersects (s1:t) (s2:t) = 
+  let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
+  if (a<d && b>c) then
+    let (a,b) = proj_y s1
+    and (c,d) = proj_y s2 in
+    (a<d && b>c)
+  else false
