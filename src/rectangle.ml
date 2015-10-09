@@ -11,6 +11,8 @@ let top_right_corner ((p,w,h):t) = Point.translate p w h
 
 let top_left_corner ((p,_,h):t) = Point.translate p 0. h
 
+let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
+
 let contains ((p,w,h):t) ((px,py):Point.t) = 
   let x=Point.x_coord p and y = Point.y_coord p in
   x < px && px < (x+.w) &&
@@ -18,7 +20,7 @@ let contains ((p,w,h):t) ((px,py):Point.t) =
 
 let area ((_,w,h):t) = w *. h 
 
-let permiter ((_,w,h):t) = 2. *. (w+.h)
+let perimeter ((_,w,h):t) = 2. *. (w+.h)
 
 let proj_x r = let open Point in (bottom_left_corner r)//x,(bottom_right_corner r)//x
 

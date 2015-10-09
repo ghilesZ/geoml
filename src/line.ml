@@ -19,6 +19,12 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let ord = p1//y -. coeff *. (p1//x)
     in Y(coeff,ord)
 
+let contains (l:t) (p:Point.t) = 
+  let open Point in
+  match l with
+  | X(n) -> p//x = n
+  | Y(a,b) -> (a*.(p//x) +. b) = p//y
+
 let parallel l1 l2 = 
   match l1,l2 with
   | X(_), X(_) -> true
@@ -30,10 +36,3 @@ let perpendicular l1 l2 =
   | X(_),Y(0.,_) | Y(0.,_),X(_) -> true
   | Y(a,_),Y(b,_) when a *. b = -1. -> true
   | _ -> false
-
-let contains (l:t) (p:Point.t) = 
-  let open Point in
-  match l with
-  | X(n) -> p//x = n
-  | Y(a,b) -> (a*.(p//x) +. b) = p//y
- 

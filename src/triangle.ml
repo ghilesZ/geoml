@@ -2,6 +2,17 @@ type t = Point.t * Point.t * Point.t
 
 let make p1 p2 p3 : t= (p1,p2,p3)
 
+let extr1 ((p1,_,_):t) = p1
+
+let extr2 ((_,p2,_):t) = p2
+
+let extr3 ((_,_,p3):t) = p3
+
+let translate ((p1,p2,p3):t) dx dy : t = 
+  ((Point.translate p1 dx dy),
+   (Point.translate p2 dx dy),
+   (Point.translate p3 dx dy))
+
 (* tests if a point is in a triangle with barycenter method *)
 let contains (((ax,ay), (bx,by), (cx,cy)):t) ((px,py):Point.t) = 
   let l1 = 

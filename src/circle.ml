@@ -4,6 +4,13 @@ let pi = 4.0 *. atan 1.
 
 let make center radius : t= (center,radius)
 
+let center ((c,_):t) = c
+
+let radius ((_,r):t) = r
+
+let translate ((c,r):t) dx dy = 
+  make (Point.translate c dx dy) r
+
 let contains ((c,r):t) p = (Point.sq_distance c p) < r
 
 let area ((_,r):t) = pi *. r *. r
