@@ -29,6 +29,7 @@ let proj_x r = let open Point in (bottom_left_corner r)//x,(bottom_right_corner 
 
 let proj_y r = let open Point in (bottom_left_corner r)//y,(top_right_corner r)//y
 
+(** determines whether or not two rectangles intersect *)
 let intersects (s1:t) (s2:t) =
   let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
   if (a<d && b>c) then
@@ -36,6 +37,8 @@ let intersects (s1:t) (s2:t) =
     and (c,d) = proj_y s2 in
     (a<d && b>c)
   else false
+
+let is_square ((_,w,h):t) = w=h
 
 (** given a rectangle and point, returns the smallest rectangle that
    contains the points and the rectangle given as parameters*)
