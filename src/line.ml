@@ -1,8 +1,18 @@
 type t = X of float | Y of float * float
 
+exception Vertical of float 
+
 let make_x f = X(f)
 
 let make_y a b = Y(a,b)
+
+let get_coeff = function
+  | Y(a,_) -> a
+  | X(v) -> raise (Vertical(v))
+
+let get_ord = function
+  | Y(_,a) -> a
+  | X(v) -> raise (Vertical(v))
 
 let to_string = function
   | X(a) -> ("x="^(string_of_float a))
