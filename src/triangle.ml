@@ -47,10 +47,21 @@ let proj_y ((pa,pb,pc):t) =
   and max = max (pa//y) (pb//y) |> max (pc//y)
   in (inf,max)
 
-let intersects (s1:t) (s2:t) = 
-  let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
-  if (a<d && b>c) then
-    let (a,b) = proj_y s1
-    and (c,d) = proj_y s2 in
-    (a<d && b>c)
-  else false
+let intersects (((a,b,c) as s1):t) (((d,e,f) as s2):t) = 
+  contains s2 a || contains s2 b || contains s2 c ||
+  contains s1 d || contains s1 e || contains s1 f
+
+let is_isoscele ((a,b,c) :t) =
+  Point.sq_distance a b = Point.sq_distance b c ||
+  Point.sq_distance b c = Point.sq_distance a c ||
+  Point.sq_distance a b = Point.sq_distance a c
+
+let is_equilateral ((a,b,c) :t) =
+  Point.sq_distance a b = Point.sq_distance b c &&
+  Point.sq_distance b c = Point.sq_distance a c
+
+let is_right ((a,b,c) :t) =
+  let psq = Point.sq_distance in
+  psq a b = psq b c +. psq c a ||
+  psq b c = psq a b +. psq c a ||
+  psq c a = psq a b +. psq b c
