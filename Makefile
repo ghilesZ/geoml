@@ -14,6 +14,7 @@ tests:
 	mv tests/t_01 bin/
 
 doc:
+	$(MAKESRC)
 	$(MAKEDOC) 
 
 clean:
@@ -21,4 +22,4 @@ clean:
 	$(MAKE) clean -C tests
 	rm -f lib/* *~ doc/*.html doc/*.css bin/*
 
-.PHONY: lib tests
+.PHONY: lib tests doc
