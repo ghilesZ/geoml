@@ -65,3 +65,28 @@ let is_right ((a,b,c) :t) =
   psq a b = psq b c +. psq c a ||
   psq b c = psq a b +. psq c a ||
   psq c a = psq a b +. psq b c
+
+
+let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
+
+let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
+
+let tri_find f (pa,pb,pc) = 
+  if f pa then pa 
+  else if f pb then pb
+  else if f pc then pc 
+  else raise Not_found
+
+let tri_forall f (pa,pb,pc) = (f pa) && (f pb) && (f pc)
+
+let tri_iter f (pa,pb,pc) = f pa; f pb; f pc
+
+let points x = x
+
+let segments ((pa,pb,pc):t) = ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
+
+let angles ((pa,pb,pc):t) = 
+  let a1 = Vector.angle_deg (Vector.of_points pa pb) (Vector.of_points pa pc)
+  and a2 = Vector.angle_deg (Vector.of_points pc pa) (Vector.of_points pc pb) in
+  let a3 = 360. -. (a1+.a2) in
+  (a1,a2,a3)

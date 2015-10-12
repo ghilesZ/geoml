@@ -4,16 +4,15 @@ MLFILES = \
   point.ml \
   line.ml \
   segment.ml \
+  vector.ml \
   triangle.ml \
   circle.ml \
-  vector.ml \
   rectangle.ml
-
 
 CMOFILES = $(MLFILES:%.ml=%.cmo)
 
 all: $(CMOFILES)
-	$(CC) -a -o geom.cma $(CMOFILES)
+	$(CC) -linkall -a $(CMOFILES) -o geom.cma
 
 doc:
 	ocamldoc -m A -html -d ../doc $(MLFILES)
@@ -22,4 +21,4 @@ doc:
 	$(CC) -c $<
 
 clean:
-	rm -f a.out *.cma *.cmo *.cmi *~ ../doc/*.html ../doc/*.css
+	rm -f a.out *.cma *.cmo *.cmi *~
