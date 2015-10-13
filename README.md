@@ -1,7 +1,7 @@
 # GeoML
 
 To build GeoML: 
-   make build
+   make build\\
    make
 
 To build doc: 
