@@ -1,4 +1,4 @@
-type t = X of float | Y of float * float (** linears equations types *)
+type t = X of float | Y of float * float (** linear equation type *)
 
 exception Vertical of float
 exception Parallel
@@ -59,3 +59,12 @@ let perpendicular l1 l2 =
   | X(_),Y(0.,_) | Y(0.,_),X(_) -> true
   | Y(a,_),Y(b,_) when a *. b = -1. -> true
   | _ -> false
+
+let perpendicular_of_line l p = 
+  let open Point in
+  match l with 
+  | Y(a,b) ->
+     let coeff = (-.1.) /. a in
+     let ord = p.y -. coeff *. p.x in
+     Y(coeff,ord)
+  | X(x) -> Y(0.,p.y)
