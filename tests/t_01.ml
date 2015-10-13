@@ -5,6 +5,8 @@ let col_line = Graphics.rgb 90 190 220
 
 let iof = int_of_float
 
+let () = Random.self_init ()
+
 (************* RANDOM GENERATION ****************)
 
 let gen_point xmin xmax ymin ymax =
@@ -18,24 +20,41 @@ let gen_triangle xmin xmax ymin ymax =
   and p3 = gen_point xmin xmax ymin ymax
   in Triangle.make p1 p2 p3
 
-let cur = ref (gen_triangle 0. !size_x 0. !size_y)
+let cur = ref (gen_triangle 200. (!size_x-.200.) 200. (!size_y-.200.))
 
 let new_triangle () = 
-  cur := (gen_triangle 0. !size_x 0. !size_y)
+  cur := (gen_triangle 200. (!size_x-.200.) 200. (!size_y-.200.))
 
 (************************************************)
-
-let exists_gt_120 t = false
 
 let fermat t =
-  if exists_gt_120 t then
-    ()
-  else
-    ()
+  let build_pts seg = 
+    let piv = Segment.extr1 seg 
+    and pt = Segment.extr2 seg in
+    (Point.rotate piv pt 1.0472),(Point.rotate piv pt (-.1.0472))
+  in
+  let further p1 (p2,p3) =
+    if Point.sq_distance p1 p2 > Point.sq_distance p1 p3 then p2
+    else p3
+  in
+  let (a,b,c) = Triangle.points t in
+  let bc = Segment.make b c
+  and ac = Segment.make a c in
+  let l1 = Line.of_points (build_pts bc |> further a) a
+  and l2 = Line.of_points (build_pts ac |> further b) b
+  in Line.intersection l1 l2
+
+let fermat t = 
+  let (pa,pb,pc) = Triangle.points t in
+  let (a,b,c) = Triangle.angles t in
+  if a > 120. then pa
+  else if b > 120. then pb
+  else if c > 120. then pc
+  else fermat t
 
 (************************************************)
 
-let draw_point p =
+let draw_point p col_point =
   Graphics.set_color col_point;
   let open Point in
   let x = x_coord p |> iof
@@ -51,7 +70,7 @@ let draw_segment e =
 let draw_triangle t = 
   let open Triangle in
   tri_iter draw_segment (segments t);
-  tri_iter draw_point (points t)
+  tri_iter (fun e -> draw_point e col_point) (points t)
 
 let draw_cur () = draw_triangle !cur
 
@@ -61,7 +80,8 @@ let clear () =
 
 let frame () =
   clear ();
-  draw_triangle !cur
+   draw_triangle !cur;
+   Graphics.rgb 250 120 120 |>(fermat !cur |> draw_point)
 
 let handler status =
   let open Graphics in
@@ -80,5 +100,4 @@ let doit la lb =
   loop ()
 
 let _ = 
-  Random.self_init();
   doit 800 700

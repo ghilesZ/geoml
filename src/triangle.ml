@@ -87,7 +87,9 @@ let segments ((pa,pb,pc):t) =
   ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
 
 let angles ((pa,pb,pc):t) = 
-  let a1 = Vector.angle_deg (Vector.of_points pa pb) (Vector.of_points pa pc)
-  and a2 = Vector.angle_deg (Vector.of_points pc pa) (Vector.of_points pc pb) in
-  let a3 = 360. -. (a1+.a2) in
+  let a1 = Vector.angle_deg (Vector.of_points pa pb) (Vector.of_points pa pc) in
+  let a2 = Vector.angle_deg (Vector.of_points pb pa) (Vector.of_points pb pc) in
+  let a1 = if a1 < 0. then (-.a1) else a1
+  and a2 = if a2 < 0. then (-.a2) else a2 in
+  let a3 = 180. -. (a1+.a2) in
   (a1,a2,a3)

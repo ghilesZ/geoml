@@ -41,6 +41,20 @@ let parallel l1 l2 =
   | Y(a,_),Y(b,_) when a = b -> true
   | _ -> false
 
+let intersects l1 l2 = parallel l1 l2 |> not
+
+let intersection l1 l2 = 
+  match l1,l2 with
+  | Y(a1,b1),Y(a2,b2) -> 
+     let x = (b2 -. b1) /. (a1 -. a2) in
+     let y = a1 *. x +. b1 in
+     Point.make x y
+  | Y(a,b), X(x) | X(x), Y(a,b) -> 
+     let y = a *. x +. b in Point.make x y
+  | X(a),X(b) -> 
+     if a = b then failwith "same line"
+     else failwith "lines don't intersects"
+
 let perpendicular l1 l2 = 
   match l1,l2 with
   | X(_),Y(0.,_) | Y(0.,_),X(_) -> true
