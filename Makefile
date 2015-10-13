@@ -4,9 +4,12 @@ MAKEDOC=$(MAKE) doc -C src
 
 all: lib tests
 
+build: 
+	mkdir lib
+	mkdir bin
+
 lib:
 	$(MAKESRC)
-	mkdir lib
 	mv src/geom.cma lib/
 	cp src/*.cmi lib/
 
@@ -22,6 +25,5 @@ clean:
 	$(MAKE) clean -C src
 	$(MAKE) clean -C tests
 	rm -f lib/* *~ doc/*.html doc/*.css bin/*
-	rm -R lib
 
 .PHONY: lib tests doc
