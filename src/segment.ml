@@ -16,13 +16,13 @@ let contains ((a,b):t) p =
 
 let proj_x ((a,b):t) = 
   let open Point in
-  if a//x > b//x then b//x,a//x
-  else a//x,b//x
+  if a.x > b.x then b.x,a.x
+  else a.x,b.x
 
 let proj_y ((a,b):t) = 
   let open Point in
-  if a//y > b//y then b//y,a//y
-  else a//y,b//y
+  if a.y > b.y then b.y,a.y
+  else a.y,b.y
 
 let intersects (s1:t) (s2:t) = 
   let (a,b) = proj_x s1 and (c,d) = proj_x s2 in

@@ -14,7 +14,7 @@ let translate ((p1,p2,p3):t) dx dy : t =
    (Point.translate p3 dx dy))
 
 (** tests if a point is in a triangle with barycenter method *)
-let contains (((ax,ay), (bx,by), (cx,cy)):t) ((px,py):Point.t) = 
+let contains (({x=ax;y=ay}, {x=bx;y=by}, {x=cx;y=cy}):t) ({x=px;y=py}:Point.t) = 
   let l1 = 
     ((by -. cy) *. (px -. cx) +. (cx -. bx) *. (py -. cy)) /.
     ((by -. cy) *. (ax -. cx) +. (cx -. bx) *. (ay -. cy))
@@ -37,14 +37,14 @@ let perimeter ((pa,pb,pc):t) =
 
 let proj_x ((pa,pb,pc):t) =
   let open Point in
-  let inf = min (pa//x) (pb//x) |> min (pc//x) 
-  and max = max (pa//x) (pb//x) |> max (pc//x)
+  let inf = min (pa.x) (pb.x) |> min (pc.x) 
+  and max = max (pa.x) (pb.x) |> max (pc.x)
   in inf,max
 
 let proj_y ((pa,pb,pc):t) =
   let open Point in  
-  let inf = min (pa//y) (pb//y) |> min (pc//y) 
-  and max = max (pa//y) (pb//y) |> max (pc//y)
+  let inf = min (pa.y) (pb.y) |> min (pc.y) 
+  and max = max (pa.y) (pb.y) |> max (pc.y)
   in (inf,max)
 
 let intersects (((a,b,c) as s1):t) (((d,e,f) as s2):t) = 
@@ -83,7 +83,8 @@ let tri_iter f (pa,pb,pc) = f pa; f pb; f pc
 
 let points x = x
 
-let segments ((pa,pb,pc):t) = ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
+let segments ((pa,pb,pc):t) =
+  ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
 
 let angles ((pa,pb,pc):t) = 
   let a1 = Vector.angle_deg (Vector.of_points pa pb) (Vector.of_points pa pc)

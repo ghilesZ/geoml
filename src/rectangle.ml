@@ -16,18 +16,18 @@ let top_left_corner ((p,_,h):t) = Point.translate p 0. h
 
 let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
 
-let contains ((p,w,h):t) ((px,py):Point.t) = 
-  let x=Point.x_coord p and y = Point.y_coord p in
-  x < px && px < (x+.w) &&
-  y < py && py < y+.h
+let contains ((p,w,h):t) (pt:Point.t) =
+  let open Point in
+  p.x < pt.x && pt.x < (p.x+.w) &&
+  p.y < pt.y && pt.y < (p.y+.h)
 
 let area ((_,w,h):t) = w *. h 
 
 let perimeter ((_,w,h):t) = 2. *. (w+.h)
 
-let proj_x r = let open Point in (bottom_left_corner r)//x,(bottom_right_corner r)//x
+let proj_x r = let open Point in (bottom_left_corner r).x,(bottom_right_corner r).x
 
-let proj_y r = let open Point in (bottom_left_corner r)//y,(top_right_corner r)//y
+let proj_y r = let open Point in (bottom_left_corner r).y,(top_right_corner r).y
 
 (** determines whether or not two rectangles intersect *)
 let intersects (s1:t) (s2:t) =

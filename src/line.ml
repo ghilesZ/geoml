@@ -22,18 +22,18 @@ let of_points (p1:Point.t) (p2:Point.t) =
   let open Point in
   if p1 = p2 then 
     failwith "Line.of_points: points have same coordinate, can't build line whith those points" 
-  else if p1//x = p2//x then
-    X(p1//y)
+  else if p1.x = p2.x then
+    X(p1.y)
   else 
-    let coeff = (p2//y -. p1//y) /. (p2//x -. p1//x) in
-    let ord = p1//y -. coeff *. (p1//x)
+    let coeff = (p2.y -. p1.y) /. (p2.x -. p1.x) in
+    let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
 
 let contains (l:t) (p:Point.t) = 
   let open Point in
   match l with
-  | X(n) -> p//x = n
-  | Y(a,b) -> (a*.(p//x) +. b) = p//y
+  | X(n) -> p.x = n
+  | Y(a,b) -> (a*.(p.x) +. b) = p.y
 
 let parallel l1 l2 = 
   match l1,l2 with
