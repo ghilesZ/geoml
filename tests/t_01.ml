@@ -52,6 +52,7 @@ let fermat t =
   else if c > 120. then pc
   else fermat t
 
+
 (************************************************)
 
 let draw_point p col_point =
