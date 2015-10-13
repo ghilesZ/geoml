@@ -81,8 +81,10 @@ let clear () =
 
 let frame () =
   clear ();
-   draw_triangle !cur;
-   Graphics.rgb 250 120 120 |>(fermat !cur |> draw_point)
+  draw_triangle !cur;
+  Graphics.moveto 25 675;
+  Graphics.draw_string "Press r to generate a new triangle";
+  Graphics.rgb 250 120 120 |>(fermat !cur |> draw_point)
 
 let handler status =
   let open Graphics in
