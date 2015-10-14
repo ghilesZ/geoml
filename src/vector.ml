@@ -11,7 +11,8 @@ let x_coord (v:t) = v.dx
 
 let y_coord (v:t) = v.dy
 
-let of_points (a: Point.t) (b: Point.t) : t =  make (b.x-.a.x) (b.y-.a.y)
+let of_points (a: Point.t) (b: Point.t) : t =  
+  make (b.Point.x-.a.Point.x) (b.Point.y-.a.Point.y)
 
 let magnitude ({dx;dy}:t) = sqrt (dx*.dx +. dy*.dy)
 
@@ -34,7 +35,7 @@ let move_to ({dx;dy}:t) p = Point.translate p dx dy
 let angle v1 v2 = 
   let v1 = normalize v1
   and v2 = normalize v2 in
-  (dot_product v1 v2 |> acos) /. ((magnitude v1) *. (magnitude v2))
+  dot_product v1 v2 |> acos
 
 let angle_deg v1 v2 = 57.2958 *. (angle v1 v2)
   

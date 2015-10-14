@@ -1,7 +1,4 @@
 let size_x = ref 800. and size_y = ref 700.
-let col_point = Graphics.rgb 120 120 230
-let col_fermat = Graphics.rgb 230 120 120
-let col_line = Graphics.rgb 90 190 220
 
 let iof = int_of_float
 
@@ -52,28 +49,7 @@ let fermat t =
   else if c > 120. then pc
   else fermat t
 
-
-(************************************************)
-
-let draw_point p col_point =
-  Graphics.set_color col_point;
-  let open Point in
-  let x = x_coord p |> iof
-  and y = y_coord p |> iof
-  in Graphics.fill_circle x y 10
-
-let draw_segment e = 
-  let p1,p2 = (Segment.extr1 e),(Segment.extr2 e) in
-  Graphics.set_color col_line;
-  Graphics.moveto (iof (Point.x_coord p1)) (iof(Point.y_coord p1));
-  Graphics.lineto (iof(Point.x_coord p2))(iof (Point.y_coord p2))
-
-let draw_triangle t = 
-  let open Triangle in
-  tri_iter draw_segment (segments t);
-  tri_iter (fun e -> draw_point e col_point) (points t)
-
-let draw_cur () = draw_triangle !cur
+(***************************************************)
 
 let clear () = 
   Graphics.set_color Graphics.white;
@@ -81,10 +57,13 @@ let clear () =
 
 let frame () =
   clear ();
-  draw_triangle !cur;
-  Graphics.moveto 25 675;
-  Graphics.draw_string "Press r to generate a new triangle";
-  Graphics.rgb 250 120 120 |>(fermat !cur |> draw_point)
+  Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
+  Drawing.draw_triangle !cur Graphics.blue;
+  Triangle.tri_iter (fun e -> 
+    let c = Circle.make e 5. in
+    Drawing.fill_circle c Graphics.green
+  ) (Triangle.points !cur );
+  Drawing.fill_circle (Circle.make (fermat !cur) 6.) Graphics.red
 
 let handler status =
   let open Graphics in
@@ -94,13 +73,9 @@ let loop state =
   Graphics.loop_at_exit [Graphics.Key_pressed] handler
 
 let doit la lb = 
-  size_x := float_of_int la;
-  size_y := float_of_int lb;
-  let open Graphics in
-  open_graph (" 800x700");
-  set_window_title "Calculating the fermat point of a triangle";
+  Drawing.open_graph la lb "Calculating the fermat point of a triangle";
   frame ();
   loop ()
 
 let _ = 
-  doit 800 700
+  doit 800. 700.

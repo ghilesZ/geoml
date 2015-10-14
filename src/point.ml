@@ -24,9 +24,3 @@ let rotate pivot p angle =
   and py = (sin angle) *. (p.x -. pivot.x) +. (cos angle) *. (p.y -. pivot.y) +. pivot.y
   in make px py
 
-(* SHORTCUT *)
-type coordinate = Xc | Yc
-let x = Xc
-let y = Yc
-
-

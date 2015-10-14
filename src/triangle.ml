@@ -14,7 +14,10 @@ let translate ((p1,p2,p3):t) dx dy : t =
    (Point.translate p3 dx dy))
 
 (** tests if a point is in a triangle with barycenter method *)
-let contains (({x=ax;y=ay}, {x=bx;y=by}, {x=cx;y=cy}):t) ({x=px;y=py}:Point.t) = 
+let contains (({Point.x=ax;Point.y=ay},
+	       {Point.x=bx;Point.y=by},
+	       {Point.x=cx;Point.y=cy}):t) 
+              ({Point.x=px;Point.y=py}:Point.t) = 
   let l1 = 
     ((by -. cy) *. (px -. cx) +. (cx -. bx) *. (py -. cy)) /.
     ((by -. cy) *. (ax -. cx) +. (cx -. bx) *. (ay -. cy))
