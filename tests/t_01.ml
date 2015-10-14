@@ -34,12 +34,43 @@ let fermat t =
     if Point.sq_distance p1 p2 > Point.sq_distance p1 p3 then p2
     else p3
   in
+
   let (a,b,c) = Triangle.points t in
+  
   let bc = Segment.make b c
-  and ac = Segment.make a c in
-  let l1 = Line.of_points (build_pts bc |> further a) a
-  and l2 = Line.of_points (build_pts ac |> further b) b
-  in Line.intersection l1 l2
+  and ac = Segment.make a c 
+  and ab = Segment.make a b in
+  
+  let far_a = build_pts bc |> further a
+  and far_b = build_pts ac |> further b
+  and far_c = build_pts ab |> further c in
+
+  Drawing.fill_circle (Circle.make far_a 4.) (Graphics.rgb 200 230 200);
+  Drawing.fill_circle (Circle.make far_b 4.) (Graphics.rgb 200 230 200);
+  Drawing.fill_circle (Circle.make far_c 4.) (Graphics.rgb 200 230 200);
+ 
+  Drawing.draw_segment (Segment.make b far_a) (Graphics.rgb 210 240 210);
+  Drawing.draw_segment (Segment.make c far_a) (Graphics.rgb 210 240 210);
+
+  Drawing.draw_segment (Segment.make a far_b) (Graphics.rgb 210 240 210);
+  Drawing.draw_segment (Segment.make c far_b) (Graphics.rgb 210 240 210);
+
+  Drawing.draw_segment (Segment.make a far_c) (Graphics.rgb 210 240 210); 
+  Drawing.draw_segment (Segment.make b far_c) (Graphics.rgb 210 240 210);
+
+  let l1 = Line.of_points far_a a
+  and l2 = Line.of_points far_b b
+  and l3 = Line.of_points far_c c in
+ 
+  let l1_l2 = Line.intersection l1 l2
+  and l2_l3 = Line.intersection l2 l3
+  and l3_l1 = Line.intersection l3 l1 in
+
+  Drawing.draw_line  l1 !size_x !size_y (Graphics.rgb 230 180 230);
+  Drawing.draw_line  l2 !size_x !size_y (Graphics.rgb 230 180 230);
+  Drawing.draw_line  l3 !size_x !size_y (Graphics.rgb 230 180 230);
+ 
+  Point.barycenter [l1_l2; l2_l3; l3_l1]
 
 let fermat t = 
   let (pa,pb,pc) = Triangle.points t in
@@ -58,7 +89,7 @@ let clear () =
 let frame () =
   clear ();
   Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
-  Drawing.draw_triangle !cur Graphics.blue;
+  Drawing.draw_triangle ~lw:2 !cur Graphics.blue;
   Triangle.tri_iter (fun e -> 
     let c = Circle.make e 5. in
     Drawing.fill_circle c Graphics.green

@@ -5,7 +5,18 @@ type t =
 
 let make x y : t = {x; y}
 
-let center ({x=a;y=b}: t) ({x=c;y=d} : t) : t = make ((a+.c) /. 2.) ((b+.d) /. 2.) 
+let center ({x=a;y=b}: t) ({x=c;y=d} : t) : t = make ((a+.c) /. 2.) ((b+.d) /. 2.)
+
+let barycenter pts = 
+  match pts with 
+  | [] -> failwith "cant' caluclate the barycenter of an empty list"
+  | h::tl -> 
+     let (nb, (sumx,sumy)) = List.fold_left
+       (fun (a,(b,c)) {x=d;y=e} -> (a+.1., (b+.d,c+.e))) 
+       (1., (h.x,h.y))
+       tl
+     in make (sumx /. nb) (sumy/.nb)
+     
 
 let sq_distance ({x=a;y=b}: t) ({x=c;y=d}: t) = 
   let diffX = a -. c and diffY = b -. d in

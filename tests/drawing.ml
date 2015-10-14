@@ -39,6 +39,21 @@ let draw_string posx posy str col =
   set_color col;
   Graphics.moveto posx posy;
   Graphics.draw_string str
+
+let draw_line ?(lw=1) l sx sy col = 
+  if (Line.is_vertical l) then
+    let x = try Line.get_coeff l with
+      | Line.Vertical c -> c 
+    in
+    let p1 = (Point.make x 0.)
+    and p2 = (Point.make x sy) in
+    let s = Segment.make p1 p2 in 
+    draw_segment ~lw:lw s col
+  else
+    let p1 = (Point.make 0. (Line.y_from_x l 0.))
+    and p2 = (Point.make sx (Line.y_from_x l sx)) in
+    let s = Segment.make p1 p2 in 
+    draw_segment ~lw:lw s col
   
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int

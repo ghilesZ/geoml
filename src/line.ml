@@ -7,6 +7,10 @@ let make_x f = X(f)
 
 let make_y a b = Y(a,b)
 
+let is_vertical = function 
+  | X(_) -> true
+  | _ -> false
+
 let get_coeff = function
   | Y(a,_) -> a
   | X(v) -> raise (Vertical(v))
@@ -29,6 +33,16 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let coeff = (p2.y -. p1.y) /. (p2.x -. p1.x) in
     let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
+
+let x_from_y l y = 
+  match l with
+  | X(x) -> x
+  | Y(a,b) -> (y-.b) /. a
+
+let y_from_x l x =
+  match l with
+  | X(c) -> raise (Vertical(c))
+  | Y(a,b) -> a *. x +. b
 
 let contains (l:t) (p:Point.t) = 
   let open Point in
