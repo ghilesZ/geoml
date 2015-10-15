@@ -37,10 +37,12 @@ let draw_triangle ?(lw=1) t col =
 
 let draw_string posx posy str col =
   set_color col;
-  Graphics.moveto posx posy;
-  Graphics.draw_string str
+  moveto posx posy;
+  draw_string str
 
-let draw_line ?(lw=1) l sx sy col = 
+let draw_line ?(lw=1) l col = 
+  let sx = float_of_int (size_x ())
+  and sy = float_of_int (size_y ()) in
   if (Line.is_vertical l) then
     let x = try Line.get_coeff l with
       | Line.Vertical c -> c 

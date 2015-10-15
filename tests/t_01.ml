@@ -2,8 +2,6 @@ let size_x = ref 800. and size_y = ref 700.
 
 let iof = int_of_float
 
-let () = Random.self_init ()
-
 (************* RANDOM GENERATION ****************)
 
 let gen_point xmin xmax ymin ymax =
@@ -17,14 +15,16 @@ let gen_triangle xmin xmax ymin ymax =
   and p3 = gen_point xmin xmax ymin ymax
   in Triangle.make p1 p2 p3
 
-let cur = ref (gen_triangle 200. (!size_x-.200.) 200. (!size_y-.200.))
+let cur = 
+  Random.self_init ();
+  ref (gen_triangle 200. (!size_x-.200.) 200. (!size_y-.200.))
 
 let new_triangle () = 
   cur := (gen_triangle 200. (!size_x-.200.) 200. (!size_y-.200.))
 
 (************************************************)
 
-let fermat t =
+let aux t =
   let build_pts seg = 
     let piv = Segment.extr1 seg 
     and pt = Segment.extr2 seg in
@@ -66,9 +66,9 @@ let fermat t =
   and l2_l3 = Line.intersection l2 l3
   and l3_l1 = Line.intersection l3 l1 in
 
-  Drawing.draw_line  l1 !size_x !size_y (Graphics.rgb 230 180 230);
-  Drawing.draw_line  l2 !size_x !size_y (Graphics.rgb 230 180 230);
-  Drawing.draw_line  l3 !size_x !size_y (Graphics.rgb 230 180 230);
+  Drawing.draw_line  l1 (Graphics.rgb 230 180 230);
+  Drawing.draw_line  l2 (Graphics.rgb 230 180 230);
+  Drawing.draw_line  l3 (Graphics.rgb 230 180 230);
  
   Point.barycenter [l1_l2; l2_l3; l3_l1]
 
@@ -78,7 +78,7 @@ let fermat t =
   if a > 120. then pa
   else if b > 120. then pb
   else if c > 120. then pc
-  else fermat t
+  else aux t
 
 (***************************************************)
 
