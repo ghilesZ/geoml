@@ -41,7 +41,7 @@ let intersects (s1:t) (s2:t) =
 let is_square ((_,w,h):t) = w=h
 
 (** given a rectangle and point, returns the smallest rectangle that
-   contains the points and the rectangle given as parameters*)
+   contains the point and the rectangle given as parameters*)
 let encompass (p1,w,h) p2 =
   let l = min (Point.x_coord p1) (Point.x_coord p2)
   and t = max (Point.y_coord p1 +. h) (Point.y_coord p2)
