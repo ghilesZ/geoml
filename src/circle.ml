@@ -33,20 +33,33 @@ let circumscribed p1 p2 p3 =
     (2. *. (sin angle))
   in make center radius
 
+let of_diameter p1 p2 = make (Point.center p1 p2) (0.5 *. Point.distance p1 p2)
+
 (** given a list of point, returns the smallest circle that
    contains all the points of the list *)
 let bounding (pts : Point.t list) : t =
   let d = ref (make (Point.make 0. 0.) 0.) in
-
-  let b_mindisk l p = !d in
-
+  let b_md r = match r with
+    | [x] -> make x 0.
+    | [x;y] -> of_diameter x y
+    | [x;y;z] -> circumscribed x y z
+    | _ -> failwith "sno"
+  in
+  let rec b_mindisk p r = 
+    match p,r with
+    | [],_ |_,[_;_;_] -> b_md r
+    | h::tl,_ -> 
+      d:=b_mindisk tl r;
+      if contains !d h |> not then d:=b_mindisk tl (h::r);
+      !d	
+  in
   let rec mindisk l : t=
     match l with 
     | [] -> !d
     | h::tl -> 
       d := mindisk tl;
       if contains (!d) h then !d
-      else b_mindisk tl h
+      else b_mindisk tl [h]
   in 
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"

@@ -3,7 +3,6 @@ let size_x = ref 800. and size_y = ref 700.
 let iof = int_of_float
 
 (************* RANDOM GENERATION ****************)
-
 let gen_point xmin xmax ymin ymax =
   let x = xmin +. Random.float (xmax-.xmin)
   and y = ymin +. Random.float (ymax-.ymin) in

@@ -16,6 +16,7 @@ lib:
 tests:
 	$(MAKETESTS)
 	mv tests/t_01 bin/
+	mv tests/t_02 bin/
 
 doc:
 	$(MAKESRC)
