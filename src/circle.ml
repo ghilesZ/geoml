@@ -56,28 +56,29 @@ let bounding (pts : Point.t list) : t =
 	 if contains2 c x z then ([y;pt],c) else
 	   let c = (of_diameter pt z) in
            if contains2 c x y then ([z;pt],c) else
-	     let c1 = circumscribed pt x y
-	     and c2 = circumscribed pt x z
-	     and c3 = circumscribed pt y z in
-	     let r1 = radius c1 and r2 = radius c2 and r3 = radius c3 in
+	     let smallest a b c = a<b && a<c in
+	     let ((_,r1) as c1) = circumscribed pt x y
+	     and ((_,r2) as c2) = circumscribed pt x z
+	     and ((_,r3) as c3) = circumscribed pt y z 
+	     and s1 = [pt;x;y] and s2 = [pt;x;z] and s3 = [pt;y;z] in
 	     match ((contains c1 z),(contains c2 y),(contains c3 x)) with
-	     |(true,true,true) when r1 < r2 && r1 < r3 -> ([pt;x;y],c1)
-	     |(true,true,true) when r2 < r1 && r2 < r3 -> ([pt;x;z],c2)
-	     |(true,true,true) when r1 < r2 && r1 < r3 -> ([pt;z;y],c3)
-	     |(_,true,true) when r2 < r3 -> ([pt;x;z],c2)
-	     |(_,true,true) -> ([pt;z;y],c3)
-	     |(true,_,true) when r1 < r3 -> ([pt;x;y],c1)
-	     |(true,_,true) -> ([pt;z;y],c3)
-	     |(true,true,_) when r1 < r2 -> ([pt;x;y],c1)
-	     |(true,true,_) -> ([pt;x;z],c2)
-	     |(true,_,_) -> ([pt;x;y],c1)
-	     |(_,true,_) -> ([pt;x;z],c2)
-	     |(_,_,true) -> ([pt;z;y],c3)
+	     |(true,true,true) when smallest r1 r2 r3 -> (s1,c1)
+	     |(true,true,true) when smallest r2 r1 r3 -> (s2,c2)
+	     |(true,true,true) -> (s3,c3)
+	     |(_,true,true) when r2 < r3 -> (s2,c2)
+	     |(_,true,true) -> (s3,c3)
+	     |(true,_,true) when r1 < r3 -> (s1,c1)
+	     |(true,_,true) -> (s3,c3)
+	     |(true,true,_) when r1 < r2 -> (s1,c1)
+	     |(true,true,_) -> (s2,c2)
+	     |(true,_,_) -> (s1,c1)
+	     |(_,true,_) -> (s2,c2)
+	     |(_,_,true) -> (s3,c3)
   in
   let rec mindisk circle set pts =
     match pts with
     | [] -> circle
-    | h::tl when (contains circle h |> not) && (List.mem h set |> not) ->
+    | h::tl when (contains circle h |> not) ->
        let (new_set,new_circle) = update set h in
        mindisk new_circle new_set tl
     | h::tl -> mindisk circle set tl
