@@ -5,7 +5,7 @@ type t =
 
 let make x y : t = {x; y}
 
-let center ({x=a;y=b}: t) ({x=c;y=d} : t) : t = make ((a+.c) /. 2.) ((b+.d) /. 2.)
+let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
 
 let barycenter pts = 
   match pts with 

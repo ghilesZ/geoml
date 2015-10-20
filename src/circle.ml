@@ -11,7 +11,7 @@ let radius ((_,r):t) = r
 let translate ((c,r):t) dx dy = 
   make (Point.translate c dx dy) r
 
-let contains ((c,r):t) p = (Point.sq_distance c p) < r
+let contains ((c,r):t) p = (Point.sq_distance c p) < r *. r
 
 let area ((_,r):t) = pi *. r *. r
 
@@ -35,37 +35,53 @@ let circumscribed p1 p2 p3 =
 
 let of_diameter p1 p2 = make (Point.center p1 p2) (0.5 *. Point.distance p1 p2)
 
+     
 (** given a list of point, returns the smallest circle that
    contains all the points of the list *)
-let bounding (pts : Point.t list) : t =
-  let d = ref (make (Point.make 0. 0.) 0.) in
-  let b_md r = match r with
-    | [x] -> make x 0.
-    | [x;y] -> of_diameter x y
-    | [x;y;z] -> circumscribed x y z
-    | _ -> failwith "sno"
+let bounding (pts : Point.t list) : t =	
+  let update set pt =
+    match set with
+    | [x] -> [x;pt],(of_diameter x pt)
+    | [x;y] ->
+       let c = of_diameter pt x in
+       if contains c y then ([x;pt],c) else
+	 let c = of_diameter pt y in
+	 if contains c x then ([y;pt],c)
+	 else ([x;y;pt],circumscribed pt x y)
+    | [x;y;z] ->
+       let contains2 c a b = contains c a && contains c b in
+       let c = (of_diameter pt x) in 
+       if contains2 c y z then ([x;pt],c) else
+	 let c = (of_diameter pt y) in
+	 if contains2 c x z then ([y;pt],c) else
+	   let c = (of_diameter pt z) in
+           if contains2 c x y then ([z;pt],c) else
+	     let c1 = circumscribed pt x y
+	     and c2 = circumscribed pt x z
+	     and c3 = circumscribed pt y z in
+	     let r1 = radius c1 and r2 = radius c2 and r3 = radius c3 in
+	     match ((contains c1 z),(contains c2 y),(contains c3 x)) with
+	     |(true,true,true) when r1 < r2 && r1 < r3 -> ([pt;x;y],c1)
+	     |(true,true,true) when r2 < r1 && r2 < r3 -> ([pt;x;z],c2)
+	     |(true,true,true) when r1 < r2 && r1 < r3 -> ([pt;z;y],c3)
+	     |(_,true,true) when r2 < r3 -> ([pt;x;z],c2)
+	     |(_,true,true) -> ([pt;z;y],c3)
+	     |(true,_,true) when r1 < r3 -> ([pt;x;y],c1)
+	     |(true,_,true) -> ([pt;z;y],c3)
+	     |(true,true,_) when r1 < r2 -> ([pt;x;y],c1)
+	     |(true,true,_) -> ([pt;x;z],c2)
+	     |(true,_,_) -> ([pt;x;y],c1)
+	     |(_,true,_) -> ([pt;x;z],c2)
+	     |(_,_,true) -> ([pt;z;y],c3)
   in
-  let rec b_mindisk p r = 
-    match p,r with
-    | [],_ |_,[_;_;_] -> b_md r
-    | h::tl,_ -> 
-      d:=b_mindisk tl r;
-      if contains !d h |> not then d:=b_mindisk tl (h::r);
-      !d	
+  let rec mindisk circle set pts =
+    match pts with
+    | [] -> circle
+    | h::tl when (contains circle h |> not) && (List.mem h set |> not) ->
+       let (new_set,new_circle) = update set h in
+       mindisk new_circle new_set tl
+    | h::tl -> mindisk circle set tl
   in
-  let rec mindisk l : t=
-    match l with 
-    | [] -> !d
-    | h::tl -> 
-      d := mindisk tl;
-      if contains (!d) h then !d
-      else b_mindisk tl [h]
-  in 
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"
-  | [x] -> make x 0.
-  | x::tl -> d := (make x 0.); mindisk tl
-  
-
-
-
+  | h::tl -> mindisk (make h 0.) [h] tl

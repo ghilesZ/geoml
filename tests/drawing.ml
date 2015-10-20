@@ -62,3 +62,7 @@ let open_graph size_x size_y title =
   and sy = size_y |> iof |> string_of_int in
   open_graph (" "^sx^"x"^sy);
   set_window_title title
+
+let fill_screen rgb =
+  Graphics.set_color rgb;
+  Graphics.fill_rect 0 0 (size_x ()) (size_y ())

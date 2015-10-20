@@ -18,13 +18,13 @@ let cur =
   Random.self_init ();
   let l = Array.make !size 0 |> Array.to_list|>
       List.map (fun _ ->
-	gen_point 200. (!size_x-.200.) 200. (!size_y-.200.)
+	gen_point 70. (!size_x-.70.) 70. (!size_y-.70.)
       ) 
   in ref l
 
 let new_list () = 
   cur := List.map (fun _ ->
-    gen_point 200. (!size_x-.200.) 200. (!size_y-.200.)
+    gen_point 70. (!size_x-.70.) 70. (!size_y-.70.)
   ) (!cur)
 
 (************************************************)
@@ -33,9 +33,8 @@ let bounding t = Circle.bounding t
 
 (***************************************************)
 
-let clear () = 
-  Graphics.set_color Graphics.white;
-  Graphics.fill_rect 0 0 (iof !size_x) (iof !size_y)
+let clear () = Drawing.fill_screen Graphics.white
+
 
 let frame () =
   clear ();
@@ -53,11 +52,12 @@ let handler status =
 let loop state = 
   Graphics.loop_at_exit [Graphics.Key_pressed] handler
 
-let doit la lb nb = 
-  size:=nb;
-  Drawing.open_graph la lb "Calculating the bounding circle of a point list";
+let doit la lb =
+  size_x := la;
+  size_y := lb;
+  Drawing.open_graph la lb "Calculating the bounding circle of a point list using emo welzl algorithm. Computation is done in linear time";
   frame ();
   loop ()
 
 let _ = 
-  doit 800. 700. 50
+  doit 800. 700.
