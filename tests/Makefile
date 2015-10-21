@@ -3,7 +3,7 @@ GEOMLDIR = /home/ghiles/geoml/lib
 OCAMLINC = -I $(GEOMLDIR)
 WITHGRAPHICS = graphics.cma
 WITHGEOM = geom.cma $(OCAMLINC)
-UTILS = drawing.ml tester.ml
+UTILS = utils.ml drawing.ml tester.ml
 
 all:
 	ocamlc $(WITHGRAPHICS) $(WITHGEOM) $(UTILS) t_01.ml -o t_01

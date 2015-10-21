@@ -56,7 +56,7 @@ let draw_line ?(lw=1) l col =
     and p2 = (Point.make sx (Line.y_from_x l sx)) in
     let s = Segment.make p1 p2 in 
     draw_segment ~lw:lw s col
-  
+      
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int
   and sy = size_y |> iof |> string_of_int in
