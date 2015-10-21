@@ -18,5 +18,8 @@ test:
 				$(OCBTEST) t_02.byte
 				$(OCBTEST) t_03.byte
 
+doc:
+				ocamlbuild geom.docdir/index.html
+
 
 .PHONY: 	all clean test
