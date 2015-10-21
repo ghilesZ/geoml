@@ -24,6 +24,8 @@ let dot_product ({dx=a;dy=b}:t) ({dx=c;dy=d}:t) = a*.c +. b*.d
 
 let scal_mult ({dx;dy}:t) f : t = make (f*.dx) (f*.dy)
 
+let determinant v1 v2 = v1.dx *. v2.dy -. v1.dy *. v2.dx
+
 let opposite v = scal_mult v (-1.)
 
 let add (v1:t) (v2:t) : t = make (v1.dx+.v2.dx) (v1.dy+.v2.dy) 

@@ -4,9 +4,9 @@ MAKEDOC=$(MAKE) doc -C src
 
 all: lib tests
 
-build: 
-	mkdir lib
-	mkdir bin
+build:
+	@mkdir lib
+	@mkdir bin
 
 lib:
 	$(MAKESRC)

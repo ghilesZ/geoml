@@ -8,6 +8,9 @@ let make x y : t = {x; y}
 
 let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
 
+let determinant a b c =
+  (b.x -. a.x) *. (c.y -. a.y) -. (b.y -. a.y) *. (c.x -. a.x)
+    
 let iso_barycenter pts =
   let rec aux pts sumx sumy nb = 
     match pts with 
