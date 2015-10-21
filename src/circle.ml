@@ -25,16 +25,25 @@ let intersects ((c1,r1):t) ((c2,r2):t) =
   (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
 
 let circumscribed p1 p2 p3 =
-  let b1 = Line.bissection p1 p2
-  and b2 = Line.bissection p2 p3 in
+  let b1 = Line.point_bissection p1 p2
+  and b2 = Line.point_bissection p2 p3 in
   let angle = Vector.angle (Vector.of_points p1 p2) (Vector.of_points p1 p3) in
   let center = Line.intersection b1 b2 
   and radius = (Point.distance p2 p3) /. 
     (2. *. (sin angle))
   in make center radius
 
-let of_diameter p1 p2 = make (Point.center p1 p2) (0.5 *. Point.distance p1 p2)
+let incircle p1 p2 p3 =
+  let a = Point.distance p1 p2
+  and b = Point.distance p2 p3
+  and c = Point.distance p3 p1 in
+  let center = Point.barycenter [(p1,b);(p2,c);(p3,a)] in
+  let radius = 
+    let s = 0.5 *. (a+.b+.c) in
+    (2. *. sqrt (s *. (s-.a) *. (s-.b) *.(s-.c))) /. (a+.b+.c)
+  in make center radius
 
+let of_diameter p1 p2 = make (Point.center p1 p2) (0.5 *. Point.distance p1 p2)
      
 (** given a list of point, returns the smallest circle that
    contains all the points of the list *)
@@ -61,7 +70,7 @@ let bounding (pts : Point.t list) : t =
 	     and ((_,r2) as c2) = circumscribed pt x z
 	     and ((_,r3) as c3) = circumscribed pt y z 
 	     and s1 = [pt;x;y] and s2 = [pt;x;z] and s3 = [pt;y;z] in
-	     match ((contains c1 z),(contains c2 y),(contains c3 x)) with
+	     (match ((contains c1 z),(contains c2 y),(contains c3 x)) with
 	     |(true,true,true) when smallest r1 r2 r3 -> (s1,c1)
 	     |(true,true,true) when smallest r2 r1 r3 -> (s2,c2)
 	     |(true,true,true) -> (s3,c3)
@@ -74,6 +83,9 @@ let bounding (pts : Point.t list) : t =
 	     |(true,_,_) -> (s1,c1)
 	     |(_,true,_) -> (s2,c2)
 	     |(_,_,true) -> (s3,c3)
+	     | _ -> assert false)
+    | _ -> assert false
+	    
   in
   let rec mindisk circle set pts =
     match pts with
