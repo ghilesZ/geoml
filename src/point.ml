@@ -16,7 +16,9 @@ let barycenter pts =
        (1., (h.x,h.y))
        tl
      in make (sumx /. nb) (sumy/.nb)
-     
+
+let determinant a b c =
+  (b.x -. a.x) *. (c.y -. a.y) -. (b.y -. a.y) *. (c.x -. a.x)
 
 let sq_distance ({x=a;y=b}: t) ({x=c;y=d}: t) = 
   let diffX = a -. c and diffY = b -. d in

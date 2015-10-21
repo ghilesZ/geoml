@@ -7,7 +7,8 @@ MLFILES = \
   vector.ml \
   triangle.ml \
   circle.ml \
-  rectangle.ml
+  rectangle.ml \
+  polygon.ml
 
 CMOFILES = $(MLFILES:%.ml=%.cmo)
 
