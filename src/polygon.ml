@@ -35,7 +35,7 @@ module Regular = struct
     center; fst; len; edges;
     apothem =
       let snd = Point.rotate center fst (360. /. float_of_int edges) in
-      Point.distance center (Point.barycenter [fst; snd])
+      Point.distance center (Point.iso_barycenter [fst; snd])
   }
 
   let next_point ?(nth=0) rp pt =
@@ -56,7 +56,7 @@ module Regular = struct
   let area rp = rp.len *. rp.apothem /. 2. *. float_of_int rp.edges
 
   let to_polygon rp =
-    rp fold_filter (fun _ _ -> true)
+    fold_filter (fun _ _ -> true)
       (fun _ acc current next ->
          next :: acc
       ) [] rp
