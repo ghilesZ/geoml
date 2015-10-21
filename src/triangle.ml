@@ -69,7 +69,6 @@ let is_right ((a,b,c) :t) =
   psq b c = psq a b +. psq c a ||
   psq c a = psq a b +. psq b c
 
-
 let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
 
 let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)

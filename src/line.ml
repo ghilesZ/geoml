@@ -81,7 +81,10 @@ let perpendicular_of_line l p =
      let coeff = (-.1.) /. a in
      let ord = p.y -. coeff *. p.x in
      Y(coeff,ord)
-  | X(x) -> Y(0.,p.y)
+  | X(x) -> Y(x,p.y)
 
-let bissection p1 p2 = 
+let orth_proj l p =
+  perpendicular_of_line l p |> intersection l
+
+let point_bissection p1 p2 = 
   Point.center p1 p2 |> perpendicular_of_line (of_points p1 p2)

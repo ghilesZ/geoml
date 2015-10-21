@@ -1,5 +1,6 @@
 type t =
-  { x : float ;
+  {
+    x : float ;
     y : float ;
   }
 
@@ -7,17 +8,20 @@ let make x y : t = {x; y}
 
 let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
 
-let barycenter pts = 
-  match pts with 
-  | [] -> failwith "cant' caluclate the barycenter of an empty list"
-  | h::tl -> 
-     let (nb, (sumx,sumy)) = List.fold_left
-       (fun (a,(b,c)) {x=d;y=e} -> (a+.1., (b+.d,c+.e))) 
-       (1., (h.x,h.y))
-       tl
-     in make (sumx /. nb) (sumy/.nb)
-     
+let iso_barycenter pts =
+  let rec aux pts sumx sumy nb = 
+    match pts with 
+    | [] -> make (sumx /. nb) (sumy /. nb)
+    | h::tl -> aux tl (sumx +. h.x) (sumy +. h.y) (nb +. 1.)
+  in aux pts 0. 0. 0.
 
+let barycenter weighted_pts =
+  let rec aux pts sumx sumy sumw =
+    match pts with
+    | [] -> make (sumx /. sumw) (sumy /. sumw)
+    | (pt,w)::tl -> aux tl ((w*.pt.x) +. sumx) ((w*.pt.y) +. sumy) (w+.sumw)
+  in aux weighted_pts 0. 0. 0.
+  
 let sq_distance ({x=a;y=b}: t) ({x=c;y=d}: t) = 
   let diffX = a -. c and diffY = b -. d in
   (diffX *. diffX +. diffY *. diffY)

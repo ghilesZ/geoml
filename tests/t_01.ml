@@ -56,7 +56,7 @@ module Fermat = struct
     Drawing.draw_line  l2 (Graphics.rgb 230 180 230);
     Drawing.draw_line  l3 (Graphics.rgb 230 180 230);
     
-    Point.barycenter [l1_l2; l2_l3; l3_l1]
+    Point.iso_barycenter [l1_l2; l2_l3; l3_l1]
 
   let fermat t = 
     let (pa,pb,pc) = Triangle.points t in
