@@ -1,3 +1,4 @@
+open Geom
 open Graphics
 
 let iof = int_of_float

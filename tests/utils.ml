@@ -1,3 +1,5 @@
+open Geom
+
 let iof = int_of_float
 let foi = float_of_int
 

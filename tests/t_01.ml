@@ -1,3 +1,4 @@
+open Geom
 open Utils
 
 module Fermat = struct 
