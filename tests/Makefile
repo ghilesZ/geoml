@@ -1,5 +1,5 @@
 CC = ocamlc
-GEOMLDIR = /home/ghiles/geoml/lib
+GEOMLDIR = ../lib
 OCAMLINC = -I $(GEOMLDIR)
 WITHGRAPHICS = graphics.cma
 WITHGEOM = geom.cma $(OCAMLINC)
