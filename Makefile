@@ -14,10 +14,9 @@ byte:
 				$(OCB) geom.cma
 
 test:
-				$(OCBTEST) t_01.byte
-				$(OCBTEST) t_02.byte
-				$(OCBTEST) t_03.byte
-				$(OCBTEST) t_04.byte
+				@for file in tests/t_*.ml ; do \
+					 $(OCBTEST) $$(basename $$file | cut -f 1 -d '.').byte ; \
+				done
 
 doc:
 				ocamlbuild geom.docdir/index.html
