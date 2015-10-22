@@ -38,10 +38,11 @@ module Regular = struct
       Point.distance center (Point.iso_barycenter [fst; snd])
   }
 
-  let next_point ?(nth=0) rp pt =
+  let next_point ?(nth=0) rp =
     if nth = rp.edges then rp.center
     else
-      Point.rotate rp.center rp.fst (360. /. float_of_int rp.edges)
+      Point.rotate rp.center rp.fst
+        (float_of_int (nth + 1) *. 360. /. float_of_int rp.edges)
 
   let fold_filter filter f acc rp =
     let rec aux nth acc current next =
@@ -49,8 +50,8 @@ module Regular = struct
       else if not @@ filter current next then acc
       else
         let nth = nth + 1 in
-        aux (nth + 1) (f nth acc current next) next (next_point ~nth rp next)
-    in aux 0 acc rp.fst (next_point rp rp.fst)
+        aux (nth + 1) (f nth acc current next) next (next_point ~nth rp)
+    in aux 0 acc rp.fst (next_point rp)
 
   let perimeter rp = float_of_int rp.edges *. rp.len
   let area rp = rp.len *. rp.apothem /. 2. *. float_of_int rp.edges
