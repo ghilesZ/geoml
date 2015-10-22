@@ -41,10 +41,24 @@ let draw_string posx posy str col =
   moveto posx posy;
   draw_string str
 
-let draw_polygon ?(lw=1) col p =
+let draw_regular ?(lw=1) rp col =
+  let open Point in
+  let open Polygon.Regular in
+  draw_point ~lw:3 rp.center col;
+  set_line_width lw;
+  moveto (iof rp.fst.x) (iof rp.fst.y);
+  fold_filter (fun _ _ -> true)
+    (fun nth _ current next ->
+       draw_point ~lw:3 current col;
+       set_line_width lw;
+       lineto (iof next.x) (iof next.y)
+    ) () rp
+
+let draw_polygon ?(lw=1) p col =
   let open Point in
   moveto (iof (List.hd p).x) (iof (List.hd p).y);
-  Polygon.fold (fun _ current next -> lineto (iof next.x) (iof next.y)) () p
+  Polygon.fold (fun _ current next ->
+      lineto (iof next.x) (iof next.y)) () p
 
 let draw_line ?(lw=1) l col = 
   let sx = float_of_int (size_x ())

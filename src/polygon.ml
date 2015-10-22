@@ -26,42 +26,51 @@ module Regular = struct
   type t = {
     center : Point.t;
     fst : Point.t; (* one arbitrary point of the regular polygon *)
+    snd : Point.t;
     len : float;
     apothem : float;
     edges : int;
   }
 
-  let make center fst len edges = {
-    center; fst; len; edges;
-    apothem =
-      let snd = Point.rotate center fst (360. /. float_of_int edges) in
-      Point.distance center (Point.iso_barycenter [fst; snd])
-  }
+  let make center fst edges =
+    let snd = Point.rotate_angle center fst (360. /. float_of_int edges) in
+    { center; fst; snd; edges;
+      len = Point.distance fst snd;
+      apothem =
+        Point.distance center (Point.iso_barycenter [fst; snd])
+    }
 
   let next_point ?(nth=0) rp =
-    if nth = rp.edges then rp.center
+    if nth = rp.edges - 1 then rp.fst
+    else if nth = 0 then rp.snd
     else
-      Point.rotate rp.center rp.fst
-        (float_of_int (nth + 1) *. 360. /. float_of_int rp.edges)
+      Point.rotate_angle rp.center rp.fst
+        (float_of_int (nth + 1) *. (360. /. float_of_int rp.edges))
 
   let fold_filter filter f acc rp =
     let rec aux nth acc current next =
-      if nth = rp.edges then acc
-      else if not @@ filter current next then acc
+      if nth = rp.edges || not @@ filter current next then acc
       else
-        let nth = nth + 1 in
-        aux (nth + 1) (f nth acc current next) next (next_point ~nth rp)
+        aux (nth + 1) (f nth acc current next) next (next_point ~nth:(nth + 1) rp)
     in aux 0 acc rp.fst (next_point rp)
 
   let perimeter rp = float_of_int rp.edges *. rp.len
   let area rp = rp.len *. rp.apothem /. 2. *. float_of_int rp.edges
 
   let to_polygon rp =
-    fold_filter (fun _ _ -> true)
-      (fun _ acc current next ->
-         next :: acc
+   fold_filter (fun _ _ -> true)
+      (fun _ acc current _ ->
+         current :: acc
       ) [] rp
 
+  let to_randomized_polygon rp =
+   fold_filter (fun _ _ -> true)
+      (fun _ acc current next ->
+        if Random.bool () then acc else
+        let bar = Point.barycenter
+            [(current, Random.float 1.); (next, Random.float 1.)]
+        in bar :: acc
+      ) [] rp
 
   let translate rp dx dy =
     { rp with
