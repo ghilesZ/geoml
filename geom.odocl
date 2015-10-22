@@ -4,4 +4,6 @@ src/Rectangle
 src/Segment
 src/Triangle
 src/Vector
+src/Point  
+src/Line
   
