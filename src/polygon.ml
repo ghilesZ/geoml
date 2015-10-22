@@ -21,6 +21,17 @@ let area p =
       acc +. (p1.x *. p2.y -. p1.y *. p2.x)
     ) 0. p /. 2.
 
+let proj_x p = Point.(fold (
+    fun (minx, maxx) current _ ->
+      min current.x minx, max current.x maxx
+  ) ((List.hd p).x, (List.hd p).x) p)
+
+let proj_y p = Point.(fold (
+    fun (miny, maxy) current _ ->
+      min current.y miny, max current.y maxy
+  ) ((List.hd p).y, (List.hd p).y) p)
+
+
 module Regular = struct
 
   type t = {
