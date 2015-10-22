@@ -40,6 +40,11 @@ let draw_string posx posy str col =
   moveto posx posy;
   draw_string str
 
+let draw_polygon ?(lw=1) col p =
+  let open Point in
+  moveto (iof (List.hd p).x) (iof (List.hd p).y);
+  Polygon.fold (fun _ current next -> lineto (iof next.x) (iof next.y)) () p
+
 let draw_line ?(lw=1) l col = 
   let sx = float_of_int (size_x ())
   and sy = float_of_int (size_y ()) in
