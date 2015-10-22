@@ -34,7 +34,7 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
 
-let x_from_y l y = 
+let x_from_y l y =
   match l with
   | X(x) -> x
   | Y(a,b) -> (y-.b) /. a

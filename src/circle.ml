@@ -24,6 +24,34 @@ let proj_y ((c,r):t) = let open Point in (c.y-.r,c.y+.r)
 let intersects ((c1,r1):t) ((c2,r2):t) = 
   (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
 
+let intersection ((c,r):t) (l:Line.t) =
+  let a',b' = c.Point.x,c.Point.y in
+  match l with
+  | Line.Y(a,b) ->
+     let grand_b = b -. b' in
+     let delta = r*.r *. (1. +. a*.a) -. (a *. a' +. grand_b *. grand_b) in
+     print_string "a' ";print_float a';print_newline();
+     print_string "b' "; print_float b';print_newline(); 
+     print_string "a "; print_float a;print_newline();
+     print_string "b "; print_float b;print_newline();	  
+     print_string "delta "; print_float delta; print_newline();
+     if delta < 0. then [] else 
+	 let sol1 = ((-.a' +. a *. grand_b) +. (sqrt delta)) /. (1. +. a*.a) in
+	 if delta = 0. then [Point.make sol1 (Line.y_from_x l sol1)]
+	 else let sol2 = ((-.a' +. a*.grand_b) -. (sqrt delta)) /. (1.+.a*.a) in
+	      [Point.make sol1 (Line.y_from_x l sol1);
+	       Point.make sol2 (Line.y_from_x l sol2)]
+  | Line.X(x) ->
+     let a,b = c.Point.x,c.Point.y in
+     let c = r*.r -. b*.b -. x*.x -. 2.*.a*.x +. a*.a
+     in let delta = 4. *. (b*.b -. c) in
+	if delta < 0. then [] else 
+	  let sol1 = (2. *. b -. (sqrt delta)) /. 2. in
+	  if delta = 0. then [Point.make x sol1]
+	  else let sol2 = (2. *. b +. (sqrt delta)) /. 2. in
+	       [Point.make x sol1;
+		Point.make x sol2]
+
 let circumscribed p1 p2 p3 =
   let b1 = Line.point_bissection p1 p2
   and b2 = Line.point_bissection p2 p3 in

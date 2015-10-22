@@ -18,7 +18,7 @@ test:
 				$(OCBTEST) t_02.byte
 				$(OCBTEST) t_03.byte
 				$(OCBTEST) t_04.byte
-
+				$(OCBTEST) t_05.byte
 doc:
 				ocamlbuild geom.docdir/index.html
 
