@@ -1,3 +1,6 @@
 *.cm[oia]
 *~
 bin/
+_build
+*.byte
+*.docdir
