@@ -50,6 +50,14 @@ let contains (l:t) (p:Point.t) =
   | X(n) -> p.x = n
   | Y(a,b) -> (a*.(p.x) +. b) = p.y
 
+let translate (l:t) dx dy = 
+  match l with 
+  | X(n) -> X(n+.dx)
+  | Y(a,b) -> 
+    let p1 = Point.translate (Point.make 0. b) dx dy
+    and p2 = Point.translate (Point.make 1. (a+.b)) dx dy in
+    of_points p1 p2
+
 let parallel l1 l2 = 
   match l1,l2 with
   | X(_), X(_) -> true

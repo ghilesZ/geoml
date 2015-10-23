@@ -29,9 +29,7 @@ let intersection ((c,r):t) (l:Line.t) =
   match l with
   | Line.Y(a,b) ->
     (* we go to origin *)
-    let p1 = Point.translate (Point.make 0. b) (-.cx) (-.cy)
-    and p2 = Point.translate (Point.make 1. (a+.b)) (-.cx) (-.cy) in
-    let l_2 = Line.of_points p1 p2 in
+    let l_2 = Line.translate l (-.cx) (-.cy) in
     let a = Line.get_coeff l_2 and b = Line.get_ord l_2 in
     (* we solve the equation at the origin for x*)
     (* x² + y² = r²
