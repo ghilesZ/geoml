@@ -25,22 +25,24 @@ let intersects ((c1,r1):t) ((c2,r2):t) =
   (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
 
 let intersection ((c,r):t) (l:Line.t) =
-  let a',b' = c.Point.x,c.Point.y in
+  let cx = Point.x_coord c and cy = Point.y_coord c in
   match l with
   | Line.Y(a,b) ->
-     let grand_b = b -. b' in
-     let delta = r*.r *. (1. +. a*.a) -. (a *. a' +. grand_b *. grand_b) in
-     print_string "a' ";print_float a';print_newline();
-     print_string "b' "; print_float b';print_newline(); 
-     print_string "a "; print_float a;print_newline();
-     print_string "b "; print_float b;print_newline();	  
-     print_string "delta "; print_float delta; print_newline();
-     if delta < 0. then [] else 
-	 let sol1 = ((-.a' +. a *. grand_b) +. (sqrt delta)) /. (1. +. a*.a) in
-	 if delta = 0. then [Point.make sol1 (Line.y_from_x l sol1)]
-	 else let sol2 = ((-.a' +. a*.grand_b) -. (sqrt delta)) /. (1.+.a*.a) in
-	      [Point.make sol1 (Line.y_from_x l sol1);
-	       Point.make sol2 (Line.y_from_x l sol2)]
+    (* we go to origin *)
+    let p1 = Point.translate (Point.make 0. b) (-.cx) (-.cy)
+    and p2 = Point.translate (Point.make 1. (a+.b)) (-.cx) (-.cy) in
+    let l_2 = Line.of_points p1 p2 in
+    let a = Line.get_coeff l_2 and b = Line.get_ord l_2 in
+    (* we solve the equation at the origin for x*)
+    (* x² + y² = r²
+       x² + (ax + b)² = r²
+       x² + a²x² + 2abx + b² = r²
+       (a²+1)x² + 2abx + b²-r² = 0 *)
+    Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. r*.r)
+     (* we calculate the associates y*)
+    |> List.map (fun x -> Point.make x (a*.x+.b))
+     (* we translate the result to the first coordinates*)
+    |> List.map (fun x -> Point.translate x cx cy)
   | Line.X(x) ->
      let a,b = c.Point.x,c.Point.y in
      let c = r*.r -. b*.b -. x*.x -. 2.*.a*.x +. a*.a
