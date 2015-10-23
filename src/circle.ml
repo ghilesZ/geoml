@@ -24,7 +24,7 @@ let proj_y ((c,r):t) = let open Point in (c.y-.r,c.y+.r)
 let intersects ((c1,r1):t) ((c2,r2):t) = 
   (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
 
-let intersection ((c,r):t) (l:Line.t) =
+let line_intersection ((c,r):t) (l:Line.t) =
   let cx = Point.x_coord c and cy = Point.y_coord c in
   match l with
   | Line.Y(a,b) ->
@@ -37,7 +37,7 @@ let intersection ((c,r):t) (l:Line.t) =
        x² + a²x² + 2abx + b² = r²
        (a²+1)x² + 2abx + b²-r² = 0 *)
     Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. r*.r)
-     (* we calculate the associates y*)
+     (* we calculate the associated y*)
     |> List.map (fun x -> Point.make x (a*.x+.b))
      (* we translate the result to the first coordinates*)
     |> List.map (fun x -> Point.translate x cx cy)
@@ -51,6 +51,12 @@ let intersection ((c,r):t) (l:Line.t) =
 	  else let sol2 = (2. *. b +. (sqrt delta)) /. 2. in
 	       [Point.make x sol1;
 		Point.make x sol2]
+
+let intersection (((c1,r1) as c):t) ((c2,r2):t) = 
+  let c1_c2 = Line.of_points c1 c2 in
+  let p = Point.barycenter [(c1,r1);(c2,r2)] in
+  let l = Line.perpendicular_of_line c1_c2 p in
+  line_intersection c l
 
 let circumscribed p1 p2 p3 =
   let b1 = Line.point_bissection p1 p2

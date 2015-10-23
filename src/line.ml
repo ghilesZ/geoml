@@ -85,11 +85,20 @@ let perpendicular l1 l2 =
 let perpendicular_of_line l p = 
   let open Point in
   match l with 
-  | Y(a,b) ->
+  | Y(0.,b) -> X(p.x)
+  | Y(a,b)  ->
      let coeff = (-.1.) /. a in
      let ord = p.y -. coeff *. p.x in
      Y(coeff,ord)
-  | X(x) -> Y(x,p.y)
+  | X(_) -> Y(0.,p.y)
+
+let parallel_of_line l p = 
+  let open Point in
+  match l with 
+  | Y(a,b) ->
+     let ord = p.y -. a *. p.x in
+     Y(a,ord)
+  | X(x) -> X(p.x)
 
 let orth_proj l p =
   perpendicular_of_line l p |> intersection l
