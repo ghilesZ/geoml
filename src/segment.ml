@@ -11,6 +11,8 @@ let size ((p1,p2):t) = Point.distance p1 p2
 let translate ((p1,p2):t) dx dy=
   make (Point.translate p1 dx dy) (Point.translate p2 dx dy)
 
+let to_line ((p1,p2):t) = Line.of_points p1 p2
+
 let contains ((a,b):t) p = 
   Point.sq_distance a p +. Point.sq_distance p b =  Point.sq_distance a b
 
@@ -25,9 +27,8 @@ let proj_y ((a,b):t) =
   else a.y,b.y
 
 let intersects (s1:t) (s2:t) = 
-  let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
-  if (a<d && b>c) then
-    let (a,b) = proj_y s1
-    and (c,d) = proj_y s2 in
-    (a<d && b>c)
-  else false
+  try 
+    let p = Line.intersection (to_line s1) (to_line s2) in
+    contains s1 p && contains s2 p
+  with 
+  | Line.Parallel -> false
