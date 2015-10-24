@@ -52,9 +52,9 @@ let line_intersection ((c,r):t) (l:Line.t) =
 	       [Point.make x sol1;
 		Point.make x sol2]
 
-let intersection (((c1,r1) as c):t) ((c2,r2):t) = 
+let intersection (((c1,_) as c):t) (((c2,_)as c'):t) = 
   let c1_c2 = Line.of_points c1 c2 in
-  let p = Point.barycenter [(c1,r1);(c2,r2)] in
+  let p = Point.barycenter [c;c'] in
   let l = Line.perpendicular_of_line c1_c2 p in
   line_intersection c l
 
