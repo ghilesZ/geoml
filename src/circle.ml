@@ -11,7 +11,7 @@ let radius ((_,r):t) = r
 let translate ((c,r):t) dx dy = 
   make (Point.translate c dx dy) r
 
-let contains ((c,r):t) p = (Point.sq_distance c p) < r *. r
+let contains ((c,r):t) p = (Point.sq_distance c p) < (r*.r)
 
 let area ((_,r):t) = pi *. r *. r
 
@@ -81,53 +81,63 @@ let of_diameter p1 p2 = make (Point.center p1 p2) (0.5 *. Point.distance p1 p2)
      
 (** given a list of point, returns the smallest circle that
    contains all the points of the list *)
-let bounding (pts : Point.t list) : t =	
+let bounding (pts : Point.t list) : t =
+  let of_two x y pt = 
+    let c = of_diameter pt x in
+    if contains c y then ([x;pt],c) else
+      let c = of_diameter pt y in
+      if contains c x then ([y;pt],c)
+      else raise Not_found 
+  in
+  let of_three x y z pt =
+    try 
+      let (s,c) = of_two x y pt in
+      if contains c z then (s,c) else
+	let (s,c) = of_two x z pt in
+	if contains c y then (s,c) else
+	  let (s,c) = of_two y z pt in
+	   if contains c x then (s,c) 
+	   else raise Not_found
+    with
+    | Not_found -> begin
+      (* returns the indice of the smallest value *)
+      let smallest a b c = 
+	let res = ref (a,0) in
+	if b < a then res := (b,1);
+	if c < fst (!res) then res := (c,2);
+	snd(!res)
+      in
+      let ((_,r1) as c1) = circumscribed pt x y
+      and ((_,r2) as c2) = circumscribed pt x z
+      and ((_,r3) as c3) = circumscribed pt y z
+      and s1 = [pt;x;y] and s2 = [pt;x;z] and s3 = [pt;y;z] in
+      let res_array = [|(s1,c1);(s2,c2);(s3,c3)|] in
+      (match ((contains c1 z),(contains c2 y),(contains c3 x)) with
+      |(true,true,true) -> res_array.(smallest r1 r2 r3)
+      |(_,true,true) -> res_array.(smallest (r3+.1.) r2 r3)
+      |(true,_,true) -> res_array.(smallest r1 (r1+.1.) r3)
+      |(true,true,_) -> res_array.(smallest r1 r2 (r2+.1.))
+      |(true,_,_) -> res_array.(0)
+      |(_,true,_) -> res_array.(1)
+      |(_,_,true) -> res_array.(2)
+      | _ -> assert false)
+    end
+  in 
   let update set pt =
     match set with
     | [x] -> [x;pt],(of_diameter x pt)
-    | [x;y] ->
-       let c = of_diameter pt x in
-       if contains c y then ([x;pt],c) else
-	 let c = of_diameter pt y in
-	 if contains c x then ([y;pt],c)
-	 else ([x;y;pt],circumscribed pt x y)
-    | [x;y;z] ->
-       let contains2 c a b = contains c a && contains c b in
-       let c = (of_diameter pt x) in 
-       if contains2 c y z then ([x;pt],c) else
-	 let c = (of_diameter pt y) in
-	 if contains2 c x z then ([y;pt],c) else
-	   let c = (of_diameter pt z) in
-           if contains2 c x y then ([z;pt],c) else
-	     let smallest a b c = a<b && a<c in
-	     let ((_,r1) as c1) = circumscribed pt x y
-	     and ((_,r2) as c2) = circumscribed pt x z
-	     and ((_,r3) as c3) = circumscribed pt y z 
-	     and s1 = [pt;x;y] and s2 = [pt;x;z] and s3 = [pt;y;z] in
-	     (match ((contains c1 z),(contains c2 y),(contains c3 x)) with
-	     |(true,true,true) when smallest r1 r2 r3 -> (s1,c1)
-	     |(true,true,true) when smallest r2 r1 r3 -> (s2,c2)
-	     |(true,true,true) -> (s3,c3)
-	     |(_,true,true) when r2 < r3 -> (s2,c2)
-	     |(_,true,true) -> (s3,c3)
-	     |(true,_,true) when r1 < r3 -> (s1,c1)
-	     |(true,_,true) -> (s3,c3)
-	     |(true,true,_) when r1 < r2 -> (s1,c1)
-	     |(true,true,_) -> (s2,c2)
-	     |(true,_,_) -> (s1,c1)
-	     |(_,true,_) -> (s2,c2)
-	     |(_,_,true) -> (s3,c3)
-	     | _ -> assert false)
-    | _ -> assert false
-	    
+    | [x;y] -> 
+      (try of_two x y pt 
+      with Not_found -> ([x;y;pt],circumscribed pt x y))
+    | [x;y;z] -> of_three x y z pt
+    | _ -> assert false  
   in
   let rec mindisk circle set pts =
     match pts with
     | [] -> circle
-    | h::tl when (contains circle h |> not) ->
-       let (new_set,new_circle) = update set h in
-       mindisk new_circle new_set tl
-    | h::tl -> mindisk circle set tl
+    | h::tl when contains circle h ->  mindisk circle set tl 
+    | h::tl -> 
+      let (new_set,new_circle) = update set h in mindisk new_circle new_set tl
   in
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"

@@ -4,7 +4,7 @@ open Utils
 module T = struct
   let size_x = 800. 
   and size_y = 700. 
-  and size = 10
+  and size = 4
   and title = "Calculating the bounding circle/rectangle/polygon of a point list"
 
   type t = Point.t list  
@@ -19,9 +19,9 @@ module T = struct
       let c = Circle.make e 5. in 
       Drawing.fill_circle c Graphics.black
     ) v;
-    Drawing.draw_circle (Circle.bounding v) Graphics.red;
     Drawing.draw_rectangle (Rectangle.bounding v) Graphics.green;
-    Drawing.draw_polygon (Polygon.bounding v) Graphics.blue
+    Drawing.draw_polygon (Polygon.bounding v) Graphics.blue;
+    Drawing.draw_circle (Circle.bounding v) Graphics.red
 
 end
 
