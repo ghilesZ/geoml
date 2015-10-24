@@ -31,6 +31,49 @@ let proj_y p = Point.(fold (
       min current.y miny, max current.y maxy
   ) ((List.hd p).y, (List.hd p).y) p)
 
+let bounding l =  
+  let bottom_left l = 
+    let open Point in
+    let rec aux best l = 
+      match l with
+      | [] -> best
+      | a::b when best.y > a.y || best.y = a.y && a.x < best.x -> aux a b
+      |h::tl -> aux best tl
+    in aux (List.hd l) (List.tl l) in
+    
+  let x_axis = Vector.of_points (Point.orig) (Point.make 1. 0.) in
+  let angle pa pb = Vector.angle (Vector.of_points pa pb) x_axis in
+      
+  let graham_sort l =
+    let p = bottom_left l in
+    let comp p1 p2 =
+      if p1 = p then 1
+      else if p2 = p then -1
+      else if angle p p1 > angle p p2 then 1 
+      else if angle p p1 = angle p p2 then 0
+      else -1
+    in
+    List.sort comp l in
+      
+  let signProd a b c = 
+    let open Point in 
+    (b.x-.a.x)*.(c.y-.a.y)-.(b.y-.a.y)*.(c.x-.a.x)
+  in
+      
+  let graham cloud =
+    let rec graham_aux cl conv =
+      match cl,conv with
+      | ([],_) -> conv
+      | (h::t, a::b::tl) -> 
+      let p = signProd b a h in
+      if p <= 0. then graham_aux cl (b::tl)
+      else graham_aux t (h::conv)
+      | (h::t,_) -> graham_aux t (h::conv)
+    in graham_aux (graham_sort cloud) []
+  in 
+  match l with
+  | [] -> failwith "can't build convex envelop with no points"
+  | _ -> graham l
 
 module Regular = struct
 

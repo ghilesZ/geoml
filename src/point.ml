@@ -6,6 +6,8 @@ type t =
 
 let make x y : t = {x; y}
  
+let orig = make 0. 0.
+
 let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
 
 let determinant a b c =

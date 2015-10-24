@@ -47,6 +47,7 @@ let draw_string posx posy str col =
 let draw_regular ?(lw=1) rp col =
   let open Point in
   let open Polygon.Regular in
+  set_color col;
   draw_point ~lw:3 rp.center col;
   set_line_width lw;
   moveto (iof rp.fst.x) (iof rp.fst.y);
@@ -59,6 +60,7 @@ let draw_regular ?(lw=1) rp col =
 
 let draw_polygon ?(lw=1) p col =
   let open Point in
+  set_color col;
   moveto (iof (List.hd p).x) (iof (List.hd p).y);
   Polygon.fold (fun _ current next ->
       lineto (iof next.x) (iof next.y)) () p
