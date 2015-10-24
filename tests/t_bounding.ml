@@ -19,7 +19,9 @@ module T = struct
       let c = Circle.make e 5. in 
       Drawing.fill_circle c Graphics.blue
     ) v;
-    Drawing.draw_circle (Circle.bounding v) Graphics.red
+    Drawing.draw_circle (Circle.bounding v) Graphics.red;
+    Drawing.draw_rectangle (Rectangle.bounding v) Graphics.green
+
 end
 
 module Go = Tester.Make(T)

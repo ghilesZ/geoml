@@ -33,8 +33,11 @@ let draw_segment ?(lw=1) s col =
 
 let draw_triangle ?(lw=1) t col = 
   let open Triangle in
-  tri_iter (fun e -> draw_segment ~lw:lw e col) (segments t);
-  tri_iter (fun e -> draw_point ~lw:lw e col) (points t)
+  tri_iter (fun e -> draw_segment ~lw:lw e col) (segments t)
+
+let draw_rectangle ?(lw=1) r col = 
+  let open Rectangle in
+  List.iter (fun e -> draw_segment ~lw:lw e col) (segments r)
 
 let draw_string posx posy str col =
   set_color col;

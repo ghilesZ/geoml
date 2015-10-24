@@ -38,6 +38,13 @@ let intersects (s1:t) (s2:t) =
     (a<d && b>c)
   else false
 
+let segments (r:t) = 
+  let s1 = Segment.make (bottom_right_corner r) (bottom_left_corner r) 
+  and s2 = Segment.make (bottom_left_corner r) (top_left_corner r)
+  and s3 = Segment.make (top_left_corner r) (top_right_corner r)
+  and s4 = Segment.make (top_right_corner r) (bottom_right_corner r) 
+  in [s1;s2;s3;s4]
+
 let is_square ((_,w,h):t) = w=h
 
 (** given a rectangle and point, returns the smallest rectangle that
