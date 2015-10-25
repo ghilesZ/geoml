@@ -44,16 +44,11 @@ let line_intersection ((c,r):t) (l:Line.t) =
     |> List.map (fun x -> Point.make x (a*.x+.b))
      (* we translate the result to the first coordinates*)
     |> List.map (fun x -> Point.translate x cx cy)
-  | Line.X(x) -> failwith "not implementd yet"
-     (*let a,b = c.Point.x,c.Point.y in
-     let c = r*.r -. b*.b -. x*.x -. 2.*.a*.x +. a*.a
-     in let delta = 4. *. (b*.b -. c) in
-	if delta < 0. then [] else 
-	  let sol1 = (2. *. b -. (sqrt delta)) /. 2. in
-	  if delta = 0. then [Point.make x sol1]
-	  else let sol2 = (2. *. b +. (sqrt delta)) /. 2. in
-	       [Point.make x sol1;
-		Point.make x sol2]*)
+  | Line.X(x) ->
+    let a = x-.cx in
+    Math.solve 1. 0. (a*.a -. r*.r)
+  |> List.map (fun y -> Point.make x y)
+  |> List.map (fun p -> Point.translate p 0. cy)
 
 let intersection (((c1,_) as c):t) (((c2,_)as c'):t) = 
   let c1_c2 = Line.of_points c1 c2 in

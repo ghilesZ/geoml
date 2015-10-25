@@ -7,6 +7,10 @@ let make_x f = X(f)
 
 let make_y a b = Y(a,b)
 
+let x_axis = Y(0.,0.)
+
+let y_axis = X(0.)
+
 let is_vertical = function 
   | X(_) -> true
   | _ -> false
