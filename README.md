@@ -14,5 +14,5 @@ $ make doc
 ```
 - The tests 
 ```sh
-$ make doc 
+$ make test 
 ```
