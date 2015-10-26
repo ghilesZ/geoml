@@ -59,11 +59,9 @@ let intersection (((c1,_) as c):t) (((c2,_)as c'):t) =
 let circumscribed p1 p2 p3 =
   let b1 = Line.point_bissection p1 p2
   and b2 = Line.point_bissection p2 p3 in
-  let angle = Vector.angle (Vector.of_points p1 p2) (Vector.of_points p1 p3) in
-  let center = Line.intersection b1 b2 
-  and radius = (Point.distance p2 p3) /. 
-    (2. *. (sin angle))
-  in make center radius
+  let center = Line.intersection b1 b2 in
+  let radius = (Point.distance p2 center) in
+  make center radius
 
 let incircle p1 p2 p3 =
   let a = Point.distance p1 p2
@@ -110,14 +108,16 @@ let bounding (pts : Point.t list) : t =
     | [x;y;z] -> of_three x y z pt
     | _ -> assert false  
   in
-  let rec mindisk circle set pts =
+  let rec mindisk l circle set pts =
     match pts with
     | [] -> circle
-    | h::tl when contains circle h ->  mindisk circle set tl
+    | h::tl when contains circle h || List.mem h set ->
+       mindisk l circle set tl
     | h::tl -> 
        let (new_set,new_circle) = update set h in
-       mindisk new_circle new_set tl
+       List.filter (fun e -> List.mem e new_set |> not) l |>
+       mindisk l new_circle new_set
   in
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"
-  | h::tl -> mindisk (make h 0.) [h] tl
+  | h::tl -> mindisk pts (make h 0.) [h] tl
