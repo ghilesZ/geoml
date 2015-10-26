@@ -1,7 +1,17 @@
 type t = X of float | Y of float * float (** linear equation type *)
 
-exception Vertical of float
-exception Parallel
+
+
+
+type error = Vertical of float | Parallel | Same_coordinates of Point.t
+exception Error of error
+let print_error fmt e =
+  let open Format in
+  match e with
+  | Vertical f -> fprintf fmt "Bad argument : vertical line (x: %f)" f
+  | Parallel -> fprintf fmt "Bad arguments : parallel lines"
+  | Same_coordinates p -> fprintf fmt "Bad arguments : same coordinates %a" Point.print p
+
 
 let make_x f = X(f)
 
@@ -17,11 +27,11 @@ let is_vertical = function
 
 let get_coeff = function
   | Y(a,_) -> a
-  | X(v) -> raise (Vertical(v))
+  | X(v) -> raise (Error (Vertical v))
 
 let get_ord = function
   | Y(_,a) -> a
-  | X(v) -> raise (Vertical(v))
+  | X(v) -> raise (Error (Vertical v))
 
 let to_string = function
   | X(a) -> ("x="^(string_of_float a))
@@ -30,7 +40,7 @@ let to_string = function
 let of_points (p1:Point.t) (p2:Point.t) =
   let open Point in
   if p1 = p2 then 
-    failwith "Line.of_points: points have same coordinate, can't build line whith those points" 
+    raise (Error (Same_coordinates p1))
   else if p1.x = p2.x then
     X(p1.y)
   else 
@@ -45,7 +55,7 @@ let x_from_y l y =
 
 let y_from_x l x =
   match l with
-  | X(c) -> raise (Vertical(c))
+  | X(c) -> raise (Error (Vertical c))
   | Y(a,b) -> a *. x +. b
 
 let contains (l:t) (p:Point.t) = 
@@ -78,7 +88,7 @@ let intersection l1 l2 =
      Point.make x y
   | Y(a,b), X(x) | X(x), Y(a,b) -> 
      let y = a *. x +. b in Point.make x y
-  | _  -> raise Parallel
+  | _  -> raise (Error Parallel)
 
 let perpendicular l1 l2 = 
   match l1,l2 with

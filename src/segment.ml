@@ -31,4 +31,12 @@ let intersects (s1:t) (s2:t) =
     let p = Line.intersection (to_line s1) (to_line s2) in
     contains s1 p && contains s2 p
   with 
-  | Line.Parallel -> false
+  | Line.Error Line.Parallel -> false
+
+let intersection (s1:t) (s2:t) =
+  try
+    let p = Line.intersection (to_line s1) (to_line s2) in
+    if contains s1 p && contains s2 p then Some p
+    else None
+  with
+  | Line.Error Line.Parallel -> None

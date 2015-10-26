@@ -30,7 +30,7 @@ let gen_polygon xmin xmax ymin ymax =
   let fst = gen_point xmin xmax ymin ymax in
   let center = gen_point xmin xmax ymin ymax in
   let rp = Polygon.Regular.make center fst edges in
-  Polygon.Regular.to_randomized_polygon rp
+  Polygon.Regular.to_randomized_polygon ~prob:0.7 rp
   
 let gen_regular xmin xmax ymin ymax =
   let edges = 3 + Random.int 17 in

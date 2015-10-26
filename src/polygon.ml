@@ -43,19 +43,19 @@ let proj_y p = Point.(fold (
       min current.y miny, max current.y maxy
   ) ((List.hd p).y, (List.hd p).y) p)
 
-let bounding l =  
-  let bottom_left l = 
+let bounding l =
+  let bottom_left l =
     let open Point in
-    let rec aux best l = 
+    let rec aux best l =
       match l with
       | [] -> best
       | a::b when best.y > a.y || best.y = a.y && a.x < best.x -> aux a b
       |h::tl -> aux best tl
     in aux (List.hd l) (List.tl l) in
-    
+
   let x_axis = Vector.of_points (Point.orig) (Point.make 1. 0.) in
   let angle pa pb = Vector.angle (Vector.of_points pa pb) x_axis in
-      
+
   let graham_sort l =
     let p = bottom_left l in
     let comp p1 p2 =
@@ -66,12 +66,12 @@ let bounding l =
       else -1
     in
     List.sort comp l in
-      
-  let signProd a b c = 
-    let open Point in 
+
+  let signProd a b c =
+    let open Point in
     (b.x-.a.x)*.(c.y-.a.y)-.(b.y-.a.y)*.(c.x-.a.x)
   in
-      
+
   let graham cloud =
     let rec graham_aux cl conv =
       match cl,conv with
@@ -98,17 +98,39 @@ let contains p pt =
         (pt.x < (j.x -. i.x) *. (pt.y -. i.y) /. (j.y -. i .y) +. i.x))
     (fun acc _ _ -> not acc) false p
 
-(* let intersection p1 p2 = *)
-(*   let minx1, miny1, maxx1, maxy1 = minmax_xy p1 in *)
-(*   let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in *)
-(*   let intersections = if maxx1 < minx2 || maxy1 < miny2 *)
-(*      || maxx2 < minx1 || maxy2 < miny2 then *)
-(*     [] *)
-(*   else fold (fun acc cur1 next1 -> *)
-(*       fold (fun acc cur2 next2 -> *)
-          
-(*         ) acc p2 *)
-(*     ) [] p1 *)
+let intersection p1 p2 =
+  let minx1, miny1, maxx1, maxy1 = minmax_xy p1 in
+  let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in
+  if maxx1 < minx2 || maxy1 < miny2
+     || maxx2 < minx1 || maxy2 < miny2 then
+    []
+  else
+    let _, (_p1_inter, inters, _entering) =
+      fold (fun (inside, (p1_inter, inters, entering)) cur1 next1 ->
+
+          let _, (p1_inter, inters, entering) =
+            fold (fun (inside, (p1_inter, inters, entering)) cur2 next2 ->
+                match
+                  Segment.(intersection (make cur1 next1) (make cur2 next2))
+                with
+                | None -> inside, (p1_inter, inters, entering)
+                | Some v ->
+                  not inside,
+                  (v :: p1_inter, v :: inters,
+                   if inside then entering else v :: entering)
+                | exception (Line.Error e) ->
+                  Format.printf "%a\n%a\n%a\n%a\n"
+                    Point.print cur1 Point.print next1
+                    Point.print cur2 Point.print next2;
+                  Format.printf "%a@." Line.print_error e;
+                  assert false
+              ) (inside, (p1_inter, inters, entering)) p2
+          in
+          inside, (p1_inter, inters, entering)
+
+      ) (contains p1 (List.hd p2), ([],[],[])) p1
+    in
+    inters
 
 
 module Regular = struct
@@ -153,14 +175,14 @@ module Regular = struct
          current :: acc
       ) [] rp
 
-  let to_randomized_polygon rp =
+  let to_randomized_polygon ?(min=3)  ?(prob=0.5) rp =
    fold_stop (fun _ _ -> true)
-      (fun _ acc current next ->
-        if Random.bool () then acc else
-        let bar = Point.barycenter
-            [(current, Random.float 1.); (next, Random.float 1.)]
-        in bar :: acc
-      ) [] rp
+      (fun _ (prob, acc) current next ->
+        if Random.float 1. < prob then acc else
+        let rand = Random.float 1. in
+        let bar = Point.barycenter [(current, rand); (next, 1. -. rand)] in
+        (prob + prob / min, bar :: acc)
+      ) (prob, []) rp
 
   let translate rp dx dy =
     { rp with
