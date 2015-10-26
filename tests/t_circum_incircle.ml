@@ -5,7 +5,7 @@ module Circ = struct
 
   let size_x = 800.
   and size_y = 700.
-  and title = "Calculating the circumscribed circle of a triangle"
+  and title = "Calculating the circumscribed and the incircle of a triangle"
 
   type t = Triangle.t 
 

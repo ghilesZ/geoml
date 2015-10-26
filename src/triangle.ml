@@ -1,5 +1,19 @@
 type t = Point.t * Point.t * Point.t
 
+let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
+
+let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
+
+let tri_find f (pa,pb,pc) = 
+  if f pa then pa 
+  else if f pb then pb
+  else if f pc then pc 
+  else raise Not_found
+
+let tri_forall f (pa,pb,pc) = (f pa) && (f pb) && (f pc)
+
+let tri_iter f (pa,pb,pc) = f pa; f pb; f pc
+
 let make p1 p2 p3 : t= (p1,p2,p3)
 
 let extr1 ((p1,_,_):t) = p1
@@ -8,10 +22,8 @@ let extr2 ((_,p2,_):t) = p2
 
 let extr3 ((_,_,p3):t) = p3
 
-let translate ((p1,p2,p3):t) dx dy : t = 
-  ((Point.translate p1 dx dy),
-   (Point.translate p2 dx dy),
-   (Point.translate p3 dx dy))
+let translate (tr:t) dx dy : t = 
+  tri_map (fun e -> Point.translate e dx dy) tr
 
 (** tests if a point is in a triangle with barycenter method *)
 let contains (({Point.x=ax;Point.y=ay},
@@ -50,9 +62,16 @@ let proj_y ((pa,pb,pc):t) =
   and max = max (pa.y) (pb.y) |> max (pc.y)
   in (inf,max)
 
-let intersects (((a,b,c) as s1):t) (((d,e,f) as s2):t) = 
-  contains s2 a || contains s2 b || contains s2 c ||
-  contains s1 d || contains s1 e || contains s1 f
+let segments ((pa,pb,pc):t) =
+  ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
+
+let intersects (s1:t) (s2:t) = 
+  let (a,b,c) = segments s1 and (d,e,f) = segments s2 in
+   tri_exists (fun s -> 
+     Segment.intersects d s ||
+     Segment.intersects e s ||
+     Segment.intersects f s
+   ) (a,b,c)
 
 let is_isoscele ((a,b,c) :t) =
   Point.sq_distance a b = Point.sq_distance b c ||
@@ -69,29 +88,12 @@ let is_right ((a,b,c) :t) =
   psq b c = psq a b +. psq c a ||
   psq c a = psq a b +. psq b c
 
-let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
-
-let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
-
-let tri_find f (pa,pb,pc) = 
-  if f pa then pa 
-  else if f pb then pb
-  else if f pc then pc 
-  else raise Not_found
-
-let tri_forall f (pa,pb,pc) = (f pa) && (f pb) && (f pc)
-
-let tri_iter f (pa,pb,pc) = f pa; f pb; f pc
-
 let points x = x
 
-let segments ((pa,pb,pc):t) =
-  ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
-
 let angles ((pa,pb,pc):t) = 
-  let a1 = Vector.angle_deg (Vector.of_points pa pb) (Vector.of_points pa pc) in
-  let a2 = Vector.angle_deg (Vector.of_points pb pa) (Vector.of_points pb pc) in
-  let a1 = if a1 < 0. then (-.a1) else a1
-  and a2 = if a2 < 0. then (-.a2) else a2 in
+  let open Vector in
+  let a1 = angle_deg (of_points pa pb) (of_points pa pc) in
+  let a2 = angle_deg (of_points pb pa) (of_points pb pc) in
+  let a1 = abs_float a1 and a2 = abs_float a2 in
   let a3 = 180. -. (a1+.a2) in
   (a1,a2,a3)

@@ -7,6 +7,10 @@ let make_x f = X(f)
 
 let make_y a b = Y(a,b)
 
+let x_axis = Y(0.,0.)
+
+let y_axis = X(0.)
+
 let is_vertical = function 
   | X(_) -> true
   | _ -> false
@@ -34,7 +38,7 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
 
-let x_from_y l y = 
+let x_from_y l y =
   match l with
   | X(x) -> x
   | Y(a,b) -> (y-.b) /. a
@@ -49,6 +53,14 @@ let contains (l:t) (p:Point.t) =
   match l with
   | X(n) -> p.x = n
   | Y(a,b) -> (a*.(p.x) +. b) = p.y
+
+let translate (l:t) dx dy = 
+  match l with 
+  | X(n) -> X(n+.dx)
+  | Y(a,b) -> 
+    let p1 = Point.translate (Point.make 0. b) dx dy
+    and p2 = Point.translate (Point.make 1. (a+.b)) dx dy in
+    of_points p1 p2
 
 let parallel l1 l2 = 
   match l1,l2 with
@@ -77,11 +89,20 @@ let perpendicular l1 l2 =
 let perpendicular_of_line l p = 
   let open Point in
   match l with 
-  | Y(a,b) ->
+  | Y(0.,b) -> X(p.x)
+  | Y(a,b)  ->
      let coeff = (-.1.) /. a in
      let ord = p.y -. coeff *. p.x in
      Y(coeff,ord)
-  | X(x) -> Y(x,p.y)
+  | X(_) -> Y(0.,p.y)
+
+let parallel_of_line l p = 
+  let open Point in
+  match l with 
+  | Y(a,b) ->
+     let ord = p.y -. a *. p.x in
+     Y(a,ord)
+  | X(x) -> X(p.x)
 
 let orth_proj l p =
   perpendicular_of_line l p |> intersection l
