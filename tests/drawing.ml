@@ -47,7 +47,7 @@ let draw_regular ?(lw=1) rp col =
   draw_point ~lw:3 rp.center col;
   set_line_width lw;
   moveto (iof rp.fst.x) (iof rp.fst.y);
-  fold_filter (fun _ _ -> true)
+  fold_stop (fun _ _ -> true)
     (fun nth _ current next ->
        draw_point ~lw:3 current col;
        set_line_width lw;

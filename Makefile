@@ -13,7 +13,7 @@ native:
 byte:
 				$(OCB) geom.cma
 
-test:
+test:   native byte
 				@for file in tests/t_*.ml ; do \
 					 $(OCBTEST) $$(basename $$file | cut -f 1 -d '.').byte ; \
 				done
