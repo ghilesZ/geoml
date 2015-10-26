@@ -115,15 +115,16 @@ let intersection p1 p2 =
                 with
                 | None -> inside, (p1_inter, inters, entering)
                 | Some v ->
+                  Format.printf "NOPE";
                   not inside,
                   (v :: p1_inter, v :: inters,
                    if inside then entering else v :: entering)
-                | exception (Line.Error e) ->
-                  Format.printf "%a\n%a\n%a\n%a\n"
+                | exception ((Line.Error e) as exc) ->
+                  Format.printf "%a\n%a\n%a\n%a@\n"
                     Point.print cur1 Point.print next1
                     Point.print cur2 Point.print next2;
                   Format.printf "%a@." Line.print_error e;
-                  assert false
+                  raise exc
               ) (inside, (p1_inter, inters, entering)) p2
           in
           inside, (p1_inter, inters, entering)
@@ -175,13 +176,19 @@ module Regular = struct
          current :: acc
       ) [] rp
 
-  let to_randomized_polygon ?(min=3)  ?(prob=0.5) rp =
-   fold_stop (fun _ _ -> true)
-      (fun _ (prob, acc) current next ->
-        if Random.float 1. < prob then acc else
-        let rand = Random.float 1. in
-        let bar = Point.barycenter [(current, rand); (next, 1. -. rand)] in
-        (prob + prob / min, bar :: acc)
+  let to_randomized_polygon ?(minp=3)  ?(prob=0.5) rp =
+   snd @@ fold_stop (fun _ _ -> true)
+      (fun _ (nb, acc) current next ->
+        let minp = float_of_int minp in
+        let prob =
+          if nb >= minp then prob
+          else max prob (minp /. (float_of_int rp.edges -. nb))
+        in
+        if Random.float 1. > prob then (nb, acc)
+        else
+          let rand = Random.float 1. in
+          let bar = Point.barycenter [(current, rand); (next, 1. -. rand)] in
+          (nb +. 1., bar :: acc)
       ) (prob, []) rp
 
   let translate rp dx dy =

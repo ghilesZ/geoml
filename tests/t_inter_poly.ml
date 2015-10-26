@@ -16,11 +16,15 @@ module Poly_r = struct
     let p1 = Polygon.Regular.to_randomized_polygon rp in
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
     let p2 = Polygon.Regular.to_randomized_polygon rp in
-    p1, p2, Polygon.intersection p1 p2
+    p1, p2,
+    try Polygon.intersection p1 p2 with Line.Error e -> []
 
   let frame (p1, p2, pts) =
+
     Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
     List.iter (!%(Drawing.draw_point ~lw:5) Graphics.blue) pts;
+    List.iter (Format.printf "%a@\n" Point.print) pts;
+    Graphics.set_line_width 1;
     Drawing.draw_polygon p1 Graphics.green;
     Drawing.draw_polygon p2 Graphics.blue;
 
