@@ -103,9 +103,9 @@ let intersection p1 p2 =
   let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in
   if maxx1 < minx2 || maxy1 < miny2
      || maxx2 < minx1 || maxy2 < miny2 then
-    []
+    [], []
   else
-    let _, (_p1_inter, inters, _entering) =
+    let _, (_p1_inter, inters, entering) =
       fold (fun (inside, (p1_inter, inters, entering)) cur1 next1 ->
 
           let _, (p1_inter, inters, entering) =
@@ -115,23 +115,16 @@ let intersection p1 p2 =
                 with
                 | None -> inside, (p1_inter, inters, entering)
                 | Some v ->
-                  Format.printf "NOPE";
                   not inside,
                   (v :: p1_inter, v :: inters,
-                   if inside then entering else v :: entering)
-                | exception ((Line.Error e) as exc) ->
-                  Format.printf "%a\n%a\n%a\n%a@\n"
-                    Point.print cur1 Point.print next1
-                    Point.print cur2 Point.print next2;
-                  Format.printf "%a@." Line.print_error e;
-                  raise exc
+                   if not inside then entering else v :: entering)
               ) (inside, (p1_inter, inters, entering)) p2
           in
           inside, (p1_inter, inters, entering)
 
       ) (contains p1 (List.hd p2), ([],[],[])) p1
     in
-    inters
+    inters, entering
 
 
 module Regular = struct
