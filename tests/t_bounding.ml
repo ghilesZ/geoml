@@ -4,13 +4,14 @@ open Utils
 module T = struct
   let size_x = 800. 
   and size_y = 600.
-  and size = 15
+  and size = 150
+  and padding = 30.
   and title = "Calculating the bounding circle/rectangle/polygon of a point list"
 
   type t = Point.t list  
     
   let new_val () = list_make
-    (fun _ -> gen_point 30. (size_x-.30.) 30. (size_y-.30.))
+    (fun _ -> gen_point padding (size_x-.padding) padding (size_y-.padding))
     size 
       
   let frame v =
