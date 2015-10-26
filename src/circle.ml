@@ -14,7 +14,7 @@ let translate ((c,r):t) dx dy =
 let contains ((c,r):t) p =
   let d1 = Point.sq_distance c p
   and d2 = (r*.r) in
-  d1 < d2
+  d1 <= d2
 
 let area ((_,r):t) = pi *. r *. r
 
@@ -79,61 +79,34 @@ let of_diameter p1 p2 =
   let c = Point.center p1 p2 in
   let radius = (Point.distance p1 c) in
   make c radius
-     
+
 (** given a list of point, returns the smallest circle that
    contains all the points of the list, using emo welzl's algorithm.
-    complexity in expected linear time*)
+    complexity in expected linear time *)
 let bounding (pts : Point.t list) : t =
-  let of_two x y pt = 
-    let cx = of_diameter pt x in
-    if contains cx y then ([x;pt],cx) else
-      let cy = of_diameter pt y in
-      if contains cy x then ([y;pt],cy)
-      else raise Not_found
+  let of_two x y pt =
+    try 
+      [((x,pt),y);((y,pt),x)]
+      |> List.map (fun ((a,b),c) -> (([a;b],of_diameter a b),c))
+      |> List.find (fun ((env,circle),inner) -> contains circle inner)
+      |> fst
+    with Not_found -> ([x;y;pt],(circumscribed x y pt))
   in
   let of_three x y z pt =
-    let try_2 a b contained = 
-      let c = (of_two a b pt) in
-      if contains (snd c) contained then c
-      else raise Not_found
+    let found =
+      [((x,y),z); ((x,z),y); ((y,z),x)]
+      |> List.map (fun ((a,b),c) -> ((of_two a b pt),c))
+      |> List.filter (fun ((e,c),inner) -> contains c inner)
+      |> List.map fst
     in
-    try 
-      try (try_2 x y z) 
-      with Not_found -> 
-	try (try_2 x z y) 
-	with Not_found -> (try_2 y z x)
-    with
-    (* the solution goes through three points *)
-    | Not_found -> begin
-      (* returns the indice of the smallest value *)
-      let smallest a b c = 
-	let res = ref (a,0) in
-	if b < a then res := (b,1);
-	if c < fst (!res) then 2
-	else snd (!res)
-      in
-      let ((_,r1) as c1) = circumscribed pt x y
-      and ((_,r2) as c2) = circumscribed pt x z
-      and ((_,r3) as c3) = circumscribed pt y z
-      and s1 = [pt;x;y] and s2 = [pt;x;z] and s3 = [pt;y;z] in
-      let res_array = [|(s1,c1);(s2,c2);(s3,c3)|] in
-      (match ((contains c1 z),(contains c2 y),(contains c3 x)) with
-      |(true,false,false) -> res_array.(0)
-      |(false,true,false) -> res_array.(1)
-      |(false,false,true) -> res_array.(2)
-      |(false,true,true)  -> res_array.(smallest (r3+.1.) r2 r3)
-      |(true,false,true)  -> res_array.(smallest r1 (r1+.1.) r3)
-      |(true,true,false)  -> res_array.(smallest r1 r2 (r2+.1.))
-      |(true,true,true)   -> res_array.(smallest r1 r2 r3)
-      | _ -> assert false)
-    end
-  in 
+    List.fold_left (fun (e1,c1) (e2,c2) ->
+      if radius c1 < radius c2 then (e1,c1) else (e2,c2)
+    ) (List.hd found) (List.tl found)
+  in
   let update set pt =
     match set with
     | [x] -> [x;pt],(of_diameter x pt)
-    | [x;y] -> 
-      (try of_two x y pt
-      with Not_found -> ([x;y;pt],circumscribed pt x y))
+    | [x;y] -> of_two x y pt
     | [x;y;z] -> of_three x y z pt
     | _ -> assert false  
   in
@@ -142,8 +115,8 @@ let bounding (pts : Point.t list) : t =
     | [] -> circle
     | h::tl when contains circle h ->  mindisk circle set tl
     | h::tl -> 
-      let (new_set,new_circle) = update set h in
-      mindisk new_circle new_set tl
+       let (new_set,new_circle) = update set h in
+       mindisk new_circle new_set tl
   in
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"
