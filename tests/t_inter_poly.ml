@@ -7,7 +7,7 @@ module Poly_r = struct
   and size_y = 700.
   and title = "Random regular polygon"
 
-  type t = Polygon.t * Polygon.t * (Point.t list * Point.t list)
+  type t = Polygon.t * Polygon.t * (bool * Point.t list * Point.t list)
 
   let (!%) f = fun a b -> f b a
 
@@ -17,13 +17,13 @@ module Poly_r = struct
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
     let p2 = Polygon.Regular.to_randomized_polygon rp in
     p1, p2,
-    try Polygon.intersection p1 p2 with Line.Error e -> [], []
+    try Polygon.intersection_polygons p1 p2 with Line.Error e -> false, [], []
 
-  let frame (p1, p2, (pts, entering)) =
+  let frame (p1, p2, (start_inside, pts, entering)) =
     Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
     List.iter (!%(Drawing.draw_point ~lw:5) Graphics.cyan) pts;
     List.iter (!%(Drawing.draw_point ~lw:5) Graphics.red) entering;
-    Drawing.draw_point ~lw:5 (List.hd p2) Graphics.blue;
+    Drawing.draw_point ~lw:5 (List.hd p2) Graphics.(if start_inside then magenta else blue);
     Graphics.set_line_width 1;
     Drawing.draw_polygon p1 Graphics.green;
     Drawing.draw_polygon p2 Graphics.blue;

@@ -91,40 +91,66 @@ let minmax_xy p = Point.(fold (fun (minx, miny, maxx, maxy) current _ ->
     min current.x minx, min current.y miny, max current.x maxx, max current.y maxy
   ) ((List.hd p).y, (List.hd p).y, (List.hd p).y, (List.hd p).y) p)
 
+
+(* Randolph Franklin code - Raycasting *)
 let contains p pt =
   fold_filter
     Point.(fun i j ->
-        ((i.y < pt.y) <> (j.y > pt.y)) &&
-        (pt.x < (j.x -. i.x) *. (pt.y -. i.y) /. (j.y -. i .y) +. i.x))
+        (((i.y <= pt.y) && (pt.y < j.y)) ||
+         ((j.y <= pt.y) && (pt.y < i.y))) &&
+        (pt.x < (j.x -. i.x) *. (pt.y -. i.y) /. (j.y -. i.y) +. i.x))
     (fun acc _ _ -> not acc) false p
 
-let intersection p1 p2 =
+let update h default f cpl newitem =
+  let res =
+    try Segment.Tbl.find h cpl with Not_found -> default
+  in Segment.Tbl.add h cpl (f newitem res)
+
+let segments_intersection_points crossing p1 p2 =
   let minx1, miny1, maxx1, maxy1 = minmax_xy p1 in
   let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in
   if maxx1 < minx2 || maxy1 < miny2
      || maxx2 < minx1 || maxy2 < miny2 then
-    [], []
+    []
   else
-    let _, (_p1_inter, inters, entering) =
-      fold (fun (inside, (p1_inter, inters, entering)) cur1 next1 ->
-
-          let _, (p1_inter, inters, entering) =
-            fold (fun (inside, (p1_inter, inters, entering)) cur2 next2 ->
-                match
-                  Segment.(intersection (make cur1 next1) (make cur2 next2))
-                with
-                | None -> inside, (p1_inter, inters, entering)
-                | Some v ->
-                  not inside,
-                  (v :: p1_inter, v :: inters,
-                   if not inside then entering else v :: entering)
-              ) (inside, (p1_inter, inters, entering)) p2
-          in
-          inside, (p1_inter, inters, entering)
-
-      ) (contains p1 (List.hd p2), ([],[],[])) p1
+    let update seg1 v seg2 =
+      let u seg = update crossing [] (fun e ol -> e :: ol) seg v in
+      u seg1; u seg2
     in
-    inters, entering
+    fold (fun inters cur1 next1 ->
+        fold (fun inters cur2 next2 ->
+            match Segment.(intersection (make cur1 next1) (make cur2 next2))
+            with None -> inters | Some v ->
+              update (cur2, next2) v (cur1, next1);
+              v :: inters
+          ) inters p2) [] p1
+
+let intersection_polygons p1 p2 =
+    let start_inside_p1 = contains p1 (List.hd p2) in
+    let _start_inside_p2 = contains p2 (List.hd p1) in
+    let crossing = Segment.Tbl.create 19 in
+    let inters = segments_intersection_points crossing p1 p2 in
+    let entering = ref [] in
+    let insert_inter start_inside l = List.rev @@ snd @@ fold (
+        fun (inside, acc) cur next ->
+          try
+            let vs = Segment.Tbl.find crossing (cur, next) in
+            let vs = Common.List.split_concat_sorted
+                (fun v1 v2 -> Pervasives.compare
+                    (Point.sq_distance cur v1)
+                    (Point.sq_distance cur v2))
+                vs
+            in
+            List.fold_left (fun (inside, acc) cross ->
+                if not inside then entering := cross :: !entering;
+                not inside, (cross, (Some (not inside))) :: acc
+              ) (inside, ((cur, None) :: acc)) vs
+          with Not_found -> inside, (cur, None) :: acc
+      ) (start_inside, []) l
+    in
+    let _newp2 = insert_inter (start_inside_p1) p2 in
+    (* let p2_intersect = insert_inter *)
+    start_inside_p1, inters, !entering
 
 
 module Regular = struct

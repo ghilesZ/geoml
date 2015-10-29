@@ -2,6 +2,12 @@ type t = Point.t * Point.t
 
 let make (p1:Point.t) (p2:Point.t) : t = (p1,p2)
 
+module Tbl = Hashtbl.Make (struct
+    type t = Point.t * Point.t
+    let equal (a1,b1) (a2, b2) = a1 == a2 && b1 == b2
+    let hash = Hashtbl.hash
+  end)
+
 let extr1 ((p1,_):t) : Point.t = p1
 
 let extr2 ((_,p2):t) : Point.t = p2

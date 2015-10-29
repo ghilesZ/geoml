@@ -5,6 +5,15 @@ type t =
   }
 
 let make x y : t = {x; y}
+
+type point = t
+
+module Tbl = Hashtbl.Make (struct
+    type t = point
+    let equal = (==)
+    let hash = Hashtbl.hash
+  end)
+
  
 let orig = make 0. 0.
 
