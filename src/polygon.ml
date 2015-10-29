@@ -127,34 +127,48 @@ let segments_intersection_points crossing p1 p2 =
 
 let intersection_polygons p1 p2 =
     let start_inside_p1 = contains p1 (List.hd p2) in
-    let _start_inside_p2 = contains p2 (List.hd p1) in
+    let start_inside_p2 = contains p2 (List.hd p1) in
     let crossing = Segment.Tbl.create 19 in
     let inters = segments_intersection_points crossing p1 p2 in
-    let entering = ref [] in
-    let insert_inter start_inside l = List.rev @@ snd @@ fold (
+    let enterings_p1 = ref [] in
+    let enterings_p2 = ref [] in
+    let crosslink_enter = Point.Tbl.create 11 in
+    let crosslink_out = Point.Tbl.create 11 in
+    let insert_inter entering start_inside l = snd @@ fold (
         fun (inside, acc) cur next ->
           try
             let vs = Segment.Tbl.find crossing (cur, next) in
             let vs = Common.List.split_concat_sorted
                 (fun v1 v2 -> Pervasives.compare
                     (Point.sq_distance cur v1)
-                    (Point.sq_distance cur v2))
-                vs
+                    (Point.sq_distance cur v2)) vs
             in
             List.fold_left (fun (inside, acc) cross ->
-                if not inside then entering := cross :: !entering;
-                not inside, (cross, (Some (not inside))) :: acc
+                if not inside then begin
+                  entering := cross :: !entering;
+                  Point.Tbl.add crosslink_enter cross acc
+                end else begin
+                  Point.Tbl.add crosslink_out cross acc
+                end; not inside, (cross, (Some (not inside))) :: acc
               ) (inside, ((cur, None) :: acc)) vs
           with Not_found -> inside, (cur, None) :: acc
       ) (start_inside, []) l
     in
-    let _newp2 = insert_inter (start_inside_p1) p2 in
-    (* let p2_intersect = insert_inter *)
-    start_inside_p1, inters, !entering
+    let _newp1 = insert_inter enterings_p1 (start_inside_p2) p1 in
+    let _newp2 = insert_inter enterings_p2 (start_inside_p1) p2 in
+
+    (* List.fold_left (fun acc entering -> *)
+    (*     try *)
+    (*       let cont = Point.Tbl.find crosslink_enter entering in *)
+
+    (*     with Not_found -> assert false *)
+    (*   ) [] !enterings_p1 *)
+
+
+    start_inside_p1, inters, !enterings_p2
 
 
 module Regular = struct
-
   type t = {
     center : Point.t;
     fst : Point.t; (* one arbitrary point of the regular polygon *)
