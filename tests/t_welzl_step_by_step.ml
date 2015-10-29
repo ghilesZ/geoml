@@ -1,9 +1,10 @@
 open Geom
 open Circle
 
-let size_x = 800. 
-and size_y = 600.
-and size = 15
+let size_x = 1500. 
+and size_y = 1000.
+let padding = 100.
+and size = 150
 and title = "Calculating the bounding circle of a point list"
 let cur = ref ((make Point.orig 0.),[],[],[])
 
@@ -48,7 +49,7 @@ let clear () = Drawing.fill_screen Graphics.white
 
 let init () =
   let pts = Utils.list_make
-    (fun _ -> Utils.gen_point 30. (size_x-.30.) 30. (size_y-.30.))
+    (fun _ -> Utils.gen_point padding (size_x-.padding) padding (size_y-.padding))
     size
   and computed = [] in
   let h = List.hd pts in
@@ -60,10 +61,10 @@ let frame (circle,enveloppe,computed,other) =
   Drawing.draw_string 25 25 "Press 'r' to compute next step" Graphics.black;
   Drawing.draw_circle circle Graphics.red;
   (try
-    let c = Circle.make (List.hd other) 7. in 
+    let c = Circle.make (List.hd other) 7. in
     Drawing.fill_circle c (Graphics.rgb 255 120 50)
   with _ -> ());
-  List.iter (fun e -> 
+  List.iter (fun e ->
       let c = Circle.make e 5. in 
       Drawing.fill_circle c Graphics.black
   ) other;
