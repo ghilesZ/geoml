@@ -96,7 +96,6 @@ let minmax_xy p = Point.(fold (fun (minx, miny, maxx, maxy) current _ ->
   ) ((List.hd p).y, (List.hd p).y, (List.hd p).y, (List.hd p).y) p)
 
 
-(* Randolph Franklin code - Raycasting *)
 let contains p pt =
   fold_filter
     Point.(fun i j ->
@@ -130,8 +129,6 @@ let segments_intersection_points crossing p1 p2 =
           ) inters p2) [] p1
 
 
-(** Omg omg that magnificent implementation of Weiler Atherton Algorithm for
-    concave/convexe polygons*)
 let intersection_polygons p1 p2 =
     let start_inside_p1 = contains p1 (List.hd p2) in
     let start_inside_p2 = contains p2 (List.hd p1) in
