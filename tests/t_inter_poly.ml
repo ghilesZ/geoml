@@ -7,7 +7,7 @@ module Poly_r = struct
   and size_y = 700.
   and title = "Random regular polygon"
 
-  type t = Polygon.t * Polygon.t * (bool * Point.t list * Point.t list)
+  type t = Polygon.t * Polygon.t * (bool * Point.t list * Point.t list list)
 
   let (!%) f = fun a b -> f b a
 
@@ -19,14 +19,22 @@ module Poly_r = struct
     p1, p2,
     try Polygon.intersection_polygons p1 p2 with Line.Error e -> false, [], []
 
-  let frame (p1, p2, (start_inside, pts, entering)) =
+  let frame (p1, p2, (start_inside, pts, clips)) =
     Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
+
     List.iter (!%(Drawing.draw_point ~lw:5) Graphics.cyan) pts;
-    List.iter (!%(Drawing.draw_point ~lw:5) Graphics.red) entering;
-    Drawing.draw_point ~lw:5 (List.hd p2) Graphics.(if start_inside then magenta else blue);
     Graphics.set_line_width 1;
     Drawing.draw_polygon p1 Graphics.green;
     Drawing.draw_polygon p2 Graphics.blue;
+
+    let fill_poly p =
+      Graphics.(set_color red);
+      p |> List.rev_map Point.(fun pt -> int_of_float pt.x, int_of_float pt.y)
+      |> Array.of_list
+      |> Graphics.fill_poly
+    in
+    List.iter fill_poly clips
+
 
 end
 module Go = Tester.Make(Poly_r)
