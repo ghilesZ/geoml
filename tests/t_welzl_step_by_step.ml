@@ -1,9 +1,9 @@
 open Geom
 open Circle
 
-let size_x = 1500. 
-and size_y = 1000.
-let padding = 100.
+let size_x = 800. 
+and size_y = 600.
+let padding = 50.
 and size = 150
 and title = "Calculating the bounding circle of a point list"
 let cur = ref ((make Point.orig 0.),[],[],[])
