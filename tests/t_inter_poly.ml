@@ -22,7 +22,7 @@ module Poly_r = struct
   let frame (p1, p2, (start_inside, pts, clips)) =
     Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
 
-    List.iter (!%(Drawing.draw_point ~lw:5) Graphics.cyan) pts;
+    List.iter (!%(Drawing.draw_point ~lw:5) Graphics.blue) pts;
     Graphics.set_line_width 1;
     Drawing.draw_polygon p1 Graphics.green;
     Drawing.draw_polygon p2 Graphics.blue;
