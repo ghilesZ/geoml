@@ -60,6 +60,7 @@ let draw_regular ?(lw=1) rp col =
 
 let draw_polygon ?(lw=1) p col =
   let open Point in
+  set_line_width lw;
   set_color col;
   moveto (iof (List.hd p).x) (iof (List.hd p).y);
   Polygon.fold (fun _ current next ->
@@ -82,6 +83,22 @@ let draw_line ?(lw=1) l col =
     let s = Segment.make p1 p2 in 
     draw_segment ~lw:lw s col
 
+let draw_quadratic_curve ?(lw=1) curve col = 
+  set_color col;
+  set_line_width lw;
+  let open Point in
+  let open Curve.Quadratic in
+  moveto (iof (start curve).x) (iof (start curve).y);
+  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50)
+
+let draw_cubic_curve ?(lw=1) curve col = 
+  set_color col;
+  set_line_width lw;
+  let open Point in
+  let open Curve.Quadratic in
+  moveto (iof (start curve).x) (iof (start curve).y);
+  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50)
+  
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int
   and sy = size_y |> iof |> string_of_int in
