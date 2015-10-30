@@ -78,9 +78,6 @@ let of_diameter p1 p2 =
   let radius = (Point.distance p1 c) in
   make c radius
 
-(** given a list of point, returns the smallest circle that
-   contains all the points of the list, using emo welzl's algorithm.
-    complexity in expected linear time *)
 let bounding (pts : Point.t list) : t =
   let of_two x y pt =
     try 

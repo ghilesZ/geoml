@@ -1,5 +1,6 @@
 type t = Point.t * Point.t * Point.t
 
+let as_points t = t
 let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
 
 let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)

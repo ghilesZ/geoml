@@ -1,7 +1,13 @@
 # GeoML
 
-GeoMl is 2D geometry library for OcaML. 
-It provides basic operations on geometric shapes. It also implements several cool algorithms like emo welzl's smallest enclosing disk algorithm or Graham's scan method for finding a convex hull.
+GeoMl is 2D geometry library for Ocaml. 
+It provides basic operations on geometric shapes.
+It also implements several cool algorithms :
+
+* Emo Welzl's smallest enclosing disk algorithm
+* Graham's scan method for finding a convex hull.
+* Weiler-Atherton for polygon clipping
+
 
 ### Build 
 - The library: 

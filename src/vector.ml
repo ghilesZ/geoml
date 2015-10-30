@@ -2,7 +2,6 @@ type t =
   {
     dx : float ;
     dy : float ;
-    
   }
 
 let make dx dy = {dx;dy}
@@ -40,4 +39,3 @@ let angle v1 v2 =
   dot_product v1 v2 |> acos
 
 let angle_deg v1 v2 = 57.2958 *. (angle v1 v2)
-  

@@ -58,11 +58,11 @@ let draw_regular ?(lw=1) rp col =
        lineto (iof next.x) (iof next.y)
     ) () rp
 
-let draw_polygon ?(lw=1) p col =
+let draw_polygon ?(lw=1) (p: Polygon.t) col =
   let open Point in
   set_line_width lw;
   set_color col;
-  moveto (iof (List.hd p).x) (iof (List.hd p).y);
+  moveto (iof (Polygon.first_point p).x) (iof (Polygon.first_point p).y);
   Polygon.fold (fun _ current next ->
       lineto (iof next.x) (iof next.y)) () p
 

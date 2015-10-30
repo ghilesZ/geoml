@@ -1,9 +1,5 @@
-(** This module provides the basic operations over 2D rectangles *)
-
-(** rectangle type *)
 type t = Point.t * float * float
 
-(** where p is the bottom-left corner of the rectangle *)
 let make p w h : t = (p,w,h)
 
 let bottom_left_corner ((p,_,_):t) = p
@@ -29,7 +25,6 @@ let proj_x r = let open Point in (bottom_left_corner r).x,(bottom_right_corner r
 
 let proj_y r = let open Point in (bottom_left_corner r).y,(top_right_corner r).y
 
-(** determines whether or not two rectangles intersect *)
 let intersects (s1:t) (s2:t) =
   let (a,b) = proj_x s1 and (c,d) = proj_x s2 in
   if (a<d && b>c) then
@@ -47,8 +42,6 @@ let segments (r:t) =
 
 let is_square ((_,w,h):t) = w=h
 
-(** given a rectangle and point, returns the smallest rectangle that
-   contains the point and the rectangle given as parameters*)
 let encompass (p1,w,h) p2 =
   let l = min (Point.x_coord p1) (Point.x_coord p2)
   and t = max (Point.y_coord p1 +. h) (Point.y_coord p2)
@@ -56,8 +49,6 @@ let encompass (p1,w,h) p2 =
   and b = min (Point.y_coord p1) (Point.y_coord p2)
   in ((Point.make l b),r-.l,t-.b)
 
-(** given a list of point, returns the smallest rectangle that
-   contains all the points of the list *)
 let bounding (pts : Point.t list) : t =
   match pts with
   | [x] -> (x,0.,0.)

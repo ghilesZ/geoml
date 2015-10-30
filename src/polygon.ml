@@ -1,7 +1,11 @@
 
 type t = Point.t list
 
+type polygon = t
+
 let make l = l
+let to_list l = l
+let first_point = List.hd
 
 let fold f acc p =
   let rec aux acc = function

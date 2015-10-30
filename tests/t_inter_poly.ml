@@ -7,7 +7,7 @@ module Poly_r = struct
   and size_y = 700.
   and title = "Random regular polygon"
 
-  type t = Polygon.t * Polygon.t * (bool * Point.t list * Point.t list list)
+  type t = Polygon.t * Polygon.t * (bool * Point.t list * Polygon.t list)
 
   let (!%) f = fun a b -> f b a
 
@@ -29,7 +29,8 @@ module Poly_r = struct
 
     let fill_poly p =
       Graphics.(set_color red);
-      p |> List.rev_map Point.(fun pt -> int_of_float pt.x, int_of_float pt.y)
+      p |> Polygon.to_list
+      |> List.rev_map Point.(fun pt -> int_of_float pt.x, int_of_float pt.y)
       |> Array.of_list
       |> Graphics.fill_poly
     in
