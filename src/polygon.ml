@@ -125,6 +125,9 @@ let segments_intersection_points crossing p1 p2 =
               v :: inters
           ) inters p2) [] p1
 
+
+(** Omg omg that magnificent implementation of Weiler Atherton Algorithm for
+    concave/convexe polygons*)
 let intersection_polygons p1 p2 =
     let start_inside_p1 = contains p1 (List.hd p2) in
     let start_inside_p2 = contains p2 (List.hd p1) in
@@ -132,8 +135,7 @@ let intersection_polygons p1 p2 =
     let inters = segments_intersection_points crossing p1 p2 in
     let enterings_p1 = ref [] in
     let enterings_p2 = ref [] in
-    let crosslink_enter = Point.Tbl.create 11 in
-    let crosslink_out = Point.Tbl.create 11 in
+    let crosslink = Point.Tbl.create 11 in
     let insert_inter entering start_inside l = snd @@ fold (
         fun (inside, acc) cur next ->
           try
@@ -146,26 +148,43 @@ let intersection_polygons p1 p2 =
             List.fold_left (fun (inside, acc) cross ->
                 if not inside then begin
                   entering := cross :: !entering;
-                  Point.Tbl.add crosslink_enter cross acc
-                end else begin
-                  Point.Tbl.add crosslink_out cross acc
-                end; not inside, (cross, (Some (not inside))) :: acc
+                end else Point.Tbl.add crosslink cross acc ;
+                not inside, (cross, (Some (inside))) :: acc
               ) (inside, ((cur, None) :: acc)) vs
           with Not_found -> inside, (cur, None) :: acc
       ) (start_inside, []) l
     in
-    let _newp1 = insert_inter enterings_p1 (start_inside_p2) p1 in
-    let _newp2 = insert_inter enterings_p2 (start_inside_p1) p2 in
-
-    (* List.fold_left (fun acc entering -> *)
-    (*     try *)
-    (*       let cont = Point.Tbl.find crosslink_enter entering in *)
-
-    (*     with Not_found -> assert false *)
-    (*   ) [] !enterings_p1 *)
-
-
-    start_inside_p1, inters, !enterings_p2
+    let newp1 = insert_inter enterings_p1 (start_inside_p2) p1 in
+    let newp2 = insert_inter enterings_p2 (start_inside_p1) p2 in
+    let rec aux_build_clip htbl start head head' enterings acc l =
+      match l with
+      | [] -> aux_build_clip htbl start head head' enterings acc head
+      | (vert, carac) :: l' ->
+        if start == vert then enterings, acc
+        else begin match carac with
+          | None -> aux_build_clip htbl start head head' enterings (vert :: acc) l'
+          | Some false ->
+            let enterings' = match enterings with
+              | [] -> enterings
+              | h :: t -> if h == vert then t else enterings
+            in
+            let link = Point.Tbl.find htbl vert in
+            aux_build_clip htbl start head' head enterings' (vert :: acc) link
+          | Some true -> Format.printf "FAIL@."; assert false
+        end
+    in
+    let rec build_clip p1 p2 htbl acc l =
+      match l with
+      | [] -> acc
+      | ent :: l' ->
+        try
+          let link = Point.Tbl.find htbl ent in
+          let l', poly = aux_build_clip htbl ent p1 p2 l' [ent] link in
+          build_clip p1 p2 htbl (poly :: acc) l'
+        with Not_found -> Format.printf "FAIL@."; assert false
+    in
+    let clipped = build_clip newp1 newp2 crosslink [] !enterings_p2 in
+    start_inside_p1, inters, clipped
 
 
 module Regular = struct
