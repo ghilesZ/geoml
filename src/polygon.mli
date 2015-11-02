@@ -30,7 +30,7 @@ val segments_intersection_points : Point.t list Segment.Tbl.t -> t -> t -> Point
   (** Get a list of the intersections
     points of the edges of two polygons *)
 
-val intersection_polygons : t -> t -> bool * Point.t list * t list
+val intersection_polygons : t -> t -> t list
   (** Implementation of Weiler Atherton Algorithm for
     concave/convexe polygons clipping. Complexity is O(m*n). *)
 
