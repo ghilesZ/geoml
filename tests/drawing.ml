@@ -89,15 +89,17 @@ let draw_quadratic_curve ?(lw=1) curve col =
   let open Point in
   let open Curve.Quadratic in
   moveto (iof (start curve).x) (iof (start curve).y);
-  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50)
+  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
+  lineto (iof (ending curve).x) (iof (ending curve).y)
 
 let draw_cubic_curve ?(lw=1) curve col = 
   set_color col;
   set_line_width lw;
   let open Point in
-  let open Curve.Quadratic in
+  let open Curve.Cubic in
   moveto (iof (start curve).x) (iof (start curve).y);
-  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50)
+  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
+  lineto  (iof (ending curve).x) (iof (ending curve).y)
   
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int
