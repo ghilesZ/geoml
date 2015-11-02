@@ -58,10 +58,14 @@ type t = Point.t * Point.t * Point.t * Point.t
     and ending in p3, with p1 and p2 as control points *)
 let make p0 p1 p2 p3 = (p0,p1,p2,p3)
 
+let start ((p0,_,_,_):t) = p0
+
+let ending ((_,_,_,p3):t) = p3
+  
 (** equation t with t belong to [0.;1.]*)
 let equation (p0,p1,p2,p3) t = 
   let open Point in
-  if t < 1. && t > 0. then
+  if t <= 1. && t >= 0. then
     let m_t = (1. -. t) *. (1. -. t)
     and t_2 = t*.t in
     let x = 
@@ -83,11 +87,10 @@ let points b nb =
   if nb <= 0 then [] else
     let res = ref [] and cur = ref 0.
     and step = 1. /. (float_of_int nb) in
-    while !cur < 1. do
+    while !cur <= 1. do
       res := (equation b (!cur))::(!res);
       cur := !cur +. step
     done;
     !res |> List.rev
 
-let points x:t = x
 end
