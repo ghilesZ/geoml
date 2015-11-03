@@ -128,64 +128,71 @@ let segments_intersection_points crossing p1 p2 =
               v :: inters
           ) inters p2) [] p1
 
+let insert_intersection_points crossing crosslink entering start_inside l = snd @@ fold (
+    fun (inside, acc) cur next ->
+      try
+        let vs = Segment.Tbl.find crossing (cur, next) in
+        let vs = Common.List.split_concat_sorted
+            (fun v1 v2 -> Pervasives.compare
+                (Point.sq_distance cur v1)
+                (Point.sq_distance cur v2)) vs
+        in
+        List.fold_left (fun (inside, acc) cross ->
+            if not inside then begin
+              entering := cross :: !entering;
+            end else Point.Tbl.add crosslink cross acc ;
+            not inside, (cross, (Some (inside))) :: acc
+          ) (inside, ((cur, None) :: acc)) vs
+      with Not_found -> inside, (cur, None) :: acc
+  ) (start_inside, []) l
+
+let rec build_clip p1 p2 htbl acc l =
+  let rec aux_build_clip htbl start head head' enterings acc l =
+    match l with
+    | [] -> aux_build_clip htbl start head head' enterings acc head
+    | (vert, carac) :: l' ->
+      if start == vert then enterings, acc
+      else begin match carac with
+        | None -> aux_build_clip htbl start head head' enterings (vert :: acc) l'
+        | Some false ->
+          let enterings' = match enterings with
+            | [] -> enterings
+            | h :: t -> if h == vert then t else enterings
+          in
+          let link = Point.Tbl.find htbl vert in
+          aux_build_clip htbl start head' head enterings' (vert :: acc) link
+        | Some true -> Format.printf "FAIL@."; assert false
+      end
+  in
+  match l with
+  | [] -> acc
+  | ent :: l' ->
+    try
+      let link = Point.Tbl.find htbl ent in
+      let l', poly = aux_build_clip htbl ent p1 p2 l' [ent] link in
+      build_clip p1 p2 htbl (poly :: acc) l'
+    with Not_found -> Format.printf "FAIL@."; assert false
 
 let intersection_polygons p1 p2 =
+  match p1, p2 with | [], _ | _, [] -> [] | _ ->
     let start_inside_p1 = contains p1 (List.hd p2) in
     let start_inside_p2 = contains p2 (List.hd p1) in
     let crossing = Segment.Tbl.create 19 in
+    let crosslink = Point.Tbl.create 11 in
     let inters = segments_intersection_points crossing p1 p2 in
     let enterings_p1 = ref [] in
     let enterings_p2 = ref [] in
-    let crosslink = Point.Tbl.create 11 in
-    let insert_inter entering start_inside l = snd @@ fold (
-        fun (inside, acc) cur next ->
-          try
-            let vs = Segment.Tbl.find crossing (cur, next) in
-            let vs = Common.List.split_concat_sorted
-                (fun v1 v2 -> Pervasives.compare
-                    (Point.sq_distance cur v1)
-                    (Point.sq_distance cur v2)) vs
-            in
-            List.fold_left (fun (inside, acc) cross ->
-                if not inside then begin
-                  entering := cross :: !entering;
-                end else Point.Tbl.add crosslink cross acc ;
-                not inside, (cross, (Some (inside))) :: acc
-              ) (inside, ((cur, None) :: acc)) vs
-          with Not_found -> inside, (cur, None) :: acc
-      ) (start_inside, []) l
+    let newp1 =
+      insert_intersection_points crossing crosslink
+        enterings_p1 (start_inside_p2) p1
     in
-    let newp1 = insert_inter enterings_p1 (start_inside_p2) p1 in
-    let newp2 = insert_inter enterings_p2 (start_inside_p1) p2 in
-    let rec aux_build_clip htbl start head head' enterings acc l =
-      match l with
-      | [] -> aux_build_clip htbl start head head' enterings acc head
-      | (vert, carac) :: l' ->
-        if start == vert then enterings, acc
-        else begin match carac with
-          | None -> aux_build_clip htbl start head head' enterings (vert :: acc) l'
-          | Some false ->
-            let enterings' = match enterings with
-              | [] -> enterings
-              | h :: t -> if h == vert then t else enterings
-            in
-            let link = Point.Tbl.find htbl vert in
-            aux_build_clip htbl start head' head enterings' (vert :: acc) link
-          | Some true -> Format.printf "FAIL@."; assert false
-        end
-    in
-    let rec build_clip p1 p2 htbl acc l =
-      match l with
-      | [] -> acc
-      | ent :: l' ->
-        try
-          let link = Point.Tbl.find htbl ent in
-          let l', poly = aux_build_clip htbl ent p1 p2 l' [ent] link in
-          build_clip p1 p2 htbl (poly :: acc) l'
-        with Not_found -> Format.printf "FAIL@."; assert false
-    in
-    let clipped = build_clip newp1 newp2 crosslink [] !enterings_p2 in
-    start_inside_p1, inters, clipped
+    let newp2 =
+      insert_intersection_points crossing crosslink
+        enterings_p2 (start_inside_p1) p2
+    in begin match p1, p2 with
+      | [a; b], _ | _, [a; b] -> [inters]
+      | _ -> build_clip newp1 newp2 crosslink [] !enterings_p2
+    end
 
 
 module Regular = struct
