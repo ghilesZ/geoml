@@ -100,6 +100,19 @@ let draw_cubic_curve ?(lw=1) curve col =
   moveto (iof (start curve).x) (iof (start curve).y);
   List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
   lineto  (iof (ending curve).x) (iof (ending curve).y)
+
+    
+let draw_bspline ?(lw=1) curve col = 
+  set_color col;
+  set_line_width lw;
+  let open Point in
+  let open Curve.BSpline in
+  let a  = (points curve 20) in
+  moveto (iof (List.hd a).x) (iof (List.hd a).y);
+  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (List.tl a);
+  let c = Circle.make (List.hd a) 5. in
+  fill_circle c red
+  (*lineto  (iof (ending curve).x) (iof (ending curve).y)*)
   
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int

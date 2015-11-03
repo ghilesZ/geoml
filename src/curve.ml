@@ -12,7 +12,8 @@ let ending ((_,_,p2):t) = p2
 
 let control ((_,p1,_):t) = p1
 
-(** equation t with t belong to [0.;1.]*)
+(** equation b t returns the value of the bezier equation b(t)
+    with t belong to [0.;1.]*)
 let equation (p0,p1,p2) t = 
   let b = 
     let a = (1.-.t)*.(1.-.t) 
@@ -92,5 +93,80 @@ let points b nb =
       cur := !cur +. step
     done;
     !res |> List.rev
+end
 
+module BSpline = struct 
+(** This module provides basic operations over B-spline curves *)
+  type t = {degre:int; knots:float array; nb:int; control: Point.t list}
+    
+  (** make pts k, makes a B-spline 
+      with pts the control points and k the knots Array*)
+  let make pts k =
+    let nb_knots = Array.length k in
+    let m = nb_knots - 1 in
+    let d = m - (List.length pts)
+    in 
+    {degre=d; knots=k; nb=nb_knots; control = pts}
+
+  (** make_eq pts nb_knots, makes a cardinal B-spline 
+     with a constant separation, 1/(nb_knots-1), between knots*)    
+  let make_eq pts nb_knots =
+    let step = 1. /. (float_of_int (nb_knots-1))
+    and tmp = ref 0.
+    in
+    let next () =
+      let res = !tmp in
+      tmp:=!tmp +. step;
+      res
+    in
+    let k = Array.make nb_knots 0.
+	   |> Array.map (fun _ -> next())
+    in
+    Array.iter (fun e -> print_float e; print_newline()) k;
+    make pts k
+
+  let start {control} = List.hd control
+
+  let ending {control} = Common.List.last control
+      
+  let equation ({degre;knots;nb;control} as c) t =
+    if t < 0. || t > 1. then failwith "t must be in [0. ; 1.]"
+    else if t = 0. then start c
+    else if t = 1. then ending c else
+      let rec bspl cur deg t =
+      (*print_int cur;
+	print_newline();*)
+	match deg with
+	| 1 ->
+	 (*print_endline "0";*)
+	   if knots.(cur) <= t  && t <= knots.(cur+1)  then 1. else 0.
+	| _ ->
+	 (*print_endline "else";*)
+	   let coeff1 = (t -. knots.(cur)) /. (knots.(cur + deg -1) -. knots.(cur))
+	   and coeff2 = (knots.(cur+deg) -. t) /.(knots.(cur+deg)-.knots.(cur+1))
+	   in
+	   coeff1 *. (bspl cur (deg - 1) t) +. coeff2 *. (bspl (cur+1) (deg-1) t)
+      in
+      let rec sum accu i n p tail t =
+	if i = n then accu +. (bspl i n t) *. p
+	else
+	  let accu = accu +. (bspl i n t) *. p in
+	  sum accu (i+1) n (List.hd tail) (List.tl tail) t
+      in
+      let xs = (List.map Point.x_coord control)
+      and ys = (List.map Point.y_coord control) in
+      let x = sum 0. 0 ((nb - degre) - 2) (List.hd xs) (List.tl xs) t
+      and y = sum 0. 0 ((nb - degre) - 2) (List.hd ys) (List.tl ys) t
+      in Point.make x y
+      
+  let points b nb = 
+    if nb <= 0 then [] else
+      let res = ref [] and cur = ref 0.
+      and step = 1. /. (float_of_int nb) in
+      while !cur <= 1. do
+	res := (equation b (!cur))::(!res);
+	cur := !cur +. step
+      done;
+    !res |> List.rev
+    
 end

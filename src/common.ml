@@ -1,6 +1,10 @@
 
 module List = struct
 
+  let rec last = function
+    | [] -> failwith "failure last"
+    | [a] -> a
+    | _::tl -> last tl
 
   let consr a b = b :: a
 
