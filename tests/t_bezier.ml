@@ -5,54 +5,33 @@ module Circ = struct
 
   let size_x = 800.
   and size_y = 700.
-  and padding = 100.
-  and title = "Quadratic and cubic bezier curves"
+  and padding = 50.
+  and title = "BSpline curves"
 
-  type t = Curve.Quadratic.t * Curve.Quadratic.t * Curve.Quadratic.t * Curve.Cubic.t * Curve.Cubic.t * Curve.BSpline.t
-
+  type t = Point.t list
+    
   let new_val () =
-    let split = (size_x-.padding) /. 7. in
-    let p1 = gen_point padding (padding +. split) padding (size_y-.padding)
-    and p2 = gen_point (padding+.split) (padding +. 2. *. split) padding (size_y-.padding)
-    and p3 = gen_point (padding+.2.*.split) (padding+.3.*.split) padding (size_y-.padding)
-    and p4 = gen_point (padding+.3.*.split) (padding+.4.*.split) padding (size_y-.padding)
-    and p5 = gen_point (padding+.4.*.split) (padding+.5.*.split) padding (size_y-.padding)
-    and p6 = gen_point (padding+.5.*.split) (padding+.6.*.split) padding (size_y-.padding)
-    and p7 = gen_point (padding+.6.*.split) (padding+.7.*.split) padding (size_y-.padding)
+    let tmp = ref padding in
+    let next split () =
+      let res = !tmp in
+      tmp:=!tmp +. split;
+      gen_point res (res +. split) padding (size_y-.padding)
     in
-    let c1 = Curve.Quadratic.make p1 p2 p3
-    and c2 = Curve.Quadratic.make p3 p4 p5
-    and c3 = Curve.Quadratic.make p5 p6 p7
-    and c4 = Curve.Cubic.make p1 p2 p3 p4
-    and c5 = Curve.Cubic.make p4 p5 p6 p7
-    and bs= Curve.BSpline.make_eq [p1;p2;p3;p4;p5;p6;p7] 25
-    in
-    (c1,c2,c3,c4,c5,bs)
-      
-  let frame (c1,c2,c3,c4,c5,bs) =
-    Drawing.draw_string 25 675 "Press 'r' to generate new curves" Graphics.black;
-    List.iter (fun v ->
-      let c = Circle.make (Curve.Quadratic.start v) 5. in
-      Drawing.fill_circle c Graphics.green;
-      let c = Circle.make (Curve.Quadratic.ending v) 5. in
-      Drawing.fill_circle c Graphics.green;
-      let c = Circle.make (Curve.Quadratic.control v) 5. in
-      Drawing.fill_circle c Graphics.green;
-      let s1 = Segment.make (Curve.Quadratic.start v) (Curve.Quadratic.control v)
-      and s2 = Segment.make (Curve.Quadratic.control v) (Curve.Quadratic.ending v)
-      in
-      Drawing.draw_segment s1 Graphics.green;
-      Drawing.draw_segment s2 Graphics.green
-    )
-    [c1;c2;c3];
-    (*Drawing.draw_quadratic_curve c1 Graphics.blue;
-    Drawing.draw_quadratic_curve c2 Graphics.blue;
-    Drawing.draw_quadratic_curve c3 Graphics.blue;
-    Drawing.draw_cubic_curve c4 Graphics.red;
-    Drawing.draw_cubic_curve c5 Graphics.red;*)
-    Drawing.draw_bspline bs Graphics.black
+    let nb = 10 in
+    let split = (size_x -. 2. *.padding) /. (float_of_int nb) in
+    list_make (next split) nb
 
+  let frame pts =
+    Drawing.draw_string 25 675 "Press 'r' to generate new curves" Graphics.black;
+    List.fold_left (fun a b ->
+      Drawing.draw_segment (Segment.make a b) Graphics.green;
+      b
+    ) (List.hd pts) (List.tl pts) |> ignore;
+    let bs = Curve.BSpline.make_eq pts 20 in
+    Drawing.draw_bspline bs Graphics.red
       
 end
-module Go = Tester.Make(Circ)  
+
+module Go = Tester.Make(Circ)
+
 let _ =  Go.doit()
