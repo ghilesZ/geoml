@@ -14,6 +14,7 @@ val fold : ('a -> Point.t -> Point.t -> 'a) -> 'a -> t -> 'a
 val fold_filter : (Point.t -> Point.t -> bool) -> ('b -> Point.t -> Point.t -> 'b) -> 'b -> t -> 'b
 (** Same function as [fold] but filters segments with the first argument *)
 
+val map : (Point.t -> Point.t) -> t -> t
 
 val perimeter : t -> float
 val area : t -> float
@@ -60,4 +61,6 @@ module Regular: sig
   val translate : t -> float -> float -> t
   val is_square : t -> bool
   val contains : t -> Point.t -> bool
+  val map : (Point.t -> Point.t) -> t -> t
+
 end

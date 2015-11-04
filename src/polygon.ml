@@ -15,6 +15,8 @@ let fold f acc p =
     aux (f acc pt1 pt2) (pt2 :: pg)
   in aux acc p
 
+let map = List.rev_map
+
 let fold_filter filter f acc p =
   let rec aux acc = function
   | [] -> acc
@@ -265,6 +267,13 @@ module Regular = struct
          (0. > Point.determinant current next rp.center)
          = (0. > Point.determinant current next pt)
       ) (fun nth _ current next -> nth = rp.edges) true rp
+
+  let map f rp =
+    { rp with
+      center = f rp.center;
+      fst = f rp.fst;
+      snd = f rp.snd;
+    }
 
 
 end
