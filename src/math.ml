@@ -8,3 +8,5 @@ let solve a b c =
     let sol1 = (-.b -. racine_delta) /. (2.*.a) in
     if delta = 0. then [sol1]
     else let sol2 = (-.b +. racine_delta) /. (2.*.a) in [sol1;sol2]
+
+let pi = 4.0 *. atan 1.

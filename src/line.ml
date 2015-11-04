@@ -1,8 +1,5 @@
 type t = X of float | Y of float * float (** linear equation type *)
 
-
-
-
 type error = Vertical of float | Parallel | Same_coordinates of Point.t
 exception Error of error
 let print_error fmt e =
@@ -11,7 +8,6 @@ let print_error fmt e =
   | Vertical f -> fprintf fmt "Bad argument : vertical line (x: %f)" f
   | Parallel -> fprintf fmt "Bad arguments : parallel lines"
   | Same_coordinates p -> fprintf fmt "Bad arguments : same coordinates %a" Point.print p
-
 
 let make_x f = X(f)
 

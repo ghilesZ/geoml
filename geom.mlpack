@@ -1,5 +1,6 @@
 src/Curve
 src/Circle
+src/Ellipse
 src/Polygon
 src/Rectangle
 src/Segment

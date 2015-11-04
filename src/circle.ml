@@ -1,6 +1,6 @@
-type t = Point.t * float
+open Math
 
-let pi = 4.0 *. atan 1.
+type t = Point.t * float
 
 let make center radius : t= (center,radius)
 
@@ -41,9 +41,9 @@ let line_intersection ((c,r):t) (l:Line.t) =
        => (a²+1)x² + 2abx + b²-r² = 0 *)
     Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. r*.r)
      (* we calculate the associated y*)
-    |> List.map (fun x -> Point.make x (a*.x+.b))
-     (* we translate the result to the first coordinates*)
-    |> List.map (fun x -> Point.translate x cx cy)
+  |> List.map (fun x -> Point.make x (a*.x+.b))
+    (* we translate the result to the first coordinates*)
+  |> List.map (fun x -> Point.translate x cx cy)
   | Line.X(x) ->
     let a = x-.cx in
     Math.solve 1. 0. (a*.a -. r*.r)

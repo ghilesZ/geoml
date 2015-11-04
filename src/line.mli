@@ -1,11 +1,11 @@
 type t = private 
-|	X of float
-|	Y of float * float	(* linear equation type *)
+	 | X of float
+	 | Y of float * float	(* linear equation type *)
 
-type error =
-|	Vertical of float
-|	Parallel
-|	Same_coordinates of Point.t
+type error = | Vertical of float
+	     | Parallel
+	     | Same_coordinates of Point.t
+
 exception Error of error
 val print_error : Format.formatter -> error -> unit
 

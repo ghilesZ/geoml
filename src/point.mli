@@ -2,6 +2,7 @@ type t = private {
   	x : float;
   	y : float;
 }
+
 val make : float -> float -> t
 type point = t 
 

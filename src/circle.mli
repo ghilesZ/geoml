@@ -1,7 +1,6 @@
 
 type t = private Point.t * float
 
-val pi : float
 val make : Point.t -> float -> t
 val center : t -> Point.t
 val radius : t -> float

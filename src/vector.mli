@@ -10,8 +10,9 @@ val y_coord : t -> float
 val of_points : Point.t -> Point.t -> t
 val magnitude : t -> float
 val normalize : t -> t
+val rotation : float -> t -> t
 val dot_product : t -> t -> float
-val scal_mult : t -> float -> t
+val scal_mult : float -> t -> t
 val determinant : t -> t -> float
 val opposite : t -> t
 val add : t -> t -> t
