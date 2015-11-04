@@ -2,7 +2,7 @@
 module List = struct
 
   let rec last = function
-    | [] -> failwith "failure last"
+    | [] -> raise (Failure "failure last")
     | [a] -> a
     | _::tl -> last tl
 
