@@ -107,7 +107,7 @@ let draw_bspline ?(lw=1) curve col =
   set_line_width lw;
   let open Point in
   let open Curve.BSpline in
-  let a  = (points curve 20) in
+  let a  = (points curve 200) in
   moveto (iof (List.hd a).x) (iof (List.hd a).y);
   List.iter (fun e -> lineto (iof e.x) (iof e.y)) (List.tl a);
   let c = Circle.make (List.hd a) 5. in

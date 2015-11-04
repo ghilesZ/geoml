@@ -104,8 +104,7 @@ module BSpline = struct
   let make pts k =
     let nb_knots = Array.length k in
     let m = nb_knots - 1 in
-    let d = m - (List.length pts)
-    in 
+    let d = m - (List.length pts) in 
     {degre=d; knots=k; nb=nb_knots; control = pts}
 
   (** make_eq pts nb_knots, makes a cardinal B-spline 
@@ -119,10 +118,9 @@ module BSpline = struct
       tmp:=!tmp +. step;
       res
     in
-    let k = Array.make nb_knots 0.
-	   |> Array.map (fun _ -> next())
+    let k = Array.make nb_knots 0. |> Array.map (fun _ -> next())
     in
-    Array.iter (fun e -> print_float e; print_newline()) k;
+    (*Array.iter (fun e -> print_float e; print_newline()) k;*)
     make pts k
 
   let start {control} = List.hd control
