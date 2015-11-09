@@ -1,7 +1,7 @@
 open Geom
 open Utils
 
-module Circ = struct
+module Curv = struct
 
   let size_x = 800.
   and size_y = 700.
@@ -17,7 +17,7 @@ module Circ = struct
       tmp:=!tmp +. split;
       gen_point res (res +. split) padding (size_y-.padding)
     in
-    let nb = 10 in
+    let nb = 9 in
     let split = (size_x -. 2. *.padding) /. (float_of_int nb) in
     list_make (next split) nb
 
@@ -27,11 +27,11 @@ module Circ = struct
       Drawing.draw_segment (Segment.make a b) Graphics.green;
       b
     ) (List.hd pts) (List.tl pts) |> ignore;
-    let bs = Curve.BSpline.make_eq pts 20 in
+    let bs = Curve.BSpline.make_eq pts 11 in
     Drawing.draw_bspline bs Graphics.red
       
 end
 
-module Go = Tester.Make(Circ)
+module Go = Tester.Make(Curv)
 
 let _ =  Go.doit()

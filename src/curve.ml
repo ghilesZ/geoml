@@ -104,8 +104,8 @@ module BSpline = struct
   let make pts k =
     let nb_knots = Array.length k in
     let m = nb_knots - 1 in
-    let d = m - (List.length pts) in 
-    {degre=d; knots=k; nb=nb_knots; control = pts}
+    (*let d = m - (List.length pts) in*)
+    {degre=2; knots=k; nb=nb_knots; control = pts}
 
   (** make_eq pts nb_knots, makes a cardinal B-spline 
      with a constant separation, 1/(nb_knots-1), between knots*)    
@@ -127,36 +127,39 @@ module BSpline = struct
 
   let ending {control} = Common.List.last control
       
-  let equation ({degre;knots;nb;control} as c) t =
+  let equation {degre;knots;nb;control} t =
     if t < 0. || t > 1. then failwith "t must be in [0. ; 1.]"
-    else if t = 0. then start c
-    else if t = 1. then ending c else
-      let rec bspl cur deg t =
-      (*print_int cur;
-	print_newline();*)
-	match deg with
-	| 1 ->
-	 (*print_endline "0";*)
-	   if knots.(cur) <= t  && t <= knots.(cur+1)  then 1. else 0.
-	| _ ->
-	 (*print_endline "else";*)
-	   let coeff1 = (t -. knots.(cur)) /. (knots.(cur + deg -1) -. knots.(cur))
-	   and coeff2 = (knots.(cur+deg) -. t) /.(knots.(cur+deg)-.knots.(cur+1))
-	   in
-	   coeff1 *. (bspl cur (deg - 1) t) +. coeff2 *. (bspl (cur+1) (deg-1) t)
-      in
-      let rec sum accu i n p tail t =
-	if i = n then accu +. (bspl i n t) *. p
+    else
+      let rec s1 j d x = (x -. knots.(j-1)) /. (knots.(j+d-1) -. knots.(j-1)) *. bspl j (d-1) x
+      and s2 j d x =(knots.(j+d) -. x)/.(knots.(j+d) -. knots.(j)) *. bspl (j+1) (d-1) x
+      and bspl j d x =
+	if j < 0 || j >= d then 0.
+	else if d = 0
+	then (if knots.(j-1) <= x && x <= knots.(j) then 1. else 0.)
 	else
-	  let accu = accu +. (bspl i n t) *. p in
-	  sum accu (i+1) n (List.hd tail) (List.tl tail) t
+	  if knots.(j-1) = knots.(j+d)
+	  then 0.
+	  else if knots.(j-1) < knots.(j+d-1) && knots.(j) = knots.(j+d)
+	  then s1 j d x
+	  else if knots.(j-1) = knots.(j+d-1) &&  knots.(j) < knots.(j+d)
+	  then s2 j d x
+	  else (s1 j d x)+.(s2 j d x)
       in
-      let xs = (List.map Point.x_coord control)
-      and ys = (List.map Point.y_coord control) in
-      let x = sum 0. 0 ((nb - degre) - 2) (List.hd xs) (List.tl xs) t
-      and y = sum 0. 0 ((nb - degre) - 2) (List.hd ys) (List.tl ys) t
-      in Point.make x y
-      
+      let (xs,ys) =
+	(List.map Point.x_coord control),(List.map Point.y_coord control)
+      and n = (List.length control)
+      in
+      let x = Math.float_sum 1 n (fun i ->
+	let p = List.nth xs (i-1) in
+	(bspl i n t) *. p
+      )
+      and y = Math.float_sum 1 n (fun i ->
+	let p = List.nth xs (i-1) in
+	(bspl i n t) *. p
+      )
+      in
+      Point.make x y
+    
   let points b nb = 
     if nb <= 0 then [] else
       let res = ref [] and cur = ref 0.

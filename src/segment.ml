@@ -14,6 +14,8 @@ let extr2 ((_,p2):t) : Point.t = p2
 
 let size ((p1,p2):t) = Point.distance p1 p2
 
+let center (p1,p2) = Point.center p1 p2
+
 let translate ((p1,p2):t) dx dy=
   make (Point.translate p1 dx dy) (Point.translate p2 dx dy)
 

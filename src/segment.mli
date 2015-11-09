@@ -5,6 +5,7 @@ module Tbl: Hashtbl.S with type key = t
 
 val extr1 : t -> Point.t
 val extr2 : t -> Point.t
+val center : t -> Point.t
 val size : t -> float
 val translate : t -> float -> float -> t
 val to_line : t -> Line.t
