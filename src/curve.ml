@@ -103,7 +103,7 @@ module BSpline = struct
       with pts the control points and k the knots Array*)
   let make pts k =
     let nb_knots = Array.length k in
-    let m = nb_knots - 1 in
+    (*let m = nb_knots - 1 in*)
     (*let d = m - (List.length pts) in*)
     {degre=2; knots=k; nb=nb_knots; control = pts}
 

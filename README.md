@@ -20,5 +20,9 @@ $ make doc
 ```
 - The tests 
 ```sh
-$ make test 
+$ make tests
 ```
+
+### Current
+GeoML is currently still in developpement, and have not been tested (nor proved, nor model-checked nor analyzed ... but you know what we say about well typed program ;)).
+You are free to contact any member of the developpement team if you want to propose a feature you think it may be cool to have in GeoML.
