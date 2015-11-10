@@ -48,14 +48,12 @@ let y_coord (p:t) = p.y
 
 let translate ({x;y}: t) dx dy : t= make (x+.dx) (y+.dy)
 
-let deg_to_rad = 0.0174533
-
 let rotate pivot p angle =
   let px = (cos angle) *. (p.x -. pivot.x) -. (sin angle) *. (p.y -. pivot.y) +. pivot.x  
   and py = (sin angle) *. (p.x -. pivot.x) +. (cos angle) *. (p.y -. pivot.y) +. pivot.y
   in make px py
 
-let rotate_angle pivot p angle = rotate pivot p (angle *. deg_to_rad)
+let rotate_angle pivot p angle = rotate pivot p (angle *. Math.deg_to_rad)
 
 
 let print fmt pt = Format.fprintf fmt "{x=%f; y=%f}" pt.x pt.y

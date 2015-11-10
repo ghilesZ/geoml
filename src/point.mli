@@ -18,7 +18,6 @@ val distance : t -> t -> float
 val x_coord : t -> float
 val y_coord : t -> float
 val translate : t -> float -> float -> t
-val deg_to_rad : float
 val rotate : t -> t -> float -> t
 val rotate_angle : t -> t -> float -> t
 val print : Format.formatter -> t -> unit
