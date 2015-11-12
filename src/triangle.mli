@@ -10,7 +10,7 @@ val extr1 : t -> Point.t
 val extr2 : t -> Point.t
 val extr3 : t -> Point.t
 val translate : t -> float -> float -> t
-
+val point_reflection :  Point.t -> t -> t 
 val contains : t -> Point.t -> bool
 (** tests if a point is in a triangle with barycenter method *)
 

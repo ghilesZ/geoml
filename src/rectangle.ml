@@ -12,6 +12,12 @@ let top_left_corner ((p,_,h):t) = Point.translate p 0. h
 
 let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
 
+let rotate pivot t angle = ()
+
+let point_reflection pivot ((p,w,h):t) =
+  let r = make (Point.point_reflection pivot p) w h in
+  translate r (-.w) (-.h)
+
 let contains ((p,w,h):t) (pt:Point.t) =
   let open Point in
   p.x < pt.x && pt.x < (p.x+.w) &&

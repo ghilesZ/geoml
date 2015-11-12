@@ -11,6 +11,10 @@ let radius ((_,r):t) = r
 let translate ((c,r):t) dx dy = 
   make (Point.translate c dx dy) r
 
+let point_reflection p ((c,r):t) =
+  let p' = Point.point_reflection p c in
+  make p' r
+
 let contains ((c,r):t) p =
   let d1 = Point.sq_distance c p
   and d2 = (r*.r) in

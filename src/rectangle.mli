@@ -11,6 +11,7 @@ val bottom_right_corner : t -> Point.t
 val top_right_corner : t -> Point.t
 val top_left_corner : t -> Point.t
 val translate : t -> float -> float -> t
+val point_reflection : Point.t -> t -> t
 val contains : t -> Point.t -> bool
 val area : t -> float
 val perimeter : t -> float

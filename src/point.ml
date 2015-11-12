@@ -48,12 +48,15 @@ let y_coord (p:t) = p.y
 
 let translate ({x;y}: t) dx dy : t= make (x+.dx) (y+.dy)
 
+(** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
+let point_reflection center p = 
+  translate center (center.x -. p.x) (center.y -. p.y)
+
 let rotate pivot p angle =
   let px = (cos angle) *. (p.x -. pivot.x) -. (sin angle) *. (p.y -. pivot.y) +. pivot.x  
   and py = (sin angle) *. (p.x -. pivot.x) +. (cos angle) *. (p.y -. pivot.y) +. pivot.y
   in make px py
 
 let rotate_angle pivot p angle = rotate pivot p (angle *. Math.deg_to_rad)
-
 
 let print fmt pt = Format.fprintf fmt "{x=%f; y=%f}" pt.x pt.y
