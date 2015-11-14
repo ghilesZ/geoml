@@ -16,9 +16,7 @@ let point_reflection p ((c,r):t) =
   make p' r
 
 let contains ((c,r):t) p =
-  let d1 = Point.sq_distance c p
-  and d2 = (r*.r) in
-  d1 <= d2
+  Point.sq_distance c p <= (r*.r)
 
 let area ((_,r):t) = pi *. r *. r
 

@@ -2,6 +2,7 @@ open Geom
 open Graphics
 
 let iof = int_of_float
+let soi = string_of_int
 
 let draw_point ?(lw=1) p col =
   set_color col;
@@ -100,7 +101,6 @@ let draw_cubic_curve ?(lw=1) curve col =
   moveto (iof (start curve).x) (iof (start curve).y);
   List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
   lineto  (iof (ending curve).x) (iof (ending curve).y)
-
     
 let draw_bspline ?(lw=1) curve col = 
   set_color col;
@@ -121,5 +121,35 @@ let open_graph size_x size_y title =
   set_window_title title
 
 let fill_screen rgb =
-  Graphics.set_color rgb;
-  Graphics.fill_rect 0 0 (size_x ()) (size_y ())
+  set_color rgb;
+  fill_rect 0 0 (size_x ()) (size_y ())
+
+let get_image size_x size_y = 
+  let sx = size_x |> iof
+  and sy = size_y |> iof in
+  get_image 0 0 sx sy
+
+let red i = i / 0x10000
+let green i = (i / 0x100) mod 0x100
+let blue i = i mod 0x100
+
+let to_ppm img file_name =
+  let open Printf in 
+  let arr = dump_image img in
+  let row = Array.length arr |> soi
+  and col = Array.length arr.(0) |> soi in
+  let oc = open_out file_name in
+  fprintf oc "%s\n" "P3";
+  fprintf oc "%s %s\n" col row;
+  fprintf oc "%s\n" "255";
+  Array.iter 
+    (fun line ->
+      Array.iter
+	(fun e -> 
+	  fprintf oc "%i %i %i " (red e) (green e) (blue e)
+	)
+	line;
+      fprintf oc "\n";
+    )
+    arr;
+  close_out oc
