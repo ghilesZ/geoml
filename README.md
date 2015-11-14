@@ -6,7 +6,7 @@ It also implements several cool algorithms :
 
 * Emo Welzl's smallest enclosing disk algorithm
 
-![ws](img/ws.gif)
+![ws](img/welzl.gif)
 * Graham's scan method for finding a convex hull.
 * Weiler-Atherton for polygon clipping
 
