@@ -34,11 +34,12 @@ let intersects ((c1,r1):t) ((c2,r2):t) =
  *)
 let line_intersection ((c,r):t) (l:Line.t) =
   let cx = Point.x_coord c and cy = Point.y_coord c in
+  let open Line in
   match l with
-  | Line.Y(a,b) ->
-    (* we go to origin *)
-    let l_2 = Line.translate l (-.cx) (-.cy) in
-    let a = Line.get_coeff l_2 and b = Line.get_ord l_2 in
+  | Y(a,b) ->
+     (* we go to origin *)
+     let l_2 = translate l (-.cx) (-.cy) in
+     let a,b = (match l_2 with Y(a,b) -> a,b | _ -> assert false) in
     (* we solve the equation at the origin for x*)
     (* x² + y² = r²   and   y = ax+b  
        => x² + (ax + b)² = r²
@@ -49,7 +50,7 @@ let line_intersection ((c,r):t) (l:Line.t) =
   |> List.map (fun x -> Point.make x (a*.x+.b))
     (* we translate the result to the first coordinates*)
   |> List.map (fun x -> Point.translate x cx cy)
-  | Line.X(x) ->
+  | X(x) ->
     let a = x-.cx in
     Math.solve 1. 0. (a*.a -. r*.r)
   |> List.map (fun y -> Point.make x y)

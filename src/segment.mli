@@ -13,4 +13,5 @@ val contains : t -> Point.t -> bool
 val proj_x : t -> float * float
 val proj_y : t -> float * float
 val intersects : t -> t -> bool
-val intersection : Point.t * Point.t -> Point.t * Point.t -> Point.t option
+val intersection : t -> t -> Point.t option
+val intersect_line : t -> Line.t -> Point.t option

@@ -75,19 +75,11 @@ let draw_polygon ?(lw=1) (p: Polygon.t) col =
 let draw_line ?(lw=1) l col = 
   let sx = float_of_int (size_x ())
   and sy = float_of_int (size_y ()) in
-  if (Line.is_vertical l) then
-    let x = try Line.get_coeff l with
-      | Line.Error (Line.Vertical c) -> c 
-    in
-    let p1 = (Point.make x 0.)
-    and p2 = (Point.make x sy) in
-    let s = Segment.make p1 p2 in 
-    draw_segment ~lw:lw s col
-  else
-    let p1 = (Point.make 0. (Line.y_from_x l 0.))
-    and p2 = (Point.make sx (Line.y_from_x l sx)) in
-    let s = Segment.make p1 p2 in 
-    draw_segment ~lw:lw s col
+  let r = Rectangle.of_diagonal (Point.make sx sy) Point.orig
+  in
+  match (Rectangle.intersect_line r l) with
+  | None -> ()
+  | Some s -> draw_segment ~lw:lw s col
 
 let draw_quadratic_curve ?(lw=1) curve col = 
   set_color col;
