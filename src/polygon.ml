@@ -284,7 +284,9 @@ let triangulation p =
         let v1c = (v1, v1_angle) in
         let v3c = (v3, v3_angle) in
 
+
         let ears' = AngleSet.(
+
           ears
           |> AngleSet.remove (v2, angle)
           |> (fun s -> if mem v1c s then s |> remove v1c |> add (v1, new_angle_v1) else s)
