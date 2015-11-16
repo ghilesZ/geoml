@@ -11,8 +11,8 @@ let print_error fmt e =
 
 let make a b c =
   if b = 0. then X(-.c/.a)
-  else (-.c-.a)/.b
-     
+  else Y((-.a/.b),(-.c/.b))
+
 let make_x f = X(f)
 
 let make_y a b = Y(a,b)
@@ -20,18 +20,18 @@ let make_y a b = Y(a,b)
 let x_axis = Y(0.,0.)
 
 let y_axis = X(0.)
-
+  
 let is_vertical = function 
   | X(_) -> true
   | _ -> false
 
-let get_coeff = function
-  | Y(a,_) -> a
-  | X(v) -> raise (Error (Vertical v))
+let is_horizontal = function 
+  | Y(0.,_) -> true
+  | _ -> false
 
-let get_ord = function
-  | Y(_,a) -> a
-  | X(v) -> raise (Error (Vertical v))
+let get_coeff = function
+  | Y(a,b) -> (a, -1., b)
+  | X(c) -> (1., 0., -.c)
 
 let to_string = function
   | X(a) -> ("x="^(string_of_float a))
@@ -48,11 +48,12 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
 
+
 let x_from_y l y =
   match l with
   | X(x) -> x
   | Y(a,b) -> (y-.b) /. a
-
+     
 let y_from_x l x =
   match l with
   | X(c) -> raise (Error (Vertical c))
@@ -89,6 +90,7 @@ let intersection l1 l2 =
   | Y(a,b), X(x) | X(x), Y(a,b) -> 
      let y = a *. x +. b in Point.make x y
   | _  -> raise (Error Parallel)
+
 
 let perpendicular l1 l2 = 
   match l1,l2 with

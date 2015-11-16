@@ -49,7 +49,7 @@ let intersects (s1:t) (s2:t) =
   with
   | Line.Error Line.Parallel -> false
 
-let intersection (a1, b1 as s1) (a2, b2 as s2) =
+let intersection ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
   let open Point in
   try
     let p = Line.intersection (to_line s1) (to_line s2) in
@@ -59,5 +59,13 @@ let intersection (a1, b1 as s1) (a2, b2 as s2) =
       && max (min a1.y b1.y) (min a2.y b2.y) < p.y
       && min (max a1.y b1.y) (max a2.y b2.y) > p.y
     then Some p else None
+  with
+  | Line.Error Line.Parallel -> None
+
+let intersect_line ((p1,p2):t) l =
+  try
+    if Line.contains l p1 then Some p1
+    else if Line.contains l p2 then Some p2
+    else Some (Line.of_points p1 p2 |> Line.intersection l)
   with
   | Line.Error Line.Parallel -> None

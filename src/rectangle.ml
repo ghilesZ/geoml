@@ -2,6 +2,12 @@ type t = Point.t * float * float
 
 let make p w h : t = (p,w,h)
 
+let of_diagonal p1 p2 : t =
+  let open Point in
+  let x,w = if p1.x < p2.x then (p1.x,p2.x-.p1.x) else (p2.x, p1.x-.p2.x)
+  and y,h = if p1.y < p2.y then (p1.y,p2.y-.p1.y) else (p2.y, p1.y-.p2.y) in
+  ((make x y),w,h)
+
 let bottom_left_corner ((p,_,_):t) = p
 
 let bottom_right_corner ((p,w,_):t) = Point.translate p w 0.
@@ -11,8 +17,6 @@ let top_right_corner ((p,w,h):t) = Point.translate p w h
 let top_left_corner ((p,_,h):t) = Point.translate p 0. h
 
 let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
-
-let rotate pivot t angle = ()
 
 let point_reflection pivot ((p,w,h):t) =
   let r = make (Point.point_reflection pivot p) w h in
@@ -60,3 +64,13 @@ let bounding (pts : Point.t list) : t =
   | [x] -> (x,0.,0.)
   | x::tl -> List.fold_left encompass (x,0.,0.) tl
   | [] -> failwith "can't build a bounding rectangle with an empty list"
+
+let intersect_line r l =
+  let inter =
+    segments r
+  |> List.map (fun s -> Segment.intersect_line s l)
+  |> List.filter (fun e -> e <> None) in
+  match inter with
+  | [Some a;Some b] -> Some (Segment.make a b)
+  | _ -> None
+  
