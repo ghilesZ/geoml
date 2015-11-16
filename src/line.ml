@@ -42,7 +42,7 @@ let of_points (p1:Point.t) (p2:Point.t) =
   if p1 = p2 then 
     raise (Error (Same_coordinates p1))
   else if p1.x = p2.x then
-    X(p1.y)
+    X(p1.x)
   else 
     let coeff = (p2.y -. p1.y) /. (p2.x -. p1.x) in
     let ord = p1.y -. coeff *. (p1.x)

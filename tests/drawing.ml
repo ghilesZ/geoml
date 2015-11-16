@@ -75,9 +75,9 @@ let draw_polygon ?(lw=1) (p: Polygon.t) col =
 let draw_line ?(lw=1) l col = 
   let sx = float_of_int (size_x ())
   and sy = float_of_int (size_y ()) in
-  let r = Rectangle.of_diagonal (Point.make sx sy) Point.orig
-  in
-  match (Rectangle.intersect_line r l) with
+  let r = Rectangle.make Point.orig sx sy in
+  let inter = Rectangle.intersect_line r l in
+  match inter with
   | None -> ()
   | Some s -> draw_segment ~lw:lw s col
 

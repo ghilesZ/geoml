@@ -6,7 +6,7 @@ let of_diagonal p1 p2 : t =
   let open Point in
   let x,w = if p1.x < p2.x then (p1.x,p2.x-.p1.x) else (p2.x, p1.x-.p2.x)
   and y,h = if p1.y < p2.y then (p1.y,p2.y-.p1.y) else (p2.y, p1.y-.p2.y) in
-  ((make x y),w,h)
+  ((make x y), w, h)
 
 let bottom_left_corner ((p,_,_):t) = p
 
@@ -68,9 +68,9 @@ let bounding (pts : Point.t list) : t =
 let intersect_line r l =
   let inter =
     segments r
-  |> List.map (fun s -> Segment.intersect_line s l)
+  |> List.map (fun e -> Segment.intersect_line e l)
   |> List.filter (fun e -> e <> None) in
   match inter with
-  | [Some a;Some b] -> Some (Segment.make a b)
+  | [Some a; Some b] -> Some (Segment.make a b)
   | _ -> None
   
