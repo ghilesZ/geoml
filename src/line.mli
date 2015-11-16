@@ -1,12 +1,26 @@
+(** This module provides basic operation over the linear equation type *)
+
 type t = private 
 	 | X of float
-	 | Y of float * float	(* linear equation type *)
+	 | Y of float * float
+(** the linear equation type *)
+
+val print : Format.formatter -> t -> unit
+(** printer *)
+
+val to_string : t -> string
+(** to string*)
 
 type error = | Parallel of t * t
 	     | Same_coordinates of Point.t
+(** the type of errors *)
 
 exception Error of error
+(** the type of exceptions concerning this module *)
+    
 val print_error : Format.formatter -> error -> unit
+(** error printer*)
+  
 val make : float -> float -> float -> t
 (** make a b c returns a line with an equation of the form: ax + by + c = 0*)
   
@@ -35,12 +49,21 @@ val is_horizontal: t -> bool
       where cst is a constant float*)
   
 val get_coeff : t -> (float*float*float)
-
-val to_string : t -> string
-
+(** returns a tuple (a,b,c) with respect to the equation of line, as: ax + by + c = 0*)
+  
 val x_from_y : t -> float -> float
+(** 'x_from_y line y', returns 'x', the value on the x-axis corresponding to given 'y' value, 
+    with f the affine function associated to 'line', as:
+    f(x) = y
+    raises Parallel if 'line' doesn't intersect the horizontal line going through 'y'
+*)
 
 val y_from_x : t -> float -> float
+(** 'y_from_x line x', returns 'y', the value on the y-axis corresponding to given 'x' value, 
+    with f the affine function associated to 'line', as:
+    f(x) = y 
+    raises Parallel if 'line' doesn't intersect the vertical line going through 'x'
+*)
   
 val contains : t -> Point.t -> bool
 (** contains l1 p returns true if l1goes through p. false otherwise.*)
@@ -68,4 +91,7 @@ val parallel_of_line : t -> Point.t -> t
 (** parallel_of_line l p  returns the line parallel to l that goes through p.*)
 
 val orth_proj : t -> Point.t -> Point.t
+(** orth_proj l p, returns the orthogonal projection of p on l*)
+  
 val point_bissection : Point.t -> Point.t -> t
+(** point_bissection p1 p2 returns the line l that bissects the segment p1p2 in its center*)
