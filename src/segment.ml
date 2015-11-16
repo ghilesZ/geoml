@@ -47,7 +47,7 @@ let intersects (s1:t) (s2:t) =
     let p = Line.intersection (to_line s1) (to_line s2) in
     contains s1 p && contains s2 p
   with
-  | Line.Error Line.Parallel -> false
+  | Line.Error Line.Parallel(_) -> false
 
 let intersection ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
   let open Point in
@@ -57,7 +57,7 @@ let intersection ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
     if sq_distance a1 p <= sqd && sq_distance a2 p <= sqd
     then Some p else None
   with
-  | Line.Error Line.Parallel -> None
+  | Line.Error Line.Parallel(_) -> None
 
 let intersect_line (((p1,p2) as s):t) l =
   let open Point in
@@ -67,4 +67,4 @@ let intersect_line (((p1,p2) as s):t) l =
     if sq_distance p1 p <= sqd && sq_distance p2 p <= sqd
     then Some p else None
   with
-  | Line.Error Line.Parallel -> None
+  | Line.Error Line.Parallel(_) -> None

@@ -2,8 +2,7 @@ type t = private
 	 | X of float
 	 | Y of float * float	(* linear equation type *)
 
-type error = | Vertical of float
-	     | Parallel
+type error = | Parallel of t * t
 	     | Same_coordinates of Point.t
 
 exception Error of error

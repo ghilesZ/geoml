@@ -1,12 +1,15 @@
 type t = X of float | Y of float * float (** linear equation type *)
 
-type error = Vertical of float | Parallel | Same_coordinates of Point.t
+let print fmt = function
+  | Y(a,b) -> Format.fprintf fmt "y=%fx +. %fb" a b
+  | X(c) -> Format.fprintf fmt "x=%f" c
+
+type error = Parallel of t * t | Same_coordinates of Point.t
 exception Error of error
 let print_error fmt e =
   let open Format in
   match e with
-  | Vertical f -> fprintf fmt "Bad argument : vertical line (x: %f)" f
-  | Parallel -> fprintf fmt "Bad arguments : parallel lines"
+  | Parallel(l1,l2) -> fprintf fmt "Bad arguments : parallel lines %a and %a" print l1 print l2
   | Same_coordinates p -> fprintf fmt "Bad arguments : same coordinates %a" Point.print p
 
 let make a b c =
@@ -48,15 +51,15 @@ let of_points (p1:Point.t) (p2:Point.t) =
     let ord = p1.y -. coeff *. (p1.x)
     in Y(coeff,ord)
 
-
 let x_from_y l y =
   match l with
   | X(x) -> x
-  | Y(a,b) -> (y-.b) /. a
+  | Y(a,b) when a <> 0.-> (y-.b) /. a
+  | _ -> raise (Error (Parallel(l,Y(0.,y))))
      
 let y_from_x l x =
   match l with
-  | X(c) -> raise (Error (Vertical c))
+  | X(c) -> raise (Error (Parallel(l,(make_x x))))
   | Y(a,b) -> a *. x +. b
 
 let contains (l:t) (p:Point.t) = 
@@ -89,7 +92,7 @@ let intersection l1 l2 =
      Point.make x y
   | Y(a,b), X(x) | X(x), Y(a,b) -> 
      let y = a *. x +. b in Point.make x y
-  | _  -> raise (Error Parallel)
+  | _  -> raise (Error (Parallel(l1,l2)))
 
 
 let perpendicular l1 l2 = 
