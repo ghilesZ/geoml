@@ -30,6 +30,9 @@ let extr3 ((_,_,p3):t) = p3
 let translate (tr:t) dx dy : t = 
   tri_map (fun e -> Point.translate e dx dy) tr
 
+let point_reflection  p (tr:t) : t =
+  tri_map (fun e -> Point.point_reflection p e) tr
+
 (** tests if a point is in a triangle with barycenter method *)
 let contains (({Point.x=ax;Point.y=ay},
 	       {Point.x=bx;Point.y=by},

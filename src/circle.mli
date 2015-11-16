@@ -5,6 +5,7 @@ val make : Point.t -> float -> t
 val center : t -> Point.t
 val radius : t -> float
 val translate : t -> float -> float -> t
+val point_reflection : Point.t -> t -> t
 val contains : t -> Point.t -> bool
 val area : t -> float
 val perimeter : t -> float

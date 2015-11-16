@@ -11,10 +11,12 @@ let radius ((_,r):t) = r
 let translate ((c,r):t) dx dy = 
   make (Point.translate c dx dy) r
 
+let point_reflection p ((c,r):t) =
+  let p' = Point.point_reflection p c in
+  make p' r
+
 let contains ((c,r):t) p =
-  let d1 = Point.sq_distance c p
-  and d2 = (r*.r) in
-  d1 <= d2
+  Point.sq_distance c p <= (r*.r)
 
 let area ((_,r):t) = pi *. r *. r
 
@@ -26,7 +28,10 @@ let proj_y ((c,r):t) = let open Point in (c.y-.r,c.y+.r)
 
 let intersects ((c1,r1):t) ((c2,r2):t) = 
   (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
-
+    
+(** line_intersection takes a circle and line and returns the list of the 
+    intersection points. (can be [], [a] or [a,b]
+ *)
 let line_intersection ((c,r):t) (l:Line.t) =
   let cx = Point.x_coord c and cy = Point.y_coord c in
   match l with
@@ -49,6 +54,13 @@ let line_intersection ((c,r):t) (l:Line.t) =
     Math.solve 1. 0. (a*.a -. r*.r)
   |> List.map (fun y -> Point.make x y)
   |> List.map (fun p -> Point.translate p 0. cy)
+
+
+(** tangent c p returns the tangent of circle c going through point p. 
+    p must lie on c's boundary
+ *)
+let tangent ((c,r):t) p =
+  Line.perpendicular_of_line (Line.of_points c p) p
 
 let intersection (((c1,_) as c):t) (((c2,_)as c'):t) = 
   let c1_c2 = Line.of_points c1 c2 in

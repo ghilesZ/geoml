@@ -27,3 +27,5 @@ let int_sum i n f =
   !res
 
 let pi = 4.0 *. atan 1.
+
+let deg_to_rad = 0.0174533

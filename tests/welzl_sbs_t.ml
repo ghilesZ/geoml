@@ -1,10 +1,10 @@
 open Geom
 open Circle
 
-let size_x = 800. 
-and size_y = 600.
-let padding = 50.
-and size = 150
+let size_x = 600. 
+and size_y = 400.
+let padding = 100.
+and size = 10
 and title = "Calculating the bounding circle of a point list"
 let cur = ref ((make Point.orig 0.),[],[],[])
 
@@ -77,11 +77,20 @@ let frame (circle,enveloppe,computed,other) =
     Drawing.fill_circle c (Graphics.rgb 255 79 0)
   ) enveloppe
 
+
+let save_ppm nb = 
+  let img = Drawing.get_image size_x size_y in
+  Drawing.to_ppm img ("img/img"^(string_of_int nb))
+
+let nb = ref 0
+
 let handler status =
   let open Graphics in
   if status.key = 'r' then begin
+    save_ppm !nb;
     clear ();
     cur := mindisk (!cur);
+    incr nb;
     frame !cur
   end
       

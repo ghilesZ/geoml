@@ -16,6 +16,14 @@ let size ((p1,p2):t) = Point.distance p1 p2
 
 let center (p1,p2) = Point.center p1 p2
 
+let equation ((p1,p2):t) t =
+  if t < 0. || t > 1. then
+    failwith "Segment.equation: parameter must be in [0. ; 1.]"
+  else
+    let open Point in
+    let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in 
+    Point.translate p1 (t*.dx) (t*.dy)
+
 let translate ((p1,p2):t) dx dy=
   make (Point.translate p1 dx dy) (Point.translate p2 dx dy)
 
@@ -33,8 +41,6 @@ let proj_y ((a,b):t) =
   let open Point in
   if a.y > b.y then b.y,a.y
   else a.y,b.y
-
-
 
 let intersects (s1:t) (s2:t) =
   try
