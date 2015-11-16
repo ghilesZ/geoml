@@ -1,5 +1,7 @@
 type t = private Point.t * Point.t * Point.t 
 
+val print : Format.formatter -> t -> unit
+
 val tri_map : (Point.t -> Point.t) -> t -> t
 val tri_exists : (Point.t -> bool) -> t -> bool
 val tri_find : ('a -> bool) -> 'a * 'a * 'a -> 'a
@@ -24,4 +26,5 @@ val is_isoscele : t -> bool
 val is_equilateral : t -> bool
 val is_right : t -> bool
 val points : t -> Point.t * Point.t * Point.t
+val as_points : Point.t * Point.t * Point.t -> t
 val angles : t -> float * float * float

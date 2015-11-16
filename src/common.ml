@@ -18,6 +18,13 @@ module List = struct
         else aux (h1 :: acc) (h2 :: t)
     in aux [] l
 
-    (** List is sorted but not from the start *)
+  (** List is sorted but not from the start *)
+
+  let rec print_sep f sep fmt l =
+    match l with
+    | [] -> ()
+    | [e] -> Format.fprintf fmt "%a" f e
+    | h :: t ->
+      Format.fprintf fmt "%a%s%a" f h sep (print_sep f sep) t
 
 end
