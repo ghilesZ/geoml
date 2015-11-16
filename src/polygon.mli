@@ -35,7 +35,7 @@ val intersection_polygons : t -> t -> t list
   (** Implementation of Weiler Atherton Algorithm for
     concave/convexe polygons clipping. Complexity is O(m*n). *)
 
-val triangulation : t -> (Point.t * Point.t * Point.t) list * (Point.t * string) list
+val triangulation : t -> (Point.t * Point.t * Point.t) list
 
 module Regular: sig
   (** Module for Regular polygons *)

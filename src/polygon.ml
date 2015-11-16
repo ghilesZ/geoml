@@ -254,60 +254,33 @@ let create_names p =
 
 let triangulation p =
   let htbl = Hashtbl.create 19 in
-  let ptnames = create_names p in
-  let printpt = print_pt_name ptnames in
   let n, ears = compute_ears htbl p in
   let rec aux acc nb ears =
     if AngleSet.is_empty ears then acc else
       try
         let (v2, angle) = AngleSet.min_elt ears in
         let (v1, _, v3) = Hashtbl.find htbl v2 in
-        let tr = [v1; v2; v3] in
         let acc' = (v1, v2, v3) :: acc in
-
-        Format.printf "ears (%a) :" printpt v2;
-
-        Format.printf "(%a)  ->   \n"
-          (Common.List.print_sep printpt ", ") tr;
-
         let (v1_1, v1_angle, _) = Hashtbl.find htbl v1 in
         let (_, v3_angle, v3_3) = Hashtbl.find htbl v3 in
 
         let new_angle_v1 = Vector.(angle_deg (of_points v1 v1_1) (of_points v1 v3)) in
         let new_angle_v3 = Vector.(angle_deg (of_points v3 v1) (of_points v3 v3_3)) in
-
-        Format.printf "    [%a]@."
-          (Common.List.print_sep (fun fmt (pt, angle) ->
-               Format.fprintf fmt "%a" (print_pt_name ptnames) pt) "; ")
-        @@ AngleSet.elements ears;
-
         let v1c = (v1, v1_angle) in
         let v3c = (v3, v3_angle) in
-
-
         let ears' = AngleSet.(
-
           ears
           |> AngleSet.remove (v2, angle)
           |> (fun s -> if mem v1c s then s |> remove v1c |> add (v1, new_angle_v1) else s)
           |> (fun s -> if mem v3c s then s |> remove v3c |> add (v3, new_angle_v3) else s)
           )
         in
-
-        Format.printf "    [%a]@."
-          (Common.List.print_sep (fun fmt (pt, angle) ->
-               Format.fprintf fmt "%a" (print_pt_name ptnames) pt) "; ")
-        @@ AngleSet.elements ears';
-
-
         Hashtbl.add htbl v1 (v1_1, new_angle_v1, v3);
-        Hashtbl.add htbl v3 (v3_3, new_angle_v3, v1);
+        Hashtbl.add htbl v3 (v1, new_angle_v3, v3_3);
         aux acc' (succ nb) ears'
       with
       | Not_found -> Format.printf "not found@."; acc
-  in
-  let res = aux [] 0 ears in
-  res, List.map (fun pt -> pt, Hashtbl.find ptnames pt) p
+  in aux [] 0 ears
 
 
 
