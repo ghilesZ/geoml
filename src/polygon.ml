@@ -29,6 +29,19 @@ let fold_filter filter f acc p =
     else aux (f acc pt1 pt2) (pt2 :: pg)
   in aux acc p
 
+let fold_segments_pair f acc p =
+  let rec aux acc p' =
+    match p' with
+    | [] | [_] -> acc
+    | [v; v1] ->
+      let hd = List.hd p in
+      f (f acc v v1 hd)
+        v1 hd List.(hd @@ tl p)
+    | v1 :: v2 :: v3 :: p' ->
+      aux (f acc v1 v2 v3) (v2 :: v3 :: p')
+  in
+  aux acc p
+
 let perimeter p =
   fold Point.(fun acc p1 p2 ->
       acc +. distance p1 p2
@@ -106,14 +119,15 @@ let contains p pt =
         (pt.x < (j.x -. i.x) *. (pt.y -. i.y) /. (j.y -. i.y) +. i.x))
     (fun acc _ _ -> not acc) false p
 
-let update h default f cpl newitem =
-  let res =
-    try Segment.Tbl.find h cpl with Not_found -> default
-  in Segment.Tbl.add h cpl (f newitem res)
 
 let segments_intersection_points crossing p1 p2 =
   let minx1, miny1, maxx1, maxy1 = minmax_xy p1 in
   let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in
+  let update h default f cpl newitem =
+    let res =
+      try Segment.Tbl.find h cpl with Not_found -> default
+    in Segment.Tbl.add h cpl (f newitem res)
+  in
   if maxx1 < minx2 || maxy1 < miny2
      || maxx2 < minx1 || maxy2 < miny2 then
     []
@@ -129,6 +143,9 @@ let segments_intersection_points crossing p1 p2 =
               update (cur2, next2) v (cur1, next1);
               v :: inters
           ) inters p2) [] p1
+
+
+(* Weiler Atherton #####################################################  *)
 
 let insert_intersection_points crossing crosslink entering start_inside l = snd @@ fold (
     fun (inside, acc) cur next ->
@@ -182,19 +199,114 @@ let intersection_polygons p1 p2 =
     let crossing = Segment.Tbl.create 19 in
     let crosslink = Point.Tbl.create 11 in
     let inters = segments_intersection_points crossing p1 p2 in
-    let enterings_p1 = ref [] in
-    let enterings_p2 = ref [] in
-    let newp1 =
-      insert_intersection_points crossing crosslink
-        enterings_p1 (start_inside_p2) p1
-    in
-    let newp2 =
-      insert_intersection_points crossing crosslink
-        enterings_p2 (start_inside_p1) p2
-    in begin match p1, p2 with
-      | [a; b], _ | _, [a; b] -> [inters]
-      | _ -> build_clip newp1 newp2 crosslink [] !enterings_p2
-    end
+    if inters == [] then
+      if start_inside_p1 then [p2]
+      else [p1]
+    else
+      let enterings_p1 = ref [] in
+      let enterings_p2 = ref [] in
+      let newp1 =
+        insert_intersection_points crossing crosslink
+          enterings_p1 (start_inside_p2) p1
+      in
+      let newp2 =
+        insert_intersection_points crossing crosslink
+          enterings_p2 (start_inside_p1) p2
+      in begin match p1, p2 with
+        | [a; b], _ | _, [a; b] -> [inters]
+        | _ -> build_clip newp1 newp2 crosslink [] !enterings_p2
+      end
+(* ################################################################## *)
+
+
+(* Polygon triangulation ############################################ *)
+module AngleSet = Set.Make (struct
+    open Point
+    type t = Point.t * float
+    let compare (pt1, angle1) (pt2, angle2) =
+      if pt1 = pt2 then 0
+      else if angle1 <= angle2 then -1 else 1
+  end)
+
+let compute_ears h p =
+  fold_segments_pair (fun (n, acc) v1 v2 v3 ->
+      let vec1 = Vector.of_points v2 v1 in
+      let vec2 = Vector.of_points v2 v3 in
+      let angle = Vector.angle_deg vec1 vec2 in
+      Hashtbl.add h v2 (v1, angle, v3);
+      if angle > 180. then (n + 1, acc)
+      else n + 1, AngleSet.add (v2, angle) acc
+    ) (0, AngleSet.empty) p
+
+
+let print_pt_name htbl fmt pt =
+  try Format.fprintf fmt "%s" @@ Hashtbl.find htbl pt with
+  | Not_found -> Format.fprintf fmt "%a" Point.print pt
+
+
+let create_names p =
+  let t = Hashtbl.create 19 in
+  let cpt = ref 64 in
+  List.iter (
+    fun pt -> incr cpt;
+      Hashtbl.add t pt (Format.sprintf "%c" (Char.chr !cpt))) p; t
+
+
+let triangulation p =
+  let htbl = Hashtbl.create 19 in
+  let ptnames = create_names p in
+  let printpt = print_pt_name ptnames in
+  let n, ears = compute_ears htbl p in
+  let rec aux acc nb ears =
+    if AngleSet.is_empty ears then acc else
+      try
+        let (v2, angle) = AngleSet.min_elt ears in
+        let (v1, _, v3) = Hashtbl.find htbl v2 in
+        let tr = [v1; v2; v3] in
+        let acc' = (v1, v2, v3) :: acc in
+
+        Format.printf "ears (%a) :" printpt v2;
+
+        Format.printf "(%a)  ->   \n"
+          (Common.List.print_sep printpt ", ") tr;
+
+        let (v1_1, v1_angle, _) = Hashtbl.find htbl v1 in
+        let (_, v3_angle, v3_3) = Hashtbl.find htbl v3 in
+
+        let new_angle_v1 = Vector.(angle_deg (of_points v1 v1_1) (of_points v1 v3)) in
+        let new_angle_v3 = Vector.(angle_deg (of_points v3 v1) (of_points v3 v3_3)) in
+
+        Format.printf "    [%a]@."
+          (Common.List.print_sep (fun fmt (pt, angle) ->
+               Format.fprintf fmt "%a" (print_pt_name ptnames) pt) "; ")
+        @@ AngleSet.elements ears;
+
+        let v1c = (v1, v1_angle) in
+        let v3c = (v3, v3_angle) in
+
+        let ears' = AngleSet.(
+          ears
+          |> AngleSet.remove (v2, angle)
+          |> (fun s -> if mem v1c s then s |> remove v1c |> add (v1, new_angle_v1) else s)
+          |> (fun s -> if mem v3c s then s |> remove v3c |> add (v3, new_angle_v3) else s)
+          )
+        in
+
+        Format.printf "    [%a]@."
+          (Common.List.print_sep (fun fmt (pt, angle) ->
+               Format.fprintf fmt "%a" (print_pt_name ptnames) pt) "; ")
+        @@ AngleSet.elements ears';
+
+
+        Hashtbl.add htbl v1 (v1_1, new_angle_v1, v3);
+        Hashtbl.add htbl v3 (v3_3, new_angle_v3, v1);
+        aux acc' (succ nb) ears'
+      with
+      | Not_found -> Format.printf "not found@."; acc
+  in
+  let res = aux [] 0 ears in
+  res, List.map (fun pt -> pt, Hashtbl.find ptnames pt) p
+
 
 
 module Regular = struct

@@ -19,4 +19,6 @@ val add : t -> t -> t
 val substract : t -> t -> t
 val move_to : t -> Point.t -> Point.t
 val angle : t -> t -> float
+  (** compute the angle in radians *)
 val angle_deg : t -> t -> float
+  (** compute the angle in degrees *)

@@ -3,6 +3,10 @@ type t = Point.t * Point.t * Point.t
 let as_points t = t
 let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
 
+let print fmt (a, b, c) =
+  Format.fprintf fmt "(%a, %a, %a)" Point.print a
+    Point.print b Point.print c
+
 let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
 
 let tri_find f (pa,pb,pc) = 
@@ -101,3 +105,4 @@ let angles ((pa,pb,pc):t) =
   let a1 = abs_float a1 and a2 = abs_float a2 in
   let a3 = 180. -. (a1+.a2) in
   (a1,a2,a3)
+

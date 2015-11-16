@@ -45,6 +45,11 @@ let draw_string posx posy str col =
   moveto posx posy;
   draw_string str
 
+let draw_string_at_point pt str col =
+  set_color col;
+  moveto (Point.x_coord pt |> iof) (Point.y_coord pt |> iof);
+  Graphics.draw_string str
+
 let draw_regular ?(lw=1) rp col =
   let open Point in
   let open Polygon.Regular in
