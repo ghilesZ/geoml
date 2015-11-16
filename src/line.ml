@@ -9,6 +9,10 @@ let print_error fmt e =
   | Parallel -> fprintf fmt "Bad arguments : parallel lines"
   | Same_coordinates p -> fprintf fmt "Bad arguments : same coordinates %a" Point.print p
 
+let make a b c =
+  if b = 0. then X(-.c/.a)
+  else (-.c-.a)/.b
+     
 let make_x f = X(f)
 
 let make_y a b = Y(a,b)
