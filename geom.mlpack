@@ -1,3 +1,4 @@
+src/Polyhedron
 src/Curve
 src/Circle
 src/Ellipse
@@ -5,6 +6,7 @@ src/Polygon
 src/Rectangle
 src/Segment
 src/Triangle
+src/Constraint
 src/Vector
 src/Line
 src/Point

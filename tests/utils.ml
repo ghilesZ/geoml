@@ -25,6 +25,11 @@ let gen_triangle xmin xmax ymin ymax =
   and p3 = gen_point xmin xmax ymin ymax
   in Triangle.make p1 p2 p3
 
+let gen_line xmin xmax ymin ymax =
+  let p1 = gen_point xmin xmax ymin ymax
+  and p2 = gen_point xmin xmax ymin ymax
+  in Line.of_points p1 p2
+  
 let gen_polygon xmin xmax ymin ymax =
   let edges = 3 + Random.int 17 in
   let fst = gen_point xmin xmax ymin ymax in
