@@ -131,3 +131,6 @@ let bounding (pts : Point.t list) : t =
   match pts with
   | [] -> failwith "can't build a bounding circle with an empty list"
   | h::tl -> mindisk pts (make h 0.) [h] tl
+
+let print fmt ((c,r):t) = Format.fprintf fmt "center:%a, radius=%f" Point.print c r
+
