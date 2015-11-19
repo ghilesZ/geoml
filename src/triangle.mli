@@ -7,6 +7,7 @@ val tri_exists : (Point.t -> bool) -> t -> bool
 val tri_find : ('a -> bool) -> 'a * 'a * 'a -> 'a
 val tri_forall : ('a -> bool) -> 'a * 'a * 'a -> bool
 val tri_iter : ('a -> 'b) -> 'a * 'a * 'a -> 'b
+  
 val make : Point.t -> Point.t -> Point.t -> t
 val extr1 : t -> Point.t
 val extr2 : t -> Point.t
@@ -28,3 +29,6 @@ val is_right : t -> bool
 val points : t -> Point.t * Point.t * Point.t
 val as_points : Point.t * Point.t * Point.t -> t
 val angles : t -> float * float * float
+
+val centroid : t -> Point.t
+(** returns the gravity center of a triangle *)

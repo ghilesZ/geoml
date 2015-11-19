@@ -74,3 +74,5 @@ let intersect_line r l =
   | [Some a; Some b] -> Some (Segment.make a b)
   | _ -> None
   
+let centroid r =
+  top_right_corner r |> Point.center (bottom_left_corner r)

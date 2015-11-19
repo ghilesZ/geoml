@@ -28,6 +28,7 @@ It also implements several cool algorithms :
 ![ws](img/welzl.gif)
 * Graham's scan method for finding a convex hull.
 * Weiler-Atherton for polygon clipping
+* Ear-clipping Algorithm for Polygon triangulation (Mei, Tipper & Xu)
 
 You can see some examples of application in the **tests** directory (You'll need **Graphics**)
 ##### Build

@@ -106,3 +106,7 @@ let angles ((pa,pb,pc):t) =
   let a3 = 180. -. (a1+.a2) in
   (a1,a2,a3)
 
+let centroid ((a,b,c):t) =
+  let bc = Point.center b c and ac = Point.center a c in
+  let al = Line.of_points bc a and bl = Line.of_points ac b in
+  Line.intersection bl al

@@ -36,8 +36,11 @@ val segments : t -> Segment.t list
 val is_square : t -> bool
 (** tests if the sides of the rectangle have same length *)
   
-val encompass : Point.t * float * float -> Point.t -> Point.t * float * float
+val encompass : t -> Point.t -> t
 (** given a rectangle and point, returns the smallest rectangle that contains the point and the rectangle given as parameters *)
 
 val bounding : Point.t list -> t
 (** given a list of point, returns the smallest rectangle that contains all the points of the list *)
+
+val centroid : t -> Point.t
+(** returns the gravity center of a rectangle*)
