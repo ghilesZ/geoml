@@ -32,7 +32,10 @@ val intersection : t -> t -> Point.t list
 
 val line_intersection : t -> Line.t -> Point.t list
 (** same as intersection but with a circle and a line *)
-  
+ 
+val segment_intersection : t -> Segment.t -> Point.t list
+(** same as intersection but with a circle and a segment *)
+    
 val circumscribed : Point.t -> Point.t -> Point.t -> t
 (** returns the circumscribed cirle of the triangle defined by the three points*)  
   

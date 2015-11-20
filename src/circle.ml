@@ -56,6 +56,8 @@ let line_intersection ((c,r):t) (l:Line.t) =
   |> List.map (fun y -> Point.make x y)
   |> List.map (fun p -> Point.translate p 0. cy)
 
+let segment_intersection c (s:Segment.t) =
+  Segment.to_line s |> line_intersection c |> List.filter (Segment.contains s)
 
 (** tangent c p returns the tangent of circle c going through point p. 
     p must lie on c's boundary
