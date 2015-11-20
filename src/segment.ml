@@ -56,7 +56,7 @@ let intersection ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
   try
     let p = Line.intersection (to_line s1) (to_line s2)
     and sqd = sq_distance a1 b1 in
-    if sq_distance a1 p <= sqd && sq_distance b1 p <= sqd
+    if sq_distance a1 p < sqd && sq_distance b1 p < sqd
     then Some p else None
   with
   | Line.Error Line.Parallel(_) -> None

@@ -4,7 +4,7 @@ GeoMl is 2D geometry library for Ocaml. It focuses on euclidean geometry
 and provides basic types and operations over geometric shapes.
 Here an example showing a way to construct geometrically a golden rectangle from four points defining a square:
 ```ocaml
-  Open Geom
+  open Geom
   ...
   let gold_rect (a,b,c,d) =
     let e = Point.center a b and ab = Line.of_points a b in
