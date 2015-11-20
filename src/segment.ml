@@ -42,10 +42,12 @@ let proj_y ((a,b):t) =
   if a.y > b.y then b.y,a.y
   else a.y,b.y
 
-let intersects (s1:t) (s2:t) =
+let intersects ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
+  let open Point in
   try
-    let p = Line.intersection (to_line s1) (to_line s2) in
-    contains s1 p && contains s2 p
+    let p = Line.intersection (to_line s1) (to_line s2)
+    and sqd = sq_distance a1 b1 in
+    sq_distance a1 p <= sqd && sq_distance b1 p <= sqd
   with
   | Line.Error Line.Parallel(_) -> false
 
@@ -53,8 +55,8 @@ let intersection ((a1, b1 as s1):t) ((a2, b2 as s2):t) =
   let open Point in
   try
     let p = Line.intersection (to_line s1) (to_line s2)
-    and sqd = sq_distance a1 a2 in
-    if sq_distance a1 p <= sqd && sq_distance a2 p <= sqd
+    and sqd = sq_distance a1 b1 in
+    if sq_distance a1 p <= sqd && sq_distance b1 p <= sqd
     then Some p else None
   with
   | Line.Error Line.Parallel(_) -> None

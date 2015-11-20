@@ -22,4 +22,4 @@ doc:
 				ocamlbuild geom.docdir/index.html
 
 
-.PHONY: 	all clean test
+.PHONY: 	all clean tests
