@@ -8,7 +8,7 @@ let center ((c,_):t) = c
 
 let radius ((_,r):t) = r
 
-let translate ((c,r):t) dx dy = 
+let translate ((c,r):t) dx dy =
   make (Point.translate c dx dy) r
 
 let point_reflection p ((c,r):t) =
@@ -134,5 +134,6 @@ let bounding (pts : Point.t list) : t =
   | [] -> failwith "can't build a bounding circle with an empty list"
   | h::tl -> mindisk pts (make h 0.) [h] tl
 
-let print fmt ((c,r):t) = Format.fprintf fmt "center:%a, radius=%f" Point.print c r
+let print fmt ((c,r):t) =
+  Format.fprintf fmt "center:%a, radius=%f" Point.print c r
 

@@ -6,7 +6,6 @@ type t = {f1 : Point.t; f2 : Point.t; radius : float;
 let make_bifocal p1 p2 radius = 
   let p1p2 = Point.distance p1 p2 in
   let big_axis = p1p2 +. 2. *. radius in
-  
   let a = p1p2 /. 2. in
   let c = ((p1p2 +. radius) /. 2.) in
   let b = sqrt (c *. c -. a *. a) in

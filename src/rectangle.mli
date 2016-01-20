@@ -44,3 +44,6 @@ val bounding : Point.t list -> t
 
 val centroid : t -> Point.t
 (** returns the gravity center of a rectangle*)
+
+val random_point : t -> Point.t
+(** returns a randomly chosen point of the rectangle *)

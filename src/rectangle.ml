@@ -73,6 +73,11 @@ let intersect_line r l =
   match inter with
   | [Some a; Some b] -> Some (Segment.make a b)
   | _ -> None
-  
+
 let centroid r =
   top_right_corner r |> Point.center (bottom_left_corner r)
+
+let random_point ((p,w,h):t) = 
+  let open Point in
+  let x = p.x +. (Random.float w) and y = p.y +. (Random.float h) in
+  make x y
