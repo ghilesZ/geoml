@@ -16,6 +16,10 @@ let top_right_corner ((p,w,h):t) = Point.translate p w h
 
 let top_left_corner ((p,_,h):t) = Point.translate p 0. h
 
+let scale_x ((p,w,h):t) f = ((Point.scale_x p f),w*.f,h)
+
+let scale_y ((p,w,h):t) f = ((Point.scale_y p f),w,h*.f)
+
 let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
 
 let point_reflection pivot ((p,w,h):t) =

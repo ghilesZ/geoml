@@ -68,6 +68,10 @@ val y_from_x : t -> float -> float
 val contains : t -> Point.t -> bool
 (** contains l1 p returns true if l1goes through p. false otherwise.*)
 
+val scale_x : t -> float -> t
+
+val scale_y : t -> float -> t
+
 val translate : t -> float -> float -> t
   
 val parallel : t -> t -> bool

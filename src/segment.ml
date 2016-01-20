@@ -12,6 +12,8 @@ let extr1 ((p1,_):t) : Point.t = p1
 
 let extr2 ((_,p2):t) : Point.t = p2
 
+let sq_size ((p1,p2):t) = Point.sq_distance p1 p2
+
 let size ((p1,p2):t) = Point.distance p1 p2
 
 let center (p1,p2) = Point.center p1 p2
@@ -23,6 +25,10 @@ let equation ((p1,p2):t) t =
     let open Point in
     let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in 
     Point.translate p1 (t*.dx) (t*.dy)
+
+let scale_y (p1,p2) f = make (Point.scale_y p1 f) (Point.scale_y p2 f)
+
+let scale_x (p1,p2) f = make (Point.scale_x p1 f) (Point.scale_x p2 f)
 
 let translate ((p1,p2):t) dx dy=
   make (Point.translate p1 dx dy) (Point.translate p2 dx dy)

@@ -68,6 +68,16 @@ let contains (l:t) (p:Point.t) =
   | X(n) -> p.x = n
   | Y(a,b) -> (a*.(p.x) +. b) = p.y
 
+let scale_x (l:t) f = 
+  match l with
+  | X(n) -> X(n*.f)
+  | Y(a,b) -> Y(a*.f,b)
+
+let scale_y (l:t) f = 
+  match l with
+  | Y(a,b) -> Y (a/.f, b/.f)
+  | _ -> l
+
 let translate (l:t) dx dy = 
   match l with 
   | X(n) -> X(n+.dx)

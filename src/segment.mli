@@ -4,9 +4,21 @@ val make : Point.t -> Point.t -> t
 module Tbl: Hashtbl.S with type key = t
 
 val extr1 : t -> Point.t
+
 val extr2 : t -> Point.t
+
 val center : t -> Point.t
+
+(** returns the square size of a segment *)
+val sq_size : t -> float
+
+(** returns the size of a segment *)
 val size : t -> float
+
+val scale_x : t -> float -> t
+
+val scale_y : t -> float -> t
+
 val translate : t -> float -> float -> t
   
 val to_line : t -> Line.t

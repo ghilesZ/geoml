@@ -46,10 +46,13 @@ let x_coord (p:t) = p.x
 
 let y_coord (p:t) = p.y
 
+let scale_x (p:t) f = {p with x=p.x*.f}
+
+let scale_y (p:t) f = {p with y=p.y*.f}
+
 let translate ({x;y}: t) dx dy : t= make (x+.dx) (y+.dy)
 
-(** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
-let point_reflection center p = 
+let point_reflection center p =
   translate center (center.x -. p.x) (center.y -. p.y)
 
 let rotate pivot p angle =

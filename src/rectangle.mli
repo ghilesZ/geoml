@@ -11,10 +11,14 @@ val make : Point.t -> float -> float -> t
 (**  of_diagonal p1 p2, builds the rectangle where p1p2 is its diagonal 
      (the bounding rectangle of the two points)*)
 
+val scale_x : t -> float -> t
+val scale_y : t -> float -> t
+
 val bottom_left_corner : t -> Point.t
 val bottom_right_corner : t -> Point.t
 val top_right_corner : t -> Point.t
 val top_left_corner : t -> Point.t
+
 val translate : t -> float -> float -> t
 val point_reflection : Point.t -> t -> t
 val contains : t -> Point.t -> bool
