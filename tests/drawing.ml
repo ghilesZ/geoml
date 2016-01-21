@@ -81,6 +81,20 @@ let draw_line ?(lw=1) l col =
   | None -> ()
   | Some s -> draw_segment ~lw:lw s col
 
+let draw_polynom ?(lw=1) pol col = 
+  set_color col;
+  set_line_width lw;
+  let open Point in
+  let open Polynom in
+  let step = 5. 
+  and cur = ref 5. in
+  moveto 0 (iof (equation pol 0.));
+  while !cur < (float_of_int (size_x ())) do
+    lineto (iof !cur) (iof (equation pol !cur));
+    cur := !cur +. step
+  done;
+  lineto (iof !cur) (iof (equation pol !cur))
+
 let draw_quadratic_curve ?(lw=1) curve col = 
   set_color col;
   set_line_width lw;
