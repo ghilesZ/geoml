@@ -29,3 +29,18 @@ let derive p =
     | h::tl -> aux (cur+1) ((float cur) *. h::res) tl
   in aux 0 zero (List.rev p)
 
+let print fmt p =
+  let degree = ref 0 in
+  Format.pp_print_list
+    ~pp_sep:(fun f () -> Format.fprintf f " + ")
+    (fun fmt e ->
+      if !degree = 0 then
+	Format.fprintf fmt "%f" e
+      else if !degree = 1 then
+	Format.fprintf fmt "%fx" e
+      else
+	Format.fprintf fmt "%fx^%i" e !degree;
+      incr degree;
+    ) 
+    fmt 
+    (List.rev p)

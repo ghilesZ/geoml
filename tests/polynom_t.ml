@@ -9,9 +9,11 @@ module Pol = struct
 
   type t = Polynom.t list
     
-  let new_val () = 
+  let new_val () =
     let p = Polynom.make [8.;2.;200.] in
-    let p' = Polynom.derive p in 
+    let p' = Polynom.derive p in
+    Format.printf "p: %a@." Polynom.print p;
+    Format.printf "p': %a@." Polynom.print p';
     [p;p']
 
   let frame pol_list = 
