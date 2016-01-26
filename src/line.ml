@@ -75,7 +75,7 @@ let scale_x (l:t) f =
 
 let scale_y (l:t) f = 
   match l with
-  | Y(a,b) -> Y (a/.f, b/.f)
+  | Y(a,b) -> Y (a*.f, b*.f)
   | _ -> l
 
 let translate (l:t) dx dy = 

@@ -10,7 +10,7 @@ module Pol = struct
   type t = Polynom.t list
     
   let new_val () =
-    let p = Polynom.make [8.;2.;200.] in
+    let p = Polynom.make [0.005;-2.;50.] in
     let p' = Polynom.derive p in
     Format.printf "p: %a@." Polynom.print p;
     Format.printf "p': %a@." Polynom.print p';
