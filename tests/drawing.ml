@@ -27,8 +27,8 @@ let fill_circle ?(lw=1) c col =
   
 let draw_segment ?(lw=1) s col =
   set_line_width lw;
-  let p1,p2 = (Segment.extr1 s),(Segment.extr2 s) in
   set_color col;
+  let p1,p2 = (Segment.extr1 s),(Segment.extr2 s) in
   moveto (iof (Point.x_coord p1)) (iof(Point.y_coord p1));
   lineto (iof(Point.x_coord p2))(iof (Point.y_coord p2))
 
@@ -39,6 +39,13 @@ let draw_triangle ?(lw=1) t col =
 let draw_rectangle ?(lw=1) r col = 
   let open Rectangle in
   List.iter (fun e -> draw_segment ~lw:lw e col) (segments r)
+
+let draw_ellipse ?(lw=1) e col =
+  let open Point in
+  let open Ellipse in
+  set_line_width lw;
+  set_color col;
+  draw_ellipse (iof ((center e).x)) (iof ((center e).y)) (iof (big_axis e)) (iof (small_axis e))
 
 let draw_string posx posy str col =
   set_color col;

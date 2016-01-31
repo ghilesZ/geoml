@@ -20,8 +20,8 @@ module T = struct
       let c = Circle.make e 5. in 
       Drawing.fill_circle c Graphics.black
     ) v;
-    Drawing.draw_rectangle (Rectangle.bounding v) Graphics.green;
-    Drawing.draw_polygon (Polygon.bounding v) Graphics.blue;
+    (*Drawing.draw_rectangle (Rectangle.bounding v) Graphics.green;
+    Drawing.draw_polygon (Polygon.bounding v) Graphics.blue;*)
     let c = Circle.bounding v in
     Drawing.draw_circle c Graphics.red
 end
