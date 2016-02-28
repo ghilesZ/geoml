@@ -38,7 +38,6 @@ let scale x y m = {
   c11 = m.c11 *. y;
 }
 
-let rotation 
 
 let rotate angle (m : t) =
   let cos = cos angle in
