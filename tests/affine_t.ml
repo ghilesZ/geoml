@@ -13,9 +13,13 @@ module Poly_r = struct
   let (!%) f = fun a b -> f b a
 
   let new_val () =
+    let open Polygon in
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
-    let p1 = Polygon.Regular.to_randomized_polygon rp in
-    let p2 = Polygon.transform Affine.(scaling 0.5) p1 in
+    let p1 = Regular.to_randomized_polygon rp in
+    let center = rp.Regular.center in
+    let p2 = Polygon.transform
+        Affine.(translation center.Point.x center.Point.y |> scale 0.5) p1
+    in
     p1, p2
 
   let frame (p1, p2) =

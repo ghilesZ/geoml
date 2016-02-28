@@ -54,6 +54,14 @@ let rotate angle (m : t) =
     c11 = m.c11 *. cos -. m.c10 *. sin;
   }
 
+let apply a b =
+  { c00 = b.c00 *. a.c00 +. b.c01 *. a.c10;
+    c01 = b.c00 *. a.c01 +. b.c01 *. a.c11;
+    c10 = b.c10 *. a.c00 +. b.c11 *. a.c10;
+    c11 = b.c10 *. a.c01 +. b.c11 *. a.c11;
+    c02 = b.c00 *. a.c02 +. b.c01 *. a.c12 +. b.c02;
+    c12 = b.c10 *. a.c02 +. b.c11 *. a.c12 +. b.c12; }
+
 let det m = m.c00 *. m.c11 -. m.c01 *. m.c10
 
 let transform_distance m x y =
