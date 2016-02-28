@@ -22,6 +22,16 @@ let small_axis {small_axis;_} = small_axis
 let translate {f1; f2; radius;_} dx dy = 
   make_bifocal (Point.translate f1 dx dy) (Point.translate f2 dx dy) radius
 
+let rotate e c f =
+  {e with 
+    f1=Point.rotate e.f1 c f;
+    f2=Point.rotate e.f2 c f}
+
+let rotate_angle e c f =
+  {e with 
+    f1=Point.rotate_angle e.f1 c f;
+    f2=Point.rotate_angle e.f2 c f}
+
 let scale_x {f1;f2;radius;_} f =
   let open Point in
   let new_radius = 

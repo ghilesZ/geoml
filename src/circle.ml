@@ -15,6 +15,12 @@ let point_reflection p ((c,r):t) =
   let p' = Point.point_reflection p c in
   make p' r
 
+let rotate ((c,r):t) p f =
+  make (Point.rotate c p f) r
+
+let rotate_angle ((c,r):t) p f =
+  make (Point.rotate_angle c p f) r
+
 let contains ((c,r):t) p =
   Point.sq_distance c p <= (r*.r)
 
