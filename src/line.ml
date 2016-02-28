@@ -78,12 +78,12 @@ let scale_y (l:t) f =
   | Y(a,b) -> Y (a*.f, b*.f)
   | _ -> l
 
-let translate (l:t) dx dy = 
+let translate dx dy (l:t) = 
   match l with 
   | X(n) -> X(n+.dx)
   | Y(a,b) -> 
-    let p1 = Point.translate (Point.make 0. b) dx dy
-    and p2 = Point.translate (Point.make 1. (a+.b)) dx dy in
+    let p1 = Point.translate dx dy (Point.make 0. b)
+    and p2 = Point.translate dx dy (Point.make 1. (a+.b)) in
     of_points p1 p2
 
 let parallel l1 l2 = 

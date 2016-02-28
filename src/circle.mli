@@ -8,7 +8,7 @@ val center : t -> Point.t
 
 val radius : t -> float
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
 
 val point_reflection : Point.t -> t -> t
 

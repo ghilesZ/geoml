@@ -10,7 +10,7 @@ val radius : t -> float
 val big_axis : t -> float
 val small_axis : t -> float
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
 val scale_x : t -> float -> t
 val scale_y : t -> float -> t
 val contains : t -> Point.t -> bool

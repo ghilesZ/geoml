@@ -10,21 +10,21 @@ let of_diagonal p1 p2 : t =
 
 let bottom_left_corner ((p,_,_):t) = p
 
-let bottom_right_corner ((p,w,_):t) = Point.translate p w 0.
+let bottom_right_corner ((p,w,_):t) = Point.translate w 0. p
 
-let top_right_corner ((p,w,h):t) = Point.translate p w h
+let top_right_corner ((p,w,h):t) = Point.translate w h p
 
-let top_left_corner ((p,_,h):t) = Point.translate p 0. h
+let top_left_corner ((p,_,h):t) = Point.translate 0. h p
 
 let scale_x ((p,w,h):t) f = ((Point.scale_x p f),w*.f,h)
 
 let scale_y ((p,w,h):t) f = ((Point.scale_y p f),w,h*.f)
 
-let translate ((p,w,h):t) dx dy : t = ((Point.translate p dx dy),w,h) 
+let translate dx dy ((p,w,h):t) : t = ((Point.translate dx dy p),w,h) 
 
 let point_reflection pivot ((p,w,h):t) =
   let r = make (Point.point_reflection pivot p) w h in
-  translate r (-.w) (-.h)
+  translate (-.w) (-.h) r
 
 let contains ((p,w,h):t) (pt:Point.t) =
   let open Point in

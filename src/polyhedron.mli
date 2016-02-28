@@ -13,6 +13,6 @@ val make : Constraint.t list -> t
 
 val contains : t -> Point.t -> bool
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
 
 val intersection : t -> t -> t

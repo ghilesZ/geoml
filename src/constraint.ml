@@ -31,8 +31,8 @@ let contains ((l,comp):t) p =
   | Geq -> value >= 0.
 (**contains c p returns true if the point p is in the half-space defined by c*)
 
-let translate ((l,comp):t) dx dy =
-  make (Line.translate l dx dy) comp
+let translate dx dy ((l,comp):t) =
+  make (Line.translate dx dy l) comp
 
 let intersects (((l1,comp1)as c1):t) (((l2,comp2) as c2) :t) = 
   match comp1,comp2 with

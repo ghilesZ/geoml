@@ -11,6 +11,6 @@ val get_border : t -> Line.t
 val contains : t -> Point.t -> bool
 (**contains c p returns true if the point p is in the half-space defined by c*)
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
 
 val intersects : t -> t -> bool

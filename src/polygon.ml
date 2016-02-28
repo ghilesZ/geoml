@@ -62,6 +62,9 @@ let proj_y p = Point.(fold (
       min current.y miny, max current.y maxy
   ) ((List.hd p).y, (List.hd p).y) p)
 
+let translate x y p =
+  List.map (Point.translate x y) p
+
 let bounding l =
   let bottom_left l =
     let open Point in
@@ -340,10 +343,10 @@ module Regular = struct
           (nb +. 1., bar :: acc)
       ) (prob, []) rp
 
-  let translate rp dx dy =
+  let translate dx dy rp =
     { rp with
-      center = Point.translate rp.center dx dy;
-      fst = Point.translate rp.fst dx dy
+      center = Point.translate dx dy rp.center;
+      fst = Point.translate dx dy rp.fst
     }
 
   let is_square rp = rp.edges = 4

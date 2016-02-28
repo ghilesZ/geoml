@@ -19,7 +19,7 @@ val scale_x : t -> float -> t
 
 val scale_y : t -> float -> t
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
   
 val to_line : t -> Line.t
   

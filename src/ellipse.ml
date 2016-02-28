@@ -19,8 +19,8 @@ let center {f1;f2;_} = Point.center f1 f2
 let big_axis {big_axis;_} = big_axis
 let small_axis {small_axis;_} = small_axis
 
-let translate {f1; f2; radius;_} dx dy = 
-  make_bifocal (Point.translate f1 dx dy) (Point.translate f2 dx dy) radius
+let translate dx dy {f1; f2; radius;_} =
+  make_bifocal (Point.translate dx dy f1) (Point.translate dx dy f2) radius
 
 let rotate e c f =
   {e with 

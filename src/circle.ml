@@ -8,8 +8,8 @@ let center ((c,_):t) = c
 
 let radius ((_,r):t) = r
 
-let translate ((c,r):t) dx dy =
-  make (Point.translate c dx dy) r
+let translate dx dy ((c,r):t) =
+  make (Point.translate dx dy c) r
 
 let point_reflection p ((c,r):t) =
   let p' = Point.point_reflection p c in
@@ -44,7 +44,7 @@ let line_intersection ((c,r):t) (l:Line.t) =
   match l with
   | Y(a,b) ->
      (* we go to origin *)
-     let l_2 = translate l (-.cx) (-.cy) in
+     let l_2 = translate (-.cx) (-.cy) l in
      let a,b = (match l_2 with Y(a,b) -> a,b | _ -> assert false) in
     (* we solve the equation at the origin for x*)
     (* x² + y² = r²   and   y = ax+b  
@@ -55,12 +55,12 @@ let line_intersection ((c,r):t) (l:Line.t) =
      (* we calculate the associated y*)
   |> List.map (fun x -> Point.make x (a*.x+.b))
     (* we translate the result to the first coordinates*)
-  |> List.map (fun x -> Point.translate x cx cy)
+  |> List.map (Point.translate cx cy)
   | X(x) ->
     let a = x-.cx in
     Math.solve 1. 0. (a*.a -. r*.r)
   |> List.map (fun y -> Point.make x y)
-  |> List.map (fun p -> Point.translate p 0. cy)
+  |> List.map (Point.translate 0. cy)
 
 let segment_intersection c (s:Segment.t) =
   Segment.to_line s |> line_intersection c |> List.filter (Segment.contains s)
