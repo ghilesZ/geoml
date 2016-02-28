@@ -50,10 +50,10 @@ let scale_x (p:t) f = {p with x=p.x*.f}
 
 let scale_y (p:t) f = {p with y=p.y*.f}
 
-let translate ({x;y}: t) dx dy : t= make (x+.dx) (y+.dy)
+let translate dx dy ({x;y}: t) : t= make (x+.dx) (y+.dy)
 
 let point_reflection center p =
-  translate center (center.x -. p.x) (center.y -. p.y)
+  translate (center.x -. p.x) (center.y -. p.y) center 
 
 let rotate pivot p angle =
   let px = (cos angle) *. (p.x -. pivot.x) -. (sin angle) *. (p.y -. pivot.y) +. pivot.x  

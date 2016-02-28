@@ -24,14 +24,14 @@ let equation ((p1,p2):t) t =
   else
     let open Point in
     let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in 
-    Point.translate p1 (t*.dx) (t*.dy)
+    Point.translate (t*.dx) (t*.dy) p1
 
 let scale_y (p1,p2) f = make (Point.scale_y p1 f) (Point.scale_y p2 f)
 
 let scale_x (p1,p2) f = make (Point.scale_x p1 f) (Point.scale_x p2 f)
 
-let translate ((p1,p2):t) dx dy=
-  make (Point.translate p1 dx dy) (Point.translate p2 dx dy)
+let translate dx dy ((p1,p2):t) =
+  make (Point.translate dx dy p1) (Point.translate dx dy p2)
 
 let to_line ((p1,p2):t) = Line.of_points p1 p2
 

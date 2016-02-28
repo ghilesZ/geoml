@@ -33,8 +33,8 @@ let scale_x t f =
 let scale_y t f = 
   tri_map (fun e -> Point.scale_y e f) t
 
-let translate (tr:t) dx dy : t = 
-  tri_map (fun e -> Point.translate e dx dy) tr
+let translate dx dy (tr:t) : t =
+  tri_map (Point.translate dx dy) tr
 
 let point_reflection  p (tr:t) : t =
   tri_map (fun e -> Point.point_reflection p e) tr

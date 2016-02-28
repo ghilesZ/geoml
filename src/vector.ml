@@ -35,7 +35,7 @@ let add (v1:t) (v2:t) : t = make (v1.dx+.v2.dx) (v1.dy+.v2.dy)
 
 let substract v1 v2 = opposite v2 |> add v1
 
-let move_to ({dx;dy}:t) p = Point.translate p dx dy
+let move_to ({dx;dy}:t) = Point.translate dx dy
 
 let angle v1 v2 = 
   let v1 = normalize v1

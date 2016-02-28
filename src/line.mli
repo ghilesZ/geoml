@@ -72,7 +72,7 @@ val scale_x : t -> float -> t
 
 val scale_y : t -> float -> t
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
   
 val parallel : t -> t -> bool
 (** parallel l1 l2 returns true if l1 and l2 are parallel. false otherwise.*)

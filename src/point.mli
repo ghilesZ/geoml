@@ -30,7 +30,7 @@ val scale_x : t -> float -> t
 
 val scale_y : t -> float -> t
 
-val translate : t -> float -> float -> t
+val translate : float -> float -> t -> t
 
 (** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
 val point_reflection : t -> t -> t
