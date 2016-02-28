@@ -24,20 +24,25 @@ let translate x y m = {
   c12 = m.c12 +. m.c10 *. x +. m.c11 *. y;
 }
 
-let scale x y = {
-  c00 = x; c10 = 0.;
-  c01 = 0.; c11 = y;
+let scaling s = {
+  c00 = s; c10 = 0.;
+  c01 = 0.; c11 = s;
   c02 = 0.; c12 = 0.;
 }
 
-let scale x y m = {
+let scale s m = {
   m with
-  c00 = m.c00 *. x;
-  c10 = m.c10 *. x;
-  c01 = m.c01 *. y;
-  c11 = m.c11 *. y;
+  c00 = m.c00 *. s;
+  c10 = m.c10 *. s;
+  c01 = m.c01 *. s;
+  c11 = m.c11 *. s;
 }
 
+let rotation angle = {
+  c00 = cos angle; c10 = sin angle;
+  c01 = -. sin angle; c11 = cos angle;
+  c02 = 0.; c12 = 0.;
+}
 
 let rotate angle (m : t) =
   let cos = cos angle in

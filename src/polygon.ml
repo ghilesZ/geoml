@@ -65,6 +65,9 @@ let proj_y p = Point.(fold (
 let translate x y p =
   List.map (Point.translate x y) p
 
+let transform m p =
+  List.map (Point.transform m) p
+
 let bounding l =
   let bottom_left l =
     let open Point in
@@ -347,6 +350,16 @@ module Regular = struct
     { rp with
       center = Point.translate dx dy rp.center;
       fst = Point.translate dx dy rp.fst
+    }
+
+  let transform m rp =
+    let fst = Point.transform m rp.fst in
+    let snd = Point.transform m rp.snd in
+    let center = Point.transform m rp.center in {
+      rp with
+      center; fst; snd;
+      len = Point.distance fst snd;
+      apothem = Point.distance center (Point.iso_barycenter [fst; snd]);
     }
 
   let is_square rp = rp.edges = 4

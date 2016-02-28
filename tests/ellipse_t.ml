@@ -22,7 +22,7 @@ module Ellipse_r = struct
 
   let frame (e,lp) =
     Drawing.draw_string 25 585 "Press 'R' refresh" Graphics.black;
-    let e' = Ellipse.translate e (Random.float 300.) (Random.float 300.) in
+    let e' = Ellipse.translate (Random.float 300.) (Random.float 300.) e in
     List.iter 
       (fun p -> Drawing.draw_point p 
 	(if Ellipse.contains e p && Ellipse.contains e' p 

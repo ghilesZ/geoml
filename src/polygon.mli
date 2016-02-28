@@ -21,6 +21,7 @@ val area : t -> float
 val proj_x : t -> float * float
 val proj_y : t -> float * float
 val translate : float -> float -> t -> t
+val transform : Affine.t -> t -> t
 val bounding : Point.t list -> t
 val minmax_xy : t -> float * float * float * float
 
@@ -62,6 +63,7 @@ module Regular: sig
   val to_polygon : t -> polygon
   val to_randomized_polygon : ?minp:int -> ?prob:float -> t -> polygon
   val translate : float -> float -> t -> t
+  val transform : Affine.t -> t -> t
   val is_square : t -> bool
   val contains : t -> Point.t -> bool
   val map : (Point.t -> Point.t) -> t -> t

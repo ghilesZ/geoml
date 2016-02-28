@@ -31,10 +31,10 @@ let frame (r,tr,ell,l) =
   and tr = Triangle.scale_y (Triangle.scale_x tr !cur_zoom) !cur_zoom
   and ell = Ellipse.scale_y (Ellipse.scale_x ell !cur_zoom) !cur_zoom
   and l = List.map (fun l -> Line.scale_y (Line.scale_x l !cur_zoom) !cur_zoom) l in
-  let r = Rectangle.translate r !dx !dy
-  and tr = Triangle.translate tr !dx !dy
-  and ell = Ellipse.translate ell !dx !dy
-  and l = List.map (fun l -> Line.translate l !dx !dy) l in
+  let r = Rectangle.translate !dx !dy r
+  and tr = Triangle.translate !dx !dy tr
+  and ell = Ellipse.translate !dx !dy ell
+  and l = List.map (fun l -> Line.translate !dx !dy l) l in
   List.iter (fun e -> Drawing.draw_line e (Graphics.rgb 230 230 230)) l;
   Drawing.draw_string 20 380 "'+'/'-' to zoom/unzoom" Graphics.black;
   Drawing.draw_string 20 360 "'z' 'q' 's' 'd' to move " Graphics.black;
