@@ -34,6 +34,10 @@ val translate : t -> float -> float -> t
 
 (** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
 val point_reflection : t -> t -> t
+
+(** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in radian *)
 val rotate : t -> t -> float -> t
+
+(** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in degree *)
 val rotate_angle : t -> t -> float -> t
 val print : Format.formatter -> t -> unit

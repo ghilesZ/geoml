@@ -12,6 +12,15 @@ val translate : t -> float -> float -> t
 
 val point_reflection : Point.t -> t -> t
 
+(** radian rotation. rotate c p f returns the rotated circle of c with p as
+    rotation center and f a angle in radian *)
+val rotate : t -> Point.t -> float -> t
+
+(** degree rotation. rotate c p f returns the rotated circle of c with p as
+    rotation center and f a angle in degree *)
+val rotate_angle : t -> Point.t -> float -> t
+
+val print : Format.formatter -> t -> unit
 val contains : t -> Point.t -> bool
 
 val area : t -> float

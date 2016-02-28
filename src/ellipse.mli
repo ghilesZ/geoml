@@ -10,9 +10,16 @@ val radius : t -> float
 val big_axis : t -> float
 val small_axis : t -> float
 
+(** radian rotation. rotate e p f returns the rotated ellipse with p
+    as the rotation center and f a angle in radian *)
+val rotate : t -> Point.t -> float -> t
+
+(** degree rotation. rotate e p f returns the rotated ellipse with p
+    as the rotation center and f a angle in degree *)
+val rotate_angle : t -> Point.t -> float -> t
+
 val translate : t -> float -> float -> t
 val scale_x : t -> float -> t
 val scale_y : t -> float -> t
 val contains : t -> Point.t -> bool
 val area : t -> float
-
