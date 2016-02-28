@@ -20,6 +20,8 @@ val scale_x : t -> float -> t
 val scale_y : t -> float -> t
 
 val translate : float -> float -> t -> t
+
+val transform : Affine.t -> t -> t
   
 val to_line : t -> Line.t
   

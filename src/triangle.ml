@@ -27,14 +27,16 @@ let extr2 ((_,p2,_):t) = p2
 
 let extr3 ((_,_,p3):t) = p3
 
-let scale_x t f = 
+let scale_x t f =
   tri_map (fun e -> Point.scale_x e f) t
 
-let scale_y t f = 
+let scale_y t f =
   tri_map (fun e -> Point.scale_y e f) t
 
 let translate dx dy (tr:t) : t =
   tri_map (Point.translate dx dy) tr
+
+let transform m = tri_map (Point.transform m)
 
 let point_reflection  p (tr:t) : t =
   tri_map (fun e -> Point.point_reflection p e) tr

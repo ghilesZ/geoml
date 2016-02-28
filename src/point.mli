@@ -32,6 +32,8 @@ val scale_y : t -> float -> t
 
 val translate : float -> float -> t -> t
 
+val transform : Affine.t -> t -> t
+
 (** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
 val point_reflection : t -> t -> t
 val rotate : t -> t -> float -> t

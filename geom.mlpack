@@ -12,3 +12,4 @@ src/Vector
 src/Line
 src/Point
 src/Shape
+src/Affine

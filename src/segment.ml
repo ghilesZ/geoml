@@ -16,6 +16,8 @@ let sq_size ((p1,p2):t) = Point.sq_distance p1 p2
 
 let size ((p1,p2):t) = Point.distance p1 p2
 
+let map f (p1, p2) = (f p1, f p2)
+
 let center (p1,p2) = Point.center p1 p2
 
 let equation ((p1,p2):t) t =
@@ -30,8 +32,9 @@ let scale_y (p1,p2) f = make (Point.scale_y p1 f) (Point.scale_y p2 f)
 
 let scale_x (p1,p2) f = make (Point.scale_x p1 f) (Point.scale_x p2 f)
 
-let translate dx dy ((p1,p2):t) =
-  make (Point.translate dx dy p1) (Point.translate dx dy p2)
+let translate dx dy = map (Point.translate dx dy)
+
+let transform m = map Point.(transform m)
 
 let to_line ((p1,p2):t) = Line.of_points p1 p2
 
