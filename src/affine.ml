@@ -33,8 +33,8 @@ let scaling s = {
 let scale s m = {
   m with
   c00 = m.c00 *. s;
-  c10 = m.c10 *. s;
   c01 = m.c01 *. s;
+  c10 = m.c10 *. s;
   c11 = m.c11 *. s;
 }
 
@@ -49,9 +49,9 @@ let rotate angle (m : t) =
   let sin = sin angle in {
     m with
     c00 = m.c00 *. cos +. m.c01 *. sin;
-    c01 = m.c01 *. cos -. m.c00 *. sin;
+    c01 = m.c01 *. cos +. m.c00 *. ~-.sin;
     c10 = m.c10 *. cos +. m.c11 *. sin;
-    c11 = m.c11 *. cos -. m.c10 *. sin;
+    c11 = m.c11 *. cos +. m.c10 *. ~-.sin;
   }
 
 let apply a b =
