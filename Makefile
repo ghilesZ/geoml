@@ -28,6 +28,9 @@ tests/%_t.native: %.ml
 tests/%_t.byte: %.ml
 				$(OCBTEST) $(basename $<).byte
 
+ocp:
+	ocp-build init
+	ocp-build build
 
 doc:
 				ocamlbuild geom.docdir/index.html

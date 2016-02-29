@@ -1,0 +1,77 @@
+
+
+begin library "geom"
+      sort = true
+      files = pack Geom [
+            "src/affine.ml"
+            "src/constraint.ml"
+            "src/ellipse.ml"
+            "src/math.ml"
+            "src/polygon.ml"
+            "src/polynom.ml"
+            "src/segment.ml"
+            "src/vector.ml"
+            "src/circle.ml"
+            "src/line.ml"
+            "src/point.ml"
+            "src/polyhedron.ml"
+            "src/rectangle.ml"
+            "src/shape.ml"
+            "src/curve.ml"
+            "src/triangle.ml"
+            "src/common.ml"
+    ]
+end
+
+begin library "testlib"
+      sort = true
+      files = [
+        "tests/utils.ml"
+        "tests/drawing.ml"
+        "tests/tester.ml"
+      ]
+      requires = ["geom" "graphics"]
+end
+
+begin test "basic"
+      files = [
+            "tests/affine_t.ml"
+            "tests/constraint_t.ml"
+            "tests/inter_poly_t.ml"
+            "tests/regular_polygon_t.ml"
+            "tests/triangulation_t.ml"
+            "tests/bezier_t.ml"
+            "tests/intersetction_t.ml"
+            "tests/bounding_t.ml"
+            "tests/ellipse_t.ml"
+            "tests/kmean_t.ml"
+            "tests/symetry_t.ml"
+            "tests/welzl_sbs_t.ml"
+            "tests/circum_incircle_t.ml"
+            "tests/fermat_t.ml"
+            "tests/polynom_t.ml"
+      ]
+      requires = [ "geom" "testlib" ]
+      test_cmd = "ocamlc -I ."
+      test_asm = false
+      test_dir = "_obuild"
+      test_args = [ "%{sources}%" ]
+      test_variants = ["-ocamlc"]
+      tests = [
+            "affine_t"
+            "constraint_t"
+            "inter_poly_t"
+            "regular_polygon_t"
+            "triangulation_t"
+            "bezier_t"
+            "intersetction_t"
+            "bounding_t"
+            "ellipse_t"
+            "kmean_t"
+            "symetry_t"
+            "welzl_sbs_t"
+            "circum_incircle_t"
+            "fermat_t"
+            "polynom_t"
+      ]
+end
