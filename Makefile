@@ -1,6 +1,11 @@
-OCB_FLAGS = -use-ocamlfind -tag bin_annot -I src
-OCB = 		ocamlbuild $(OCB_FLAGS)
-OCBTEST = $(OCB) -package graphics -I tests
+OCB_FLAGS = -use-ocamlfind
+OCB = 		ocamlbuild $(OCB_FLAGS) -I src
+OCBTEST = ocamlbuild $(OCB_FLAGS) -package graphics -lflags '-I .'
+
+TESTS_SRCS = $(wildcard tests/*_t.ml)
+
+TESTS_BYTE = $(patsubst %.ml,tests/%_t.byte,$(TESTS_SRCS))
+TESTS_NATIVE = $(patsubst %.ml,tests/%_t.native,$(TESTS_SRCS))
 
 all: 		native byte # profile debug
 
@@ -13,10 +18,16 @@ native:
 byte:
 				$(OCB) geom.cma
 
-tests:   native byte
-				@for file in tests/*_t.ml ; do \
-					 $(OCBTEST) $$(basename $$file | cut -f 1 -d '.').byte ; \
-				done
+tests: $(TESTS_BYTE)
+
+tests.native: $(TESTS_NATIVE)
+
+tests/%_t.native: %.ml
+				$(OCBTEST) $(basename $<).native
+
+tests/%_t.byte: %.ml
+				$(OCBTEST) $(basename $<).byte
+
 
 doc:
 				ocamlbuild geom.docdir/index.html
