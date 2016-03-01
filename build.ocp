@@ -2,24 +2,25 @@
 
 begin library "geom"
       sort = true
+      subdir = [ "src" ]
       files = pack Geom [
-            "src/affine.ml"
-            "src/constraint.ml"
-            "src/ellipse.ml"
-            "src/math.ml"
-            "src/polygon.ml"
-            "src/polynom.ml"
-            "src/segment.ml"
-            "src/vector.ml"
-            "src/circle.ml"
-            "src/line.ml"
-            "src/point.ml"
-            "src/polyhedron.ml"
-            "src/rectangle.ml"
-            "src/shape.ml"
-            "src/curve.ml"
-            "src/triangle.ml"
-            "src/common.ml"
+            "affine.ml"
+            "constraint.ml"
+            "ellipse.ml"
+            "math.ml"
+            "polygon.ml"
+            "polynom.ml"
+            "segment.ml"
+            "vector.ml"
+            "circle.ml"
+            "line.ml"
+            "point.ml"
+            "polyhedron.ml"
+            "rectangle.ml"
+            "shape.ml"
+            "curve.ml"
+            "triangle.ml"
+            "common.ml"
     ]
 end
 
@@ -34,29 +35,18 @@ begin library "testlib"
 end
 
 begin test "basic"
-      files = [
-            "tests/affine_t.ml"
-            "tests/constraint_t.ml"
-            "tests/inter_poly_t.ml"
-            "tests/regular_polygon_t.ml"
-            "tests/triangulation_t.ml"
-            "tests/bezier_t.ml"
-            "tests/intersetction_t.ml"
-            "tests/bounding_t.ml"
-            "tests/ellipse_t.ml"
-            "tests/kmean_t.ml"
-            "tests/symetry_t.ml"
-            "tests/welzl_sbs_t.ml"
-            "tests/circum_incircle_t.ml"
-            "tests/fermat_t.ml"
-            "tests/polynom_t.ml"
-      ]
+      subdir = [ "tests" ]
+      files = []
       requires = [ "geom" "testlib" ]
-      test_cmd = "ocamlc -I ."
+      test_cmd = "ocamlc"
       test_asm = false
-      test_dir = "_obuild"
-      test_args = [ "%{sources}%" ]
-      test_variants = ["-ocamlc"]
+      test_args = [
+                "-o" "%{test}%.byte"
+                "graphics.cma"
+                "-I" "_obuild/geom" "geom.cma"
+                "-I" "_obuild/testlib" "testlib.cma"
+                "tests/%{test}%.ml"
+      ]
       tests = [
             "affine_t"
             "constraint_t"
