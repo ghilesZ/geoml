@@ -8,10 +8,11 @@ init:
 	test -s _obuild || ocp-build init
 
 build: init
-	ocp-build build 2>&1 >/dev/null | grep -v "Warning:"
+	@@ocp-build build 2>&1 >/dev/null | grep -v "Warning:"
 
 tests: init
-	ocp-build tests 2>&1 >/dev/null | grep -v "Warning:"
+	@@ocp-build tests 2>&1 >/dev/null | grep -v "Warning:"
+	@@test -s runtest.byte || ln -s _obuild/runtest/runtest.byte runtest.byte
 
 clean:
 	@rm -rf _obuild
