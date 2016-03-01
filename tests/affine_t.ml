@@ -51,4 +51,3 @@ module Poly_r = struct
 
 end
 module Go = Tester.Make(Poly_r)
-let _ =  Go.doit()

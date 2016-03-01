@@ -104,5 +104,3 @@ let doit () =
   Random.self_init ();
   Drawing.open_graph size_x size_y title;
   loop ()
-
-let _ = doit()

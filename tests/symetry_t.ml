@@ -34,4 +34,3 @@ end
 
 module Go = Tester.Make(Sym)
 
-let _ =  Go.doit()

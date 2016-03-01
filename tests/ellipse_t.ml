@@ -34,4 +34,3 @@ module Ellipse_r = struct
     
 end
 module Go = Tester.Make(Ellipse_r)
-let _ =  Go.doit()

@@ -34,34 +34,26 @@ begin library "testlib"
       requires = ["geom" "graphics"]
 end
 
-begin test "basic"
+begin program "runtest"
+      sort = true
       subdir = [ "tests" ]
-      files = []
-      requires = [ "geom" "testlib" ]
-      test_cmd = "ocamlc"
-      test_asm = false
-      test_args = [
-                "-o" "%{test}%.byte"
-                "graphics.cma"
-                "-I" "_obuild/geom" "geom.cma"
-                "-I" "_obuild/testlib" "testlib.cma"
-                "tests/%{test}%.ml"
+      files = [
+            "runtest.ml"
+            "affine_t.ml"
+            "constraint_t.ml"
+            "inter_poly_t.ml"
+            "regular_polygon_t.ml"
+            "triangulation_t.ml"
+            "bezier_t.ml"
+            "intersetction_t.ml"
+            "bounding_t.ml"
+            "ellipse_t.ml"
+            "kmean_t.ml"
+            "symetry_t.ml"
+            "welzl_sbs_t.ml"
+            "circum_incircle_t.ml"
+            "fermat_t.ml"
+            "polynom_t.ml"
       ]
-      tests = [
-            "affine_t"
-            "constraint_t"
-            "inter_poly_t"
-            "regular_polygon_t"
-            "triangulation_t"
-            "bezier_t"
-            "intersetction_t"
-            "bounding_t"
-            "ellipse_t"
-            "kmean_t"
-            "symetry_t"
-            "welzl_sbs_t"
-            "circum_incircle_t"
-            "fermat_t"
-            "polynom_t"
-      ]
+      requires = ["testlib" "geom" "graphics"]
 end

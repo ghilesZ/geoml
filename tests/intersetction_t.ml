@@ -62,4 +62,3 @@ module Inter = struct
 end
 
 module Go = Tester.Make(Inter)
-let _ = Go.doit()

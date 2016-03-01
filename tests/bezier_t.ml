@@ -34,4 +34,3 @@ end
 
 module Go = Tester.Make(Curv)
 
-let _ =  Go.doit()

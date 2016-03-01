@@ -28,4 +28,3 @@ module Triangulation = struct
 
 end
 module Go = Tester.Make(Triangulation)
-let _ =  Go.doit()

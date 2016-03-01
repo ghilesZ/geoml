@@ -29,4 +29,3 @@ module Circ = struct
 
 end
 module Go = Tester.Make(Circ)  
-let _ =  Go.doit()

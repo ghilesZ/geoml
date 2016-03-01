@@ -28,4 +28,3 @@ end
 
 module Go = Tester.Make(T)
 
-let _ = Go.doit()

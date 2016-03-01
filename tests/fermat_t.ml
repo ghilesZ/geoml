@@ -82,4 +82,3 @@ end
 
 module Go = Tester.Make(Fermat)
   
-let _ = Go.doit ()

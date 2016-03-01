@@ -104,4 +104,3 @@ let doit () =
   frame !cur;
   loop ()
 
-let _ = doit()

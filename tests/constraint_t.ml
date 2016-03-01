@@ -34,4 +34,3 @@ module Half = struct
     
 end
 module Go = Tester.Make(Half)
-let _ =  Go.doit()

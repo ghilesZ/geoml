@@ -23,4 +23,3 @@ end
 
 module Go = Tester.Make(Pol)
 
-let _ =  Go.doit()
