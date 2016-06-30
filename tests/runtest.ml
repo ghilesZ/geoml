@@ -1,5 +1,3 @@
-
-
 let msg = "usage: runtest <testname>"
 let spec = []
 
@@ -21,13 +19,9 @@ let () =
   | Some "intersetction_t" -> Intersetction_t.Go.doit ()
   | Some "bounding_t" -> Bounding_t.Go.doit ()
   | Some "ellipse_t" -> Ellipse_t.Go.doit ()
-  | Some "kmean_t" -> Kmean_t.doit ()
   | Some "symetry_t" -> Symetry_t.Go.doit ()
   | Some "welzl_sbs_t" -> Welzl_sbs_t.doit ()
   | Some "circum_incircle_t" -> Circum_incircle_t.Go.doit ()
   | Some "fermat_t" -> Fermat_t.Go.doit ()
   | Some "polynom_t" -> Polynom_t.Go.doit ()
   | _ -> ()
-
-
-
