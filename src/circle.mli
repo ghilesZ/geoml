@@ -1,6 +1,9 @@
 (** Circle manipulation *)
 
-type t = private Point.t * float
+type t = private {
+  center:Point.t;
+  radius:float;
+}
 
 val make : Point.t -> float -> t
   

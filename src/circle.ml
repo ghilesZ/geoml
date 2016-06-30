@@ -1,45 +1,44 @@
 open Math
 
-type t = Point.t * float
+type t = {center:Point.t; radius:float}
 
-let make center radius : t= (center,radius)
+let make center radius : t= {center;radius}
 
-let center ((c,_):t) = c
+let center {center;_} = center
 
-let radius ((_,r):t) = r
+let radius {radius;_} = radius
 
-let translate dx dy ((c,r):t) =
-  make (Point.translate dx dy c) r
+let translate dx dy (c:t) =
+  {c with center =Point.translate dx dy c.center}
 
-let point_reflection p ((c,r):t) =
-  let p' = Point.point_reflection p c in
-  make p' r
+let point_reflection p (c:t) =
+  {c with center =Point.point_reflection p c.center}
 
-let rotate ((c,r):t) p f =
-  make (Point.rotate c p f) r
+let rotate (c:t) p f =
+  {c with center = Point.rotate c.center p f}
 
-let rotate_angle ((c,r):t) p f =
-  make (Point.rotate_angle c p f) r
+let rotate_angle (c:t) p f =
+  {c with center = Point.rotate_angle c.center p f}
 
-let contains ((c,r):t) p =
-  Point.sq_distance c p <= (r*.r)
+let contains (c:t) p =
+  Point.sq_distance c.center p <= (c.radius*.c.radius)
 
-let area ((_,r):t) = pi *. r *. r
+let area ({radius}:t) = pi *. radius *. radius
 
-let perimeter ((_,r):t) = 2. *. pi *. r
+let perimeter ({radius}:t) = 2. *. pi *. radius
 
-let proj_x ((c,r):t) = let open Point in (c.x-.r,c.x+.r)
+let proj_x (c:t) = let open Point in (c.center.x-.c.radius,c.center.x+.c.radius)
 
-let proj_y ((c,r):t) = let open Point in (c.y-.r,c.y+.r)
+let proj_y (c:t) = let open Point in (c.center.y-.c.radius,c.center.y+.c.radius)
 
-let intersects ((c1,r1):t) ((c2,r2):t) = 
-  (Point.sq_distance c1 c2) < (r1 +. r2) ** 2.
+let intersects (c1:t) (c2:t) = 
+  (Point.sq_distance c1.center c2.center) < (c1.radius +. c2.radius) ** 2.
     
 (** line_intersection takes a circle and line and returns the list of the 
     intersection points. (can be [], [a] or [a,b]
  *)
-let intersect_line ((c,r):t) (l:Line.t) =
-  let cx = Point.x_coord c and cy = Point.y_coord c in
+let intersect_line (c:t) (l:Line.t) =
+  let cx = c.center.Point.x and cy = c.center.Point.y in
   let open Line in
   match l with
   | Y(a,b) ->
@@ -51,14 +50,14 @@ let intersect_line ((c,r):t) (l:Line.t) =
        => x² + (ax + b)² = r²
        => x² + a²x² + 2abx + b² = r²
        => (a²+1)x² + 2abx + b²-r² = 0 *)
-    Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. r*.r)
+    Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. c.radius*.c.radius)
      (* we calculate the associated y*)
   |> List.map (fun x -> Point.make x (a*.x+.b))
     (* we translate the result to the first coordinates*)
   |> List.map (Point.translate cx cy)
   | X(x) ->
     let a = x-.cx in
-    Math.solve 1. 0. (a*.a -. r*.r)
+    Math.solve 1. 0. (a*.a -. c.radius*.c.radius)
   |> List.map (fun y -> Point.make x y)
   |> List.map (Point.translate 0. cy)
 
@@ -68,12 +67,12 @@ let segment_intersection c (s:Segment.t) =
 (** tangent c p returns the tangent of circle c going through point p. 
     p must lie on c's boundary
  *)
-let tangent ((c,r):t) p =
-  Line.perpendicular_of_line (Line.of_points c p) p
+let tangent {center;_} p =
+  Line.perpendicular_of_line (Line.of_points center p) p
 
-let intersection (((c1,_) as c):t) (((c2,_)as c'):t) = 
-  let c1_c2 = Line.of_points c1 c2 in
-  let p = Point.barycenter [c;c'] in
+let intersection (c:t) (c':t) = 
+  let c1_c2 = Line.of_points c.center c'.center in
+  let p = Point.barycenter [(c.center,c.radius);(c'.center,c'.radius)] in
   let l = Line.perpendicular_of_line c1_c2 p in
   intersect_line c l
 
@@ -140,6 +139,5 @@ let bounding (pts : Point.t list) : t =
   | [] -> failwith "can't build a bounding circle with an empty list"
   | h::tl -> mindisk pts (make h 0.) [h] tl
 
-let print fmt ((c,r):t) =
-  Format.fprintf fmt "center:%a, radius=%f" Point.print c r
-
+let print fmt (c:t) =
+  Format.fprintf fmt "center:%a, radius=%f" Point.print c.center c.radius
