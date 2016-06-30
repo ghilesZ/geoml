@@ -89,6 +89,14 @@ let intersects (s1:t) (s2:t) =
      Segment.intersects f s
    ) (a,b,c)
 
+let intersect_line (t:t) (l:Line.t) =
+  let (a,b,c) = segments t in
+  List.fold_left (fun acc s ->
+    match  Segment.intersect_line s l with
+    | None -> acc
+    | Some p -> p::acc
+  ) [] [a;b;c]
+
 let is_isoscele ((a,b,c) :t) =
   Point.sq_distance a b = Point.sq_distance b c ||
   Point.sq_distance b c = Point.sq_distance a c ||

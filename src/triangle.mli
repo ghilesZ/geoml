@@ -31,6 +31,7 @@ val proj_x : t -> float * float
 val proj_y : t -> float * float
 val segments : t -> Segment.t * Segment.t * Segment.t
 val intersects : t -> t -> bool
+val intersect_line : t -> Line.t -> Point.t list
 val is_isoscele : t -> bool
 val is_equilateral : t -> bool
 val is_right : t -> bool
