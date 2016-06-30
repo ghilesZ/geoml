@@ -2,11 +2,14 @@ type t = private Point.t * Point.t * Point.t
 
 val print : Format.formatter -> t -> unit
 
+(** tri_map f t applies function f in turn to all the points of t and
+    stores the results in a new triangle that is returned. *)
 val tri_map : (Point.t -> Point.t) -> t -> t
+
 val tri_exists : (Point.t -> bool) -> t -> bool
-val tri_find : ('a -> bool) -> 'a * 'a * 'a -> 'a
-val tri_forall : ('a -> bool) -> 'a * 'a * 'a -> bool
-val tri_iter : ('a -> 'b) -> 'a * 'a * 'a -> 'b
+val tri_find : (Point.t -> bool) -> t -> Point.t
+val tri_forall : (Point.t -> bool) -> t -> bool
+val tri_iter : (Point.t -> unit) -> t -> unit
   
 val make : Point.t -> Point.t -> Point.t -> t
 val extr1 : t -> Point.t
@@ -18,6 +21,7 @@ val scale_y : t -> float -> t
 
 val translate : float -> float -> t -> t
 val point_reflection :  Point.t -> t -> t
+  
 val contains : t -> Point.t -> bool
 (** tests if a point is in a triangle with barycenter method *)
 

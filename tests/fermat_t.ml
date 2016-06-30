@@ -75,7 +75,7 @@ module Fermat = struct
     Triangle.tri_iter (fun e -> 
       let c = Circle.make e 5. in
       Drawing.fill_circle c Graphics.green
-    ) (Triangle.points v);
+    ) v;
     Drawing.fill_circle (Circle.make (fermat v) 6.) Graphics.red
 
 end

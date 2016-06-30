@@ -22,7 +22,7 @@ module Circ = struct
     Triangle.tri_iter (fun e -> 
       let c = Circle.make e 5. in
       Drawing.fill_circle c Graphics.green
-    ) (Triangle.points v );
+    ) v;
     let (c1,c2) = (work v) in
     Drawing.draw_circle c1 Graphics.red;
     Drawing.draw_circle c2 Graphics.blue

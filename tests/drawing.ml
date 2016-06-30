@@ -34,7 +34,8 @@ let draw_segment ?(lw=1) s col =
 
 let draw_triangle ?(lw=1) t col = 
   let open Triangle in
-  tri_iter (fun e -> draw_segment ~lw:lw e col) (segments t)
+  let (a,b,c) = Triangle.segments t in
+  List.iter (fun e -> draw_segment ~lw:lw e col) [a;b;c]
 
 let draw_rectangle ?(lw=1) r col = 
   let open Rectangle in

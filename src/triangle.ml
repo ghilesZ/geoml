@@ -1,7 +1,7 @@
 type t = Point.t * Point.t * Point.t
 
 let as_points t = t
-let tri_map f (pa,pb,pc) = ((f pa),(f pb),(f pc))
+let tri_map f ((pa,pb,pc):t) = ((f pa),(f pb),(f pc))
 
 let print fmt (a, b, c) =
   Format.fprintf fmt "(%a, %a, %a)" Point.print a
@@ -9,15 +9,15 @@ let print fmt (a, b, c) =
 
 let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
 
-let tri_find f (pa,pb,pc) = 
+let tri_find f ((pa,pb,pc):t) = 
   if f pa then pa 
   else if f pb then pb
   else if f pc then pc 
   else raise Not_found
 
-let tri_forall f (pa,pb,pc) = (f pa) && (f pb) && (f pc)
+let tri_forall f ((pa,pb,pc):t) = (f pa) && (f pb) && (f pc)
 
-let tri_iter f (pa,pb,pc) = f pa; f pb; f pc
+let tri_iter f ((pa,pb,pc):t) = f pa; f pb; f pc
 
 let make p1 p2 p3 : t= (p1,p2,p3)
 
