@@ -1,4 +1,3 @@
-
 type t = Point.t list
 
 type polygon = t
@@ -67,6 +66,14 @@ let translate x y p =
 
 let transform m p =
   List.map (Point.transform m) p
+
+let intersect_line p l =
+  fold (fun acc p1 p2 ->
+    let s = Segment.make p1 p2 in
+    match Segment.intersect_line s l with
+    | None -> acc
+    | Some p -> p::acc
+  ) [] p
 
 let bounding l =
   let bottom_left l =

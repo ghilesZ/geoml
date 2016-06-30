@@ -23,8 +23,8 @@ module Inter = struct
     in c1,c2,l
 
   let work (c1,c2,l) = 
-    let l1 = Circle.line_intersection c1 l
-    and l2 = Circle.line_intersection c2 l
+    let l1 = Circle.intersect_line c1 l
+    and l2 = Circle.intersect_line c2 l
     and l3 = Circle.intersection c1 c2
     in List.concat [l1;l2;l3]
 
@@ -32,10 +32,10 @@ module Inter = struct
     let top = Line.make_y 0. size_y
     and right = Line.make_x size_x
     in 
-    let a = Circle.line_intersection c Line.x_axis
-    and b = Circle.line_intersection c Line.y_axis
-    and c = Circle.line_intersection c top
-    and d = Circle.line_intersection c right
+    let a = Circle.intersect_line c Line.x_axis
+    and b = Circle.intersect_line c Line.y_axis
+    and c = Circle.intersect_line c top
+    and d = Circle.intersect_line c right
     in
     List.concat [a;b;c;d]
 

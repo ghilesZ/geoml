@@ -103,4 +103,3 @@ let doit () =
   cur := init();
   frame !cur;
   loop ()
-

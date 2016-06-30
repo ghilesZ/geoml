@@ -13,6 +13,9 @@ val make : Point.t -> float -> float -> t
 
 val scale_x : t -> float -> t
 val scale_y : t -> float -> t
+  
+(** scale on both axis *)
+val scale : t -> float -> t
 
 val bottom_left_corner : t -> Point.t
 val bottom_right_corner : t -> Point.t
@@ -30,9 +33,9 @@ val proj_y : t -> float * float
 val intersects : t -> t -> bool
 (** determines whether or not two rectangles intersect *)
 
-val intersect_line : t -> Line.t -> Segment.t option
-(** returns the intersection of a rectangle and a line.
-    returns None if they don't intersect.*)
+val intersect_line : t -> Line.t -> Point.t list
+(** returns the intersection points of a rectangle and a line.
+    returns [] if they don't intersect.*)
 
 val segments : t -> Segment.t list
 (** returns a list of length 4 containing the segments of the rectangle*)

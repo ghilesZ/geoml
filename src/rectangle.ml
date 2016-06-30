@@ -20,6 +20,8 @@ let scale_x ((p,w,h):t) f = ((Point.scale_x p f),w*.f,h)
 
 let scale_y ((p,w,h):t) f = ((Point.scale_y p f),w,h*.f)
 
+let scale r f = scale_y (scale_x r f) f
+
 let translate dx dy ((p,w,h):t) : t = ((Point.translate dx dy p),w,h) 
 
 let point_reflection pivot ((p,w,h):t) =
@@ -75,8 +77,8 @@ let intersect_line r l =
   |> List.map (fun e -> Segment.intersect_line e l)
   |> List.filter (fun e -> e <> None) in
   match inter with
-  | [Some a; Some b] -> Some (Segment.make a b)
-  | _ -> None
+  | [Some a; Some b] -> [a;b]
+  | _ -> []
 
 let centroid r =
   top_right_corner r |> Point.center (bottom_left_corner r)

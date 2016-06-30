@@ -38,7 +38,7 @@ let intersects ((c1,r1):t) ((c2,r2):t) =
 (** line_intersection takes a circle and line and returns the list of the 
     intersection points. (can be [], [a] or [a,b]
  *)
-let line_intersection ((c,r):t) (l:Line.t) =
+let intersect_line ((c,r):t) (l:Line.t) =
   let cx = Point.x_coord c and cy = Point.y_coord c in
   let open Line in
   match l with
@@ -63,7 +63,7 @@ let line_intersection ((c,r):t) (l:Line.t) =
   |> List.map (Point.translate 0. cy)
 
 let segment_intersection c (s:Segment.t) =
-  Segment.to_line s |> line_intersection c |> List.filter (Segment.contains s)
+  Segment.to_line s |> intersect_line c |> List.filter (Segment.contains s)
 
 (** tangent c p returns the tangent of circle c going through point p. 
     p must lie on c's boundary
@@ -75,7 +75,7 @@ let intersection (((c1,_) as c):t) (((c2,_)as c'):t) =
   let c1_c2 = Line.of_points c1 c2 in
   let p = Point.barycenter [c;c'] in
   let l = Line.perpendicular_of_line c1_c2 p in
-  line_intersection c l
+  intersect_line c l
 
 let circumscribed p1 p2 p3 =
   let b1 = Line.point_bissection p1 p2

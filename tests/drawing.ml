@@ -85,9 +85,9 @@ let draw_line ?(lw=1) l col =
   let r = Rectangle.make Point.orig sx sy in
   let inter = Rectangle.intersect_line r l in
   match inter with
-  | None -> ()
-  | Some s -> draw_segment ~lw:lw s col
-
+  | [a;b] -> draw_segment ~lw:lw (Segment.make a b) col
+  | _ -> ()
+     
 let draw_polynom ?(lw=1) pol col = 
   set_color col;
   set_line_width lw;
@@ -142,6 +142,8 @@ let fill_screen rgb =
   set_color rgb;
   fill_rect 0 0 (size_x ()) (size_y ())
 
+let clear () = fill_screen white
+    
 let get_image size_x size_y = 
   let sx = size_x |> iof
   and sy = size_y |> iof in

@@ -39,7 +39,7 @@ val intersection : t -> t -> Point.t list
     - [p] when the circles are tangent in p
     - [a;b] when the circles intersect, a and b are the intersection points*)
 
-val line_intersection : t -> Line.t -> Point.t list
+val intersect_line : t -> Line.t -> Point.t list
 (** same as intersection but with a circle and a line *)
  
 val segment_intersection : t -> Segment.t -> Point.t list
