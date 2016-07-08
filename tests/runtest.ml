@@ -24,4 +24,5 @@ let () =
   | Some "circum_incircle_t" -> Circum_incircle_t.Go.doit ()
   | Some "fermat_t" -> Fermat_t.Go.doit ()
   | Some "polynom_t" -> Polynom_t.Go.doit ()
+  | Some "random_t" -> Random_t.Go.doit()
   | _ -> ()

@@ -53,4 +53,7 @@ val centroid : t -> Point.t
 (** returns the gravity center of a rectangle*)
 
 val random_point : t -> Point.t
-(** returns a randomly chosen point of the rectangle *)
+(** returns a randomly and uniformly chosen point of the rectangle *)
+
+val print : Format.formatter -> t -> unit  
+(** printer *)

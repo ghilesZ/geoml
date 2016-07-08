@@ -62,6 +62,8 @@ val bounding : Point.t list -> t
    contains all the points of the list, using emo welzl's algorithm.
     complexity in expected linear time *)
 
+val random_point : t -> Point.t
+(** returns a randomly and uniformly chosen point that lies inside the circle *)
+  
 val print : Format.formatter -> t -> unit  
 (** printer *)
-

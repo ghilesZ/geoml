@@ -134,10 +134,15 @@ let bounding (pts : Point.t list) : t =
        let (new_set,new_circle) = update set h in
        List.filter (fun e -> List.mem e new_set |> not) l |>
        mindisk l new_circle new_set
-  in
+  in 
   match pts with
-  | [] -> failwith "can't build a bounding circle with an empty list"
+  | [] -> invalid_arg "can't build a bounding circle with an empty list"
   | h::tl -> mindisk pts (make h 0.) [h] tl
+
+let random_point (c:t) : Point.t =  
+  let theta = Random.float pi *. 2. and r = Random.float (c.radius *. c.radius) |> sqrt  in
+  let x = r *. (cos theta) and y = r *. (sin theta) in
+  Point.(make (c.center.x+.x) (c.center.y +. y))
 
 let print fmt (c:t) =
   Format.fprintf fmt "center:%a, radius=%f" Point.print c.center c.radius

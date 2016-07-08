@@ -69,8 +69,8 @@ let bounding (pts : Point.t list) : t =
   match pts with
   | [x] -> (x,0.,0.)
   | x::tl -> List.fold_left encompass (x,0.,0.) tl
-  | [] -> failwith "can't build a bounding rectangle with an empty list"
-
+  | [] -> invalid_arg "can't build a bounding rectangle with an empty list"
+     
 let intersect_line r l =
   let inter =
     segments r
@@ -87,3 +87,6 @@ let random_point ((p,w,h):t) =
   let open Point in
   let x = p.x +. (Random.float w) and y = p.y +. (Random.float h) in
   make x y
+
+let print fmt ((bl,w,h):t) =
+  Format.fprintf fmt "bottom left corner:%a, width=%f, height:%f" Point.print bl w h

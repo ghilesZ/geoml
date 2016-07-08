@@ -41,3 +41,9 @@ val angles : t -> float * float * float
 
 val centroid : t -> Point.t
 (** returns the gravity center of a triangle *)
+
+val random_point : t -> Point.t
+(** returns a randomly and uniformly chosen point of the triangle *)
+
+val print : Format.formatter -> t -> unit  
+(** printer *)
