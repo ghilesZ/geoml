@@ -3,11 +3,6 @@ open Geom
 let iof = int_of_float
 let foi = float_of_int
 
-let gen_point xmin xmax ymin ymax =
-  let x = xmin +. Random.float (xmax-.xmin)
-  and y = ymin +. Random.float (ymax-.ymin) in
-  Point.make x y
-
 let list_make f s =
   let rec aux res = function
   | 0 -> res
