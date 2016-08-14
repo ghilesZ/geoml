@@ -32,25 +32,6 @@ begin library "testlib"
       requires = ["geom" "graphics"]
 end
 
-begin library "gcode"
-      sort = true
-      files = pack Gcode [
-        "gcode/utils.ml"
-        "gcode/constant.ml"
-	"gcode/shape.ml"
-      ]
-      requires = ["geom"]
-end
-
-begin program "gcodetest"
-      sort = true
-      subdir = [ "tests" ]
-      files = [
-        "gcode_t.ml"
-      ]
-      requires = ["testlib" "geom" "gcode" "graphics"]
-end
-
 begin program "runtest"
       sort = true
       subdir = [ "tests" ]
@@ -70,6 +51,7 @@ begin program "runtest"
             "circum_incircle_t.ml"
             "fermat_t.ml"
             "polynom_t.ml"
+            "random_t.ml"
       ]
       requires = ["testlib" "geom" "graphics"]
 end
