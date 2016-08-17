@@ -49,7 +49,7 @@ let perimeter p =
 let area p =
   fold Point.(fun acc p1 p2 ->
       acc +. (p1.x *. p2.y -. p1.y *. p2.x)
-    ) 0. p /. 2.
+  ) 0. p /. 2. |> abs_float
 
 let proj_x p = Point.(fold (
     fun (minx, maxx) current _ ->
@@ -93,7 +93,7 @@ let bounding l =
     let comp p1 p2 =
       if p1 = p then 1
       else if p2 = p then -1
-      else if angle p p1 > angle p p2 then 1 
+      else if angle p p1 > angle p p2 then 1
       else if angle p p1 = angle p p2 then 0
       else -1
     in
@@ -108,13 +108,13 @@ let bounding l =
     let rec graham_aux cl conv =
       match cl,conv with
       | ([],_) -> conv
-      | (h::t, a::b::tl) -> 
+      | (h::t, a::b::tl) ->
       let p = signProd b a h in
       if p <= 0. then graham_aux cl (b::tl)
       else graham_aux t (h::conv)
       | (h::t,_) -> graham_aux t (h::conv)
     in graham_aux (graham_sort cloud) []
-  in 
+  in
   match l with
   | [] -> failwith "can't build convex envelop with no points"
   | _ -> graham l
