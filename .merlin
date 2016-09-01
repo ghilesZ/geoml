@@ -1,5 +1,7 @@
 S src
 S tests
-B _build
-B _build/src
-B _build/tests
+B _obuild
+B _obuild/geom
+B _obuild/geom/Geom
+B _obuild/src
+B _obuild/testlib

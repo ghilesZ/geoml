@@ -6,6 +6,8 @@ type t =
 
 let make x y : t = {x; y}
 
+let ( % ) = make
+
 type point = t
 
 module Tbl = Hashtbl.Make (struct
@@ -14,17 +16,17 @@ module Tbl = Hashtbl.Make (struct
     let hash = Hashtbl.hash
   end)
 
- 
+
 let orig = make 0. 0.
 
 let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
 
 let determinant a b c =
   (b.x -. a.x) *. (c.y -. a.y) -. (b.y -. a.y) *. (c.x -. a.x)
-    
+
 let iso_barycenter pts =
-  let rec aux pts sumx sumy nb = 
-    match pts with 
+  let rec aux pts sumx sumy nb =
+    match pts with
     | [] -> make (sumx /. nb) (sumy /. nb)
     | h::tl -> aux tl (sumx +. h.x) (sumy +. h.y) (nb +. 1.)
   in aux pts 0. 0. 0.
@@ -35,8 +37,8 @@ let barycenter weighted_pts =
     | [] -> make (sumx /. sumw) (sumy /. sumw)
     | (pt,w)::tl -> aux tl ((w*.pt.x) +. sumx) ((w*.pt.y) +. sumy) (w+.sumw)
   in aux weighted_pts 0. 0. 0.
-  
-let sq_distance ({x=a;y=b}: t) ({x=c;y=d}: t) = 
+
+let sq_distance ({x=a;y=b}: t) ({x=c;y=d}: t) =
   let diffX = a -. c and diffY = b -. d in
   (diffX *. diffX +. diffY *. diffY)
 
@@ -56,10 +58,10 @@ let transform aff p =
   let x, y = Affine.transform_point aff p.x p.y in {x; y}
 
 let point_reflection center p =
-  translate (center.x -. p.x) (center.y -. p.y) center 
+  translate (center.x -. p.x) (center.y -. p.y) center
 
 let rotate pivot p angle =
-  let px = (cos angle) *. (p.x -. pivot.x) -. (sin angle) *. (p.y -. pivot.y) +. pivot.x  
+  let px = (cos angle) *. (p.x -. pivot.x) -. (sin angle) *. (p.y -. pivot.y) +. pivot.x
   and py = (sin angle) *. (p.x -. pivot.x) +. (cos angle) *. (p.y -. pivot.y) +. pivot.y
   in make px py
 

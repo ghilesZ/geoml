@@ -4,7 +4,10 @@ type t = private {
 }
 
 val make : float -> float -> t
-type point = t 
+
+val ( % ) : float -> float -> t
+
+type point = t
 
 module Tbl: Hashtbl.S with type key = t
 
