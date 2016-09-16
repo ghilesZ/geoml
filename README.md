@@ -43,6 +43,9 @@ You can see some examples of application in the **tests** directory (You'll need
 *PS: you'll have to open the Geom module to access the sub-modules (Point, Line ... etc)*
 
 ##### Current
-GeoML is currently still in developpement, and have not been tested -nor proved, nor model-checked nor analyzed ... but you know what we say about well typed program ;) -. Thereby, you'll may find some weird behaviors or failures. Feel free to let us know or report an issue about it.
+GeoML is currently still in developpement, and have not been tested -nor proved,
+nor model-checked nor analyzed ... but you know what we say about well typed
+program ;) -. Thereby, you might find some weird behaviors or failures. Feel
+free to let us know or report an issue about it.
 
 You are also welcome to contact any member of the developpement team if you want to suggest a feature you think it may be cool to have in GeoML.
