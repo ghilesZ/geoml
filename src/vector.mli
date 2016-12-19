@@ -46,4 +46,6 @@ val angle : t -> t -> float
 
 (** compute the angle in radians *)
 val angle_deg : t -> t -> float
-  (** compute the angle in degrees *)
+(** compute the angle in degrees *)
+
+val print : Format.formatter -> t -> unit

@@ -67,4 +67,4 @@ let rotate pivot p angle =
 
 let rotate_angle pivot p angle = rotate pivot p (angle *. Math.deg_to_rad)
 
-let print fmt pt = Format.fprintf fmt "{x=%f; y=%f}" pt.x pt.y
+let print fmt {x;y} = Format.fprintf fmt "{x=%f; y=%f}" x y

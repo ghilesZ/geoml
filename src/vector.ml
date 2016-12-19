@@ -4,6 +4,8 @@ type t =
     dy : float ;
   }
 
+let print fmt {dx;dy} = Format.fprintf fmt "{dx=%f; dy=%f}" dx dy
+
 let make dx dy = {dx;dy}
 
 let null = make 0. 0.
