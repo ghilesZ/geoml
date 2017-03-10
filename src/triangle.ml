@@ -9,10 +9,10 @@ let print fmt (a, b, c) =
 
 let tri_exists f (pa,pb,pc) = (f pa) || (f pb) || (f pc)
 
-let tri_find f ((pa,pb,pc):t) = 
-  if f pa then pa 
+let tri_find f ((pa,pb,pc):t) =
+  if f pa then pa
   else if f pb then pb
-  else if f pc then pc 
+  else if f pc then pc
   else raise Not_found
 
 let tri_forall f ((pa,pb,pc):t) = (f pa) && (f pb) && (f pc)
@@ -41,49 +41,46 @@ let transform m = tri_map (Point.transform m)
 let point_reflection  p (tr:t) : t =
   tri_map (fun e -> Point.point_reflection p e) tr
 
-(** tests if a point is in a triangle with barycenter method *)
+(** tests if a point is in a triangle with barycentric coordinates *)
 let contains (({Point.x=ax;Point.y=ay},
 	       {Point.x=bx;Point.y=by},
-	       {Point.x=cx;Point.y=cy}):t) 
-              ({Point.x=px;Point.y=py}:Point.t) = 
-  let l1 = 
+	       {Point.x=cx;Point.y=cy}):t)
+              ({Point.x=px;Point.y=py}:Point.t) =
+  let l1 =
     ((by -. cy) *. (px -. cx) +. (cx -. bx) *. (py -. cy)) /.
     ((by -. cy) *. (ax -. cx) +. (cx -. bx) *. (ay -. cy))
-  and l2 = 
+  and l2 =
     ((cy -. ay) *. (px -. cx) +. (ax -. cx) *. (py -. cy)) /.
     ((by -. cy) *. (ax -. cx) +. (cx -. bx) *. (ay -. cy))
-  in 
+  in
   let l3 = 1. -. l1 -. l2 in
   l3 > 0. && l3 < 1. && l2 > 0. && l2 < 1. && l1 > 0. && l1 < 1.
 
-let area ((pa,pb,pc):t) = 
-  let a = Point.distance pa pb
-  and b = Point.distance pb pc
-  and c = Point.distance pc pa in
-  let s = 0.5 *. (a+.b+.c) in 
-  sqrt (s *. (s-.a) *. (s-.b) *.(s-.c))
+let area ((pa,pb,pc):t) =
+  let ab = Vector.of_points pa pb and ac = Vector.of_points pa pc
+  in Vector.determinant ab ac
 
-let perimeter ((pa,pb,pc):t) =   
-  Point.distance pa pb +. Point.distance pb pc +. Point.distance pc pa 
+let perimeter ((pa,pb,pc):t) =
+  Point.distance pa pb +. Point.distance pb pc +. Point.distance pc pa
 
 let proj_x ((pa,pb,pc):t) =
   let open Point in
-  let inf = min (pa.x) (pb.x) |> min (pc.x) 
+  let inf = min (pa.x) (pb.x) |> min (pc.x)
   and max = max (pa.x) (pb.x) |> max (pc.x)
   in inf,max
 
 let proj_y ((pa,pb,pc):t) =
-  let open Point in  
-  let inf = min (pa.y) (pb.y) |> min (pc.y) 
+  let open Point in
+  let inf = min (pa.y) (pb.y) |> min (pc.y)
   and max = max (pa.y) (pb.y) |> max (pc.y)
   in (inf,max)
 
 let segments ((pa,pb,pc):t) =
   ((Segment.make pa pb),(Segment.make pb pc),(Segment.make pc pa))
 
-let intersects (s1:t) (s2:t) = 
+let intersects (s1:t) (s2:t) =
   let (a,b,c) = segments s1 and (d,e,f) = segments s2 in
-   tri_exists (fun s -> 
+   tri_exists (fun s ->
      Segment.intersects d s ||
      Segment.intersects e s ||
      Segment.intersects f s
@@ -114,7 +111,7 @@ let is_right ((a,b,c) :t) =
 
 let points x = x
 
-let angles ((pa,pb,pc):t) = 
+let angles ((pa,pb,pc):t) =
   let open Vector in
   let a1 = angle_deg (of_points pa pb) (of_points pa pc) in
   let a2 = angle_deg (of_points pb pa) (of_points pb pc) in
@@ -128,17 +125,14 @@ let centroid ((a,b,c):t) =
   Line.intersection bl al
 
 let random_point (((a,b,c) as tri):t) : Point.t =
-  let v1 = Vector.of_points a b
-  and v2 = Vector.of_points a c in
-  let center =
-    let half1 = Vector.scal_mult 0.5 v1
-    and half2 = Vector.scal_mult 0.5 v2
-    in Vector.move_to (Vector.add half1 half2) a
-  in
+  let v1 = Vector.of_points a b and v2 = Vector.of_points a c in
+  let d = Vector.move_to (Vector.add v1 v2) a in
+  let center = Point.center a d in
   let randv1 = Vector.scal_mult (Random.float 1.) v1
   and randv2 = Vector.scal_mult (Random.float 1.) v2 in
   let p = Vector.move_to (Vector.add randv1 randv2) a in
-  if contains tri p then p else Point.point_reflection center p
+  if contains tri p then p
+  else Point.point_reflection center p
 
 let print fmt ((a,b,c) : t) =
   Format.fprintf fmt "%a, %a, %a" Point.print a Point.print b Point.print c

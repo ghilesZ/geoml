@@ -12,7 +12,7 @@ let draw_point ?(lw=1) p col =
 let draw_circle ?(lw=1) c col =
   set_color col;
   set_line_width lw;
-  draw_circle 
+  draw_circle
     (c |> Circle.center |> Point.x_coord |> iof)
     (c |> Circle.center |> Point.y_coord |> iof)
     (c |> Circle.radius |> iof)
@@ -20,11 +20,11 @@ let draw_circle ?(lw=1) c col =
 let fill_circle ?(lw=1) c col =
   set_color col;
   set_line_width lw;
-  fill_circle 
+  fill_circle
     (c |> Circle.center |> Point.x_coord |> iof)
     (c |> Circle.center |> Point.y_coord |> iof)
     (c |> Circle.radius |> iof)
-  
+
 let draw_segment ?(lw=1) s col =
   set_line_width lw;
   set_color col;
@@ -32,12 +32,15 @@ let draw_segment ?(lw=1) s col =
   moveto (iof (Point.x_coord p1)) (iof(Point.y_coord p1));
   lineto (iof(Point.x_coord p2))(iof (Point.y_coord p2))
 
-let draw_triangle ?(lw=1) t col = 
+ let draw_vector ?(lw=1) v d col =
+   draw_segment ~lw:lw (Segment.make d (Vector.move_to v d)) col
+
+let draw_triangle ?(lw=1) t col =
   let open Triangle in
   let (a,b,c) = Triangle.segments t in
   List.iter (fun e -> draw_segment ~lw:lw e col) [a;b;c]
 
-let draw_rectangle ?(lw=1) r col = 
+let draw_rectangle ?(lw=1) r col =
   let open Rectangle in
   List.iter (fun e -> draw_segment ~lw:lw e col) (segments r)
 
@@ -80,7 +83,7 @@ let draw_polygon ?(lw=1) (p: Polygon.t) col =
   Polygon.fold (fun _ current next ->
       lineto (iof next.x) (iof next.y)) () p
 
-let draw_line ?(lw=1) l col = 
+let draw_line ?(lw=1) l col =
   let sx = float_of_int (size_x ())
   and sy = float_of_int (size_y ()) in
   let r = Rectangle.make Point.orig sx sy in
@@ -88,13 +91,13 @@ let draw_line ?(lw=1) l col =
   match inter with
   | [a;b] -> draw_segment ~lw:lw (Segment.make a b) col
   | _ -> ()
-     
-let draw_polynom ?(lw=1) pol col = 
+
+let draw_polynom ?(lw=1) pol col =
   set_color col;
   set_line_width lw;
   let open Point in
   let open Polynom in
-  let step = 5. 
+  let step = 5.
   and cur = ref 5. in
   moveto 0 (iof (equation pol 0.));
   while !cur < (float_of_int (size_x ())) do
@@ -103,7 +106,7 @@ let draw_polynom ?(lw=1) pol col =
   done;
   lineto (iof !cur) (iof (equation pol !cur))
 
-let draw_quadratic_curve ?(lw=1) curve col = 
+let draw_quadratic_curve ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
   let open Point in
@@ -112,7 +115,7 @@ let draw_quadratic_curve ?(lw=1) curve col =
   List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
   lineto (iof (ending curve).x) (iof (ending curve).y)
 
-let draw_cubic_curve ?(lw=1) curve col = 
+let draw_cubic_curve ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
   let open Point in
@@ -120,8 +123,8 @@ let draw_cubic_curve ?(lw=1) curve col =
   moveto (iof (start curve).x) (iof (start curve).y);
   List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
   lineto  (iof (ending curve).x) (iof (ending curve).y)
-    
-let draw_bspline ?(lw=1) curve col = 
+
+let draw_bspline ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
   let open Point in
@@ -132,7 +135,7 @@ let draw_bspline ?(lw=1) curve col =
   let c = Circle.make (List.hd a) 5. in
   fill_circle c red
   (*lineto  (iof (ending curve).x) (iof (ending curve).y)*)
-  
+
 let open_graph size_x size_y title =
   let sx = size_x |> iof |> string_of_int
   and sy = size_y |> iof |> string_of_int in
@@ -144,8 +147,8 @@ let fill_screen rgb =
   fill_rect 0 0 (size_x ()) (size_y ())
 
 let clear () = fill_screen white
-    
-let get_image size_x size_y = 
+
+let get_image size_x size_y =
   let sx = size_x |> iof
   and sy = size_y |> iof in
   get_image 0 0 sx sy
@@ -155,7 +158,7 @@ let green i = (i / 0x100) mod 0x100
 let blue i = i mod 0x100
 
 let to_ppm img file_name =
-  let open Printf in 
+  let open Printf in
   let arr = dump_image img in
   let row = Array.length arr |> soi
   and col = Array.length arr.(0) |> soi in
@@ -163,10 +166,10 @@ let to_ppm img file_name =
   fprintf oc "%s\n" "P3";
   fprintf oc "%s %s\n" col row;
   fprintf oc "%s\n" "255";
-  Array.iter 
+  Array.iter
     (fun line ->
       Array.iter
-	(fun e -> 
+	(fun e ->
 	  fprintf oc "%i %i %i " (red e) (green e) (blue e)
 	)
 	line;

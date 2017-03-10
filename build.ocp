@@ -53,6 +53,7 @@ begin program "runtest"
             "polynom_t.ml"
             "random_t.ml"
             "scale_t.ml"
+            "vector_t.ml"
       ]
       requires = ["testlib" "geom" "graphics"]
 end

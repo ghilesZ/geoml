@@ -41,11 +41,17 @@ val substract : t -> t -> t
 (** move_to v p returns the translation of p according to the vector v *)
 val move_to : t -> Point.t -> Point.t
 
+(** projection v1 v2 returns the projection of v1 on v2*)
+val projection : t -> t -> t
+
 (** returns the angle between two vectors*)
 val angle : t -> t -> float
 
 (** compute the angle in radians *)
 val angle_deg : t -> t -> float
 (** compute the angle in degrees *)
+
+(** reflect a b returns the symetrical vecteur to a according to b *)
+val reflect : t -> t -> t
 
 val print : Format.formatter -> t -> unit
