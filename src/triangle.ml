@@ -124,15 +124,14 @@ let centroid ((a,b,c):t) =
   let al = Line.of_points bc a and bl = Line.of_points ac b in
   Line.intersection bl al
 
-let random_point (((a,b,c) as tri):t) : Point.t =
-  let v1 = Vector.of_points a b and v2 = Vector.of_points a c in
-  let d = Vector.move_to (Vector.add v1 v2) a in
-  let center = Point.center a d in
-  let randv1 = Vector.scal_mult (Random.float 1.) v1
-  and randv2 = Vector.scal_mult (Random.float 1.) v2 in
-  let p = Vector.move_to (Vector.add randv1 randv2) a in
-  if contains tri p then p
-  else Point.point_reflection center p
+let random_point ((a,b,c):t) : Point.t =
+  let ab = Vector.of_points a b and ac = Vector.of_points a c in
+  let randab = Vector.scal_mult (Random.float 1.) ab
+  and randac = Vector.scal_mult (Random.float 1.) ac in
+  let p = Vector.move_to (Vector.add randab randac) a in
+  let bc = Vector.of_points b c and bp = Vector.of_points b p in
+  if (Vector.determinant bc bp) *. Vector.determinant bc ab < 0. then p
+  else Point.point_reflection (Point.center b c) p
 
 let print fmt ((a,b,c) : t) =
   Format.fprintf fmt "%a, %a, %a" Point.print a Point.print b Point.print c
