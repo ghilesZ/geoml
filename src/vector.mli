@@ -51,7 +51,7 @@ val angle : t -> t -> float
 val angle_deg : t -> t -> float
 (** compute the angle in degrees *)
 
-(** reflect a b returns the symetrical vecteur to a according to b *)
+(** reflect a b returns the reflected vector of a according to b *)
 val reflect : t -> t -> t
 
 val print : Format.formatter -> t -> unit

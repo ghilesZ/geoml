@@ -58,7 +58,7 @@ let contains (({Point.x=ax;Point.y=ay},
 
 let area ((pa,pb,pc):t) =
   let ab = Vector.of_points pa pb and ac = Vector.of_points pa pc
-  in Vector.determinant ab ac
+  in Vector.determinant ab ac *. 0.5
 
 let perimeter ((pa,pb,pc):t) =
   Point.distance pa pb +. Point.distance pb pc +. Point.distance pc pa

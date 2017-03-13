@@ -12,20 +12,25 @@ module Vect = struct
 
   let new_val () =
     list_make (fun () ->
-        gen_point padding (size_x/.2.-.padding) padding (size_y-.padding)
-      ) 10
+        gen_point padding (size_x/.2.-.padding) padding (size_y/.2.-.padding)
+      ) 100
 
   let frame (v_l : Point.t list) =
     Drawing.draw_string 25 675 "Press 'r' to generate new vectors" Graphics.black;
     let center = Point.make (size_x /. 2.)  (size_y /. 2.) in
-    List.iter (fun e -> Drawing.draw_segment (Segment.make e center) Graphics.green) v_l;
-    let reflected =
-      List.map (fun p ->
-          let v = Vector.of_points p center in
-          let v' = Vector.reflect v (Vector.make 1. 1.) in
-          Vector.move_to v' center
-        ) v_l in
-    List.iter (fun e -> Drawing.draw_segment (Segment.make e center) Graphics.red) reflected
+    let axis = Vector.make 0. 1. in
+    let v0 = List.map (fun p -> Vector.of_points p center) v_l in
+    let v1 = List.map (fun v -> Vector.reflect v axis) v0 in
+    let v2 = List.map Vector.opposite v1 in
+    let v3 = List.map (fun v -> Vector.reflect v axis) v2 in
+    let draw_seg col = List.iter (fun v ->
+                       let s = Segment.make (Vector.move_to v center) center in
+                       Drawing.draw_segment s col)
+    in
+    draw_seg Graphics.red v0;
+    draw_seg Graphics.green v1;
+    draw_seg Graphics.blue v2;
+    draw_seg Graphics.cyan v3
 end
 
 module Go = Tester.Make(Vect)
