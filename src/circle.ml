@@ -31,10 +31,10 @@ let proj_x (c:t) = let open Point in (c.center.x-.c.radius,c.center.x+.c.radius)
 
 let proj_y (c:t) = let open Point in (c.center.y-.c.radius,c.center.y+.c.radius)
 
-let intersects (c1:t) (c2:t) = 
+let intersects (c1:t) (c2:t) =
   (Point.sq_distance c1.center c2.center) < (c1.radius +. c2.radius) ** 2.
-    
-(** line_intersection takes a circle and line and returns the list of the 
+
+(** line_intersection takes a circle and line and returns the list of the
     intersection points. (can be [], [a] or [a,b]
  *)
 let intersect_line (c:t) (l:Line.t) =
@@ -46,7 +46,7 @@ let intersect_line (c:t) (l:Line.t) =
      let l_2 = translate (-.cx) (-.cy) l in
      let a,b = (match l_2 with Y(a,b) -> a,b | _ -> assert false) in
     (* we solve the equation at the origin for x*)
-    (* x² + y² = r²   and   y = ax+b  
+    (* x² + y² = r²   and   y = ax+b
        => x² + (ax + b)² = r²
        => x² + a²x² + 2abx + b² = r²
        => (a²+1)x² + 2abx + b²-r² = 0 *)
@@ -64,13 +64,13 @@ let intersect_line (c:t) (l:Line.t) =
 let segment_intersection c (s:Segment.t) =
   Segment.to_line s |> intersect_line c |> List.filter (Segment.contains s)
 
-(** tangent c p returns the tangent of circle c going through point p. 
+(** tangent c p returns the tangent of circle c going through point p.
     p must lie on c's boundary
  *)
 let tangent {center;_} p =
   Line.perpendicular_of_line (Line.of_points center p) p
 
-let intersection (c:t) (c':t) = 
+let intersection (c:t) (c':t) =
   let c1_c2 = Line.of_points c.center c'.center in
   let p = Point.barycenter [(c.center,c.radius);(c'.center,c'.radius)] in
   let l = Line.perpendicular_of_line c1_c2 p in
@@ -88,7 +88,7 @@ let incircle p1 p2 p3 =
   and b = Point.distance p2 p3
   and c = Point.distance p3 p1 in
   let center = Point.barycenter [(p1,b);(p2,c);(p3,a)] in
-  let radius = 
+  let radius =
     let s = 0.5 *. (a+.b+.c) in
     (2. *. sqrt (s *. (s-.a) *. (s-.b) *.(s-.c))) /. (a+.b+.c)
   in make center radius
@@ -100,7 +100,7 @@ let of_diameter p1 p2 =
 
 let bounding (pts : Point.t list) : t =
   let of_two x y pt =
-    try 
+    try
       [((x,pt),y);((y,pt),x)]
       |> List.map (fun ((a,b),c) -> (([a;b],of_diameter a b),c))
       |> List.find (fun ((env,circle),inner) -> contains circle inner)
@@ -123,24 +123,29 @@ let bounding (pts : Point.t list) : t =
     | [x] -> [x;pt],(of_diameter x pt)
     | [x;y] -> of_two x y pt
     | [x;y;z] -> of_three x y z pt
-    | _ -> assert false  
+    | _ -> assert false
   in
   let rec mindisk l circle set pts =
     match pts with
     | [] -> circle
     | h::tl when contains circle h || List.mem h set ->
        mindisk l circle set tl
-    | h::tl -> 
+    | h::tl ->
        let (new_set,new_circle) = update set h in
        List.filter (fun e -> List.mem e new_set |> not) l |>
        mindisk l new_circle new_set
-  in 
+  in
   match pts with
   | [] -> invalid_arg "can't build a bounding circle with an empty list"
   | h::tl -> mindisk pts (make h 0.) [h] tl
 
-let random_point (c:t) : Point.t =  
+let random_point (c:t) : Point.t =
   let theta = Random.float pi *. 2. and r = Random.float (c.radius *. c.radius) |> sqrt  in
+  let x = r *. (cos theta) and y = r *. (sin theta) in
+  Point.(make (c.center.x+.x) (c.center.y +. y))
+
+let random_point_perimeter (c:t) : Point.t =
+  let theta = Random.float pi *. 2. and r = c.radius  in
   let x = r *. (cos theta) and y = r *. (sin theta) in
   Point.(make (c.center.x+.x) (c.center.y +. y))
 

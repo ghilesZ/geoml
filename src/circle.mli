@@ -6,7 +6,7 @@ type t = private {
 }
 
 val make : Point.t -> float -> t
-  
+
 val center : t -> Point.t
 
 val radius : t -> float
@@ -44,16 +44,16 @@ val intersection : t -> t -> Point.t list
 
 val intersect_line : t -> Line.t -> Point.t list
 (** same as intersection but with a circle and a line *)
- 
+
 val segment_intersection : t -> Segment.t -> Point.t list
 (** same as intersection but with a circle and a segment *)
-    
+
 val circumscribed : Point.t -> Point.t -> Point.t -> t
-(** returns the circumscribed cirle of the triangle defined by the three points*)  
-  
+(** returns the circumscribed cirle of the triangle defined by the three points*)
+
 val incircle : Point.t -> Point.t -> Point.t -> t
-(** returns the incirle of the triangle defined by the three points*)  
-  
+(** returns the incirle of the triangle defined by the three points*)
+
 val of_diameter : Point.t -> Point.t -> t
 (** of_diameter a b builds the circle with ab as diameter*)
 
@@ -64,6 +64,9 @@ val bounding : Point.t list -> t
 
 val random_point : t -> Point.t
 (** returns a randomly and uniformly chosen point that lies inside the circle *)
-  
-val print : Format.formatter -> t -> unit  
+
+val random_point_perimeter : t -> Point.t
+(** returns a randomly and uniformly chosen point that lies on the permieter of the circle *)
+
+val print : Format.formatter -> t -> unit
 (** printer *)

@@ -46,11 +46,15 @@ let remove_redundancies poly =
 let intersection p1 p2 = List.rev_append p1 p2
 
 let of_polygon p =
-  let b = Point.barycenter (List.map (fun p->p,1.) (Polygon.to_list p)) in
+  let arbitrary =
+    match Polygon.to_list p with
+    | h1::h2::h3::_ -> Point.center h1 h2 |> Point.center h3
+    | _ -> failwith "cant build polyhedron with less than three points for now"
+  in
   let mk_constraint p1 p2 =
     let line = Line.of_points p1 p2 in
     let c1 = Constraint.(make line Geq) in
-    if Constraint.contains c1 b then c1 else
+    if Constraint.contains c1 arbitrary then c1 else
       Constraint.(make line Leq)
   in
   Polygon.fold (fun acc p1 p2 ->
