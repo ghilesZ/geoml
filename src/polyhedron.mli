@@ -17,10 +17,10 @@ val translate : float -> float -> t -> t
 
 val intersection : t -> t -> t
 
+(** remove redundant constraints of a polyhedra *)
 val remove_redundancies : t -> t
 
-val redundant : Constraint.t -> t -> bool
-
+(** returns the polyhedron corresponding to the space defined by a polygon *)
 val of_polygon : Polygon.t -> t
 
 val get_constr : t -> Constraint.t list

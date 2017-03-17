@@ -1,3 +1,5 @@
+(** Module for 2d points manipulation *)
+
 type t = private {
   	x : float;
   	y : float;

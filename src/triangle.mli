@@ -1,4 +1,6 @@
-type t = private Point.t * Point.t * Point.t 
+(** Triangles manipulation *)
+
+type t = private Point.t * Point.t * Point.t
 
 val print : Format.formatter -> t -> unit
 
@@ -10,7 +12,7 @@ val tri_exists : (Point.t -> bool) -> t -> bool
 val tri_find : (Point.t -> bool) -> t -> Point.t
 val tri_forall : (Point.t -> bool) -> t -> bool
 val tri_iter : (Point.t -> unit) -> t -> unit
-  
+
 val make : Point.t -> Point.t -> Point.t -> t
 val extr1 : t -> Point.t
 val extr2 : t -> Point.t
@@ -21,7 +23,7 @@ val scale_y : t -> float -> t
 
 val translate : float -> float -> t -> t
 val point_reflection :  Point.t -> t -> t
-  
+
 val contains : t -> Point.t -> bool
 (** tests if a point is in a triangle with barycenter method *)
 
@@ -45,5 +47,5 @@ val centroid : t -> Point.t
 val random_point : t -> Point.t
 (** returns a randomly and uniformly chosen point of the triangle *)
 
-val print : Format.formatter -> t -> unit  
+val print : Format.formatter -> t -> unit
 (** printer *)

@@ -1,3 +1,5 @@
+(** Ellipses manipulation *)
+
 type t = private {f1 : Point.t; f2 : Point.t; radius : float
 		 ; big_axis : float; small_axis : float}
 
