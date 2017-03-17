@@ -48,6 +48,9 @@ let projection v1 v2 =
   scal_mult (1. /. magnitude_sq v2) (scal_mult (dot_product v1 v2) v2)
 
 let angle v1 v2 =
+  (* let v1 = normalize v1 *)
+  (* and v2 = normalize v2 in *)
+  (* dot_product v1 v2 |> acos *)
   let sens = make v2.dy (-.v2.dx) in
   let x = dot_product v1 v2 and y = dot_product v1 sens in
   atan2 y x
