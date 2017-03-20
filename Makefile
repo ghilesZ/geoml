@@ -1,9 +1,9 @@
+all: tests
+
 # If you want to build using ocp-build instead of ocamlbuild, uncomment these lines
 
 # building using ocp-build
 # OCP = ocp-build
-
-# all: tests
 
 # init:
 # 	test -s _obuild || ocp-build init

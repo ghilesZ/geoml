@@ -4,6 +4,11 @@ open Graphics
 let iof = int_of_float
 let soi = string_of_int
 
+let screen () =
+ let sx = float_of_int (size_x ())
+ and sy = float_of_int (size_y ()) in
+ Rectangle.make Point.orig sx sy
+
 let draw_point ?(lw=1) p col =
   set_color col;
   set_line_width lw;
@@ -32,8 +37,45 @@ let draw_segment ?(lw=1) s col =
   moveto (iof (Point.x_coord p1)) (iof(Point.y_coord p1));
   lineto (iof(Point.x_coord p2))(iof (Point.y_coord p2))
 
- let draw_vector ?(lw=1) v d col =
+let draw_vector ?(lw=1) v d col =
    draw_segment ~lw:lw (Segment.make d (Vector.move_to v d)) col
+
+let draw_dashed_segment ?(lw=1) s col =
+  let step = 5. in
+  let nb = Segment.size s /. step in
+  let v = Vector.of_points (Segment.extr1 s) (Segment.extr2 s) in
+  let v = Vector.scal_mult (1./.nb) v in
+  let rec loop p nb =
+    if nb > 0. then begin
+        draw_vector ~lw:lw v p col;
+        loop (Vector.move_to (Vector.add v v) p) (nb -. 2.)
+      end
+  in
+  loop (Segment.extr1 s) nb
+
+let draw_line ?(lw=1) l col =
+  let sx = float_of_int (size_x ())
+  and sy = float_of_int (size_y ()) in
+  let r = Rectangle.make Point.orig sx sy in
+  let inter = Rectangle.intersect_line r l in
+  match inter with
+  | [a;b] -> draw_segment ~lw:lw (Segment.make a b) col
+  | _ -> ()
+
+let draw_constraint ?(lw=1) c col =
+  let open Constraint in
+  let draw_f,l =
+    match (get_border c), (get_comp c) with
+    | x,Lt | x,Gt -> draw_dashed_segment,x
+    | x,_ ->  draw_segment,x
+  in let sx = float_of_int (size_x ())
+  and sy = float_of_int (size_y ()) in
+  let r = Rectangle.make Point.orig sx sy in
+  let inter = Rectangle.intersect_line r l in
+  match inter with
+  | [a;b] -> draw_f ~lw:lw (Segment.make a b) col
+  | _ -> ()
+
 
 let draw_triangle ?(lw=1) t col =
   let open Triangle in
@@ -75,6 +117,15 @@ let draw_regular ?(lw=1) rp col =
        lineto (iof next.x) (iof next.y)
     ) () rp
 
+let fill_polygon ?(lw=1) (p: Polygon.t) col =
+  let open Point in
+  set_line_width lw;
+  set_color col;
+  let pts_array =
+    List.map (fun p -> (Point.x_coord p |> iof),(Point.y_coord p |> iof)) (Polygon.to_list p)
+  in
+  fill_poly (pts_array |> Array.of_list)
+
 let draw_polygon ?(lw=1) (p: Polygon.t) col =
   let open Point in
   set_line_width lw;
@@ -83,14 +134,22 @@ let draw_polygon ?(lw=1) (p: Polygon.t) col =
   Polygon.fold (fun _ current next ->
       lineto (iof next.x) (iof next.y)) () p
 
-let draw_line ?(lw=1) l col =
-  let sx = float_of_int (size_x ())
-  and sy = float_of_int (size_y ()) in
-  let r = Rectangle.make Point.orig sx sy in
-  let inter = Rectangle.intersect_line r l in
-  match inter with
-  | [a;b] -> draw_segment ~lw:lw (Segment.make a b) col
-  | _ -> ()
+let draw_polyhedron ?(lw=1) polyhedron col =
+  let open Polyhedron in
+  List.iter (fun c -> draw_constraint ~lw:lw c col) (get_constr polyhedron)
+
+let fill_polyhedron ?(lw=1) polyhedron col =
+  let open Polyhedron in
+  let r = screen() in
+  let s = Rectangle.([bottom_left_corner r;
+                      bottom_right_corner r;
+                      top_left_corner r;
+                      top_right_corner r;
+          ]) in
+  let screen_pol = Polygon.bounding s in
+  let polyhedron = intersection polyhedron (of_polygon screen_pol) in
+  fill_polygon ~lw:lw (to_polygon polyhedron) col;
+  List.iter (fun c -> draw_constraint ~lw:lw c Graphics.black) (get_constr polyhedron)
 
 let draw_polynom ?(lw=1) pol col =
   set_color col;

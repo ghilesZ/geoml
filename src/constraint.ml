@@ -32,6 +32,8 @@ let contains ((l,comp):t) p =
 let translate dx dy ((l,comp):t) =
   make (Line.translate dx dy l) comp
 
+let complementary (l,comp) = l,(neg comp)
+
 let intersects (((l1,comp1)as c1):t) (((l2,comp2) as c2) :t) =
   match comp1,comp2 with
   | x,y when Line.parallel l1 l2 ->

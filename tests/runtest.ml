@@ -26,7 +26,8 @@ let tests =[
    "polynom";
    "random";
    "scale";
-   "vector"
+   "vector";
+   "polyhedron"
   ]
 
 let print_tests fmt tests = Format.pp_print_list
@@ -53,6 +54,7 @@ let () =
   | Some "random" -> Random_t.Go.doit()
   | Some "scale" -> Scale_t.doit()
   | Some "vector" -> Vector_t.Go.doit()
+  | Some "polyhedra" -> Polyhedra_t.Go.doit()
   | Some s -> Format.printf "Test %s not found\n" s
   | None ->
      Format.printf

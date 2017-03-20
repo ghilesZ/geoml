@@ -31,7 +31,7 @@ module Half = struct
     Drawing.draw_polygon ~lw:3 p2 Graphics.green;
     List.iter (fun c -> Drawing.draw_line (Constraint.get_border c) Graphics.red)
               (Polyhedron.get_constr p3');
-    Drawing.draw_string 25 585 "Press 'R' refresh" Graphics.black;
+    Drawing.draw_string 25 585 "Press 'R' to refresh" Graphics.black
 
 end
 module Go = Tester.Make(Half)
