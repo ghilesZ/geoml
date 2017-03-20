@@ -32,7 +32,7 @@ It also implements several cool algorithms :
 
 You can see some examples of application in the **tests** directory (You'll need **Graphics**)
 ##### Build
-- The library : **make** 
+- The library : **make**
 - The documentation : **make doc**
 - The tests : **make tests**
 
@@ -47,5 +47,8 @@ GeoML is currently still in developpement, and have not been tested -nor proved,
 nor model-checked nor analyzed ... but you know what we say about well typed
 program ;) -. Thereby, you might find some weird behaviors or failures. Feel
 free to let us know or report an issue about it.
+The modules **Point, Line, Rectangle, Vector, Triangle, Segment, Circle** are pretty much usable (bug free?)
+while the **Polygon, Polyhedron, Curve, Ellipse, Shape ...** modules are not quite ready to be used and you should not rely on the code in it.
+
 
 You are also welcome to contact any member of the developpement team if you want to suggest a feature you think it may be cool to have in GeoML.
