@@ -1,41 +1,81 @@
 open Geom
 open Graphics
 
+(* conversion utilities *)
 let iof = int_of_float
 let soi = string_of_int
+
+let point2pixel p = Point.(iof p.x, iof p.y)
+
+let moveto_p p =
+  let x,y = point2pixel p in
+  moveto x y
+
+let lineto_p p =
+  let x,y = point2pixel p in
+  lineto x y
+
+(* screen handling *)
+let open_graph size_x size_y title =
+  let sx = size_x |> iof |> string_of_int
+  and sy = size_y |> iof |> string_of_int in
+  open_graph (" "^sx^"x"^sy);
+  set_window_title title
+
+let fill_screen rgb =
+  set_color rgb;
+  fill_rect 0 0 (size_x ()) (size_y ())
+
+let clear = clear_graph
 
 let screen () =
  let sx = float_of_int (size_x ())
  and sy = float_of_int (size_y ()) in
  Rectangle.make Point.orig sx sy
 
+let get_image size_x size_y =
+  let sx = size_x |> iof
+  and sy = size_y |> iof in
+  get_image 0 0 sx sy
+
+let red_c i = i / 0x10000
+let green_c i = (i / 0x100) mod 0x100
+let blue_c i = i mod 0x100
+
+let to_ppm img file_name =
+  let open Printf in
+  let arr = dump_image img in
+  let row = Array.length arr |> soi
+  and col = Array.length arr.(0) |> soi in
+  let oc = open_out file_name in
+  fprintf oc "%s\n" "P3";
+  fprintf oc "%s %s\n" col row;
+  fprintf oc "%s\n" "255";
+  Array.iter
+    (fun line ->
+      Array.iter
+	(fun e ->
+	  fprintf oc "%i %i %i " (red_c e) (green_c e) (blue_c e)
+	)
+	line;
+      fprintf oc "\n";
+    )
+    arr;
+  close_out oc
+
+(* drawing *)
 let draw_point ?(lw=1) p col =
   set_color col;
   set_line_width lw;
-  fill_circle (Point.x_coord p |> iof) (Point.y_coord p |> iof) lw
-
-let draw_circle ?(lw=1) c col =
-  set_color col;
-  set_line_width lw;
-  draw_circle
-    (c |> Circle.center |> Point.x_coord |> iof)
-    (c |> Circle.center |> Point.y_coord |> iof)
-    (c |> Circle.radius |> iof)
-
-let fill_circle ?(lw=1) c col =
-  set_color col;
-  set_line_width lw;
-  fill_circle
-    (c |> Circle.center |> Point.x_coord |> iof)
-    (c |> Circle.center |> Point.y_coord |> iof)
-    (c |> Circle.radius |> iof)
+  let x,y = point2pixel p in
+  fill_circle x y lw
 
 let draw_segment ?(lw=1) s col =
   set_line_width lw;
   set_color col;
   let p1,p2 = (Segment.extr1 s),(Segment.extr2 s) in
-  moveto (iof (Point.x_coord p1)) (iof(Point.y_coord p1));
-  lineto (iof(Point.x_coord p2))(iof (Point.y_coord p2))
+  moveto_p p1;
+  lineto_p p2
 
 let draw_vector ?(lw=1) v d col =
    draw_segment ~lw:lw (Segment.make d (Vector.move_to v d)) col
@@ -53,29 +93,38 @@ let draw_dashed_segment ?(lw=1) s col =
   in
   loop (Segment.extr1 s) nb
 
-let draw_line ?(lw=1) l col =
+let draw_line ?(lw=1) ?(dashed=false) l col =
   let sx = float_of_int (size_x ())
   and sy = float_of_int (size_y ()) in
   let r = Rectangle.make Point.orig sx sy in
   let inter = Rectangle.intersect_line r l in
   match inter with
-  | [a;b] -> draw_segment ~lw:lw (Segment.make a b) col
+  | [a;b] -> (if dashed then draw_dashed_segment else draw_segment)
+               ~lw:lw (Segment.make a b) col
   | _ -> ()
 
 let draw_constraint ?(lw=1) c col =
   let open Constraint in
-  let draw_f,l =
-    match (get_border c), (get_comp c) with
-    | x,Lt | x,Gt -> draw_dashed_segment,x
-    | x,_ ->  draw_segment,x
-  in let sx = float_of_int (size_x ())
-  and sy = float_of_int (size_y ()) in
-  let r = Rectangle.make Point.orig sx sy in
-  let inter = Rectangle.intersect_line r l in
-  match inter with
-  | [a;b] -> draw_f ~lw:lw (Segment.make a b) col
-  | _ -> ()
+  let l = get_border c
+  and dashed = match (get_comp c) with
+    | Lt | Gt -> true
+    | _ ->  false
+  in draw_line ~lw:lw ~dashed:dashed l col
 
+(* shapes with non null area *)
+let draw_circle ?(lw=1) c col =
+  let open Circle in
+  set_color col;
+  set_line_width lw;
+  let x,y = point2pixel c.center in
+  draw_circle x y (c.radius |> iof)
+
+let fill_circle ?(lw=1) c col =
+  let open Circle in
+  set_color col;
+  set_line_width lw;
+  let x,y = point2pixel c.center in
+  fill_circle x y (c.radius |> iof)
 
 let draw_triangle ?(lw=1) t col =
   let open Triangle in
@@ -87,21 +136,11 @@ let draw_rectangle ?(lw=1) r col =
   List.iter (fun e -> draw_segment ~lw:lw e col) (segments r)
 
 let draw_ellipse ?(lw=1) e col =
-  let open Point in
   let open Ellipse in
   set_line_width lw;
   set_color col;
-  draw_ellipse (iof ((center e).x)) (iof ((center e).y)) (iof (big_axis e)) (iof (small_axis e))
-
-let draw_string posx posy str col =
-  set_color col;
-  moveto posx posy;
-  draw_string str
-
-let draw_string_at_point pt str col =
-  set_color col;
-  moveto (Point.x_coord pt |> iof) (Point.y_coord pt |> iof);
-  Graphics.draw_string str
+  let x,y = point2pixel (center e) in
+  draw_ellipse x y (iof (big_axis e)) (iof (small_axis e))
 
 let draw_regular ?(lw=1) rp col =
   let open Point in
@@ -109,36 +148,33 @@ let draw_regular ?(lw=1) rp col =
   set_color col;
   draw_point ~lw:3 rp.center col;
   set_line_width lw;
-  moveto (iof rp.fst.x) (iof rp.fst.y);
+  moveto_p rp.fst;
   fold_stop (fun _ _ -> true)
     (fun nth _ current next ->
        draw_point ~lw:3 current col;
        set_line_width lw;
-       lineto (iof next.x) (iof next.y)
+       lineto_p next
     ) () rp
-
-let fill_polygon ?(lw=1) (p: Polygon.t) col =
-  let open Point in
-  set_line_width lw;
-  set_color col;
-  let pts_array =
-    List.map (fun p -> (Point.x_coord p |> iof),(Point.y_coord p |> iof)) (Polygon.to_list p)
-  in
-  fill_poly (pts_array |> Array.of_list)
 
 let draw_polygon ?(lw=1) (p: Polygon.t) col =
   let open Point in
   set_line_width lw;
   set_color col;
-  moveto (iof (Polygon.first_point p).x) (iof (Polygon.first_point p).y);
-  Polygon.fold (fun _ current next ->
-      lineto (iof next.x) (iof next.y)) () p
+  moveto_p Polygon.(first_point p);
+  Polygon.fold (fun _ current -> lineto_p) () p
+
+let fill_polygon ?(lw=1) (p: Polygon.t) col =
+  let open Point in
+  set_line_width lw;
+  set_color col;
+  let pts_array = List.map point2pixel (Polygon.to_list p) |> Array.of_list in
+  fill_poly pts_array
 
 let draw_polyhedron ?(lw=1) polyhedron col =
   let open Polyhedron in
   List.iter (fun c -> draw_constraint ~lw:lw c col) (get_constr polyhedron)
 
-let fill_polyhedron ?(lw=1) polyhedron col =
+let fill_polyhedron ?(lw=1) plhd col =
   let open Polyhedron in
   let r = screen() in
   let s = Rectangle.([bottom_left_corner r;
@@ -147,9 +183,9 @@ let fill_polyhedron ?(lw=1) polyhedron col =
                       top_right_corner r;
           ]) in
   let screen_pol = Polygon.bounding s in
-  let polyhedron = intersection polyhedron (of_polygon screen_pol) in
-  fill_polygon ~lw:lw (to_polygon polyhedron) col;
-  List.iter (fun c -> draw_constraint ~lw:lw c Graphics.black) (get_constr polyhedron)
+  let plhd = intersection plhd (of_polygon screen_pol) in
+  if is_empty plhd |> not then fill_polygon ~lw:lw (to_polygon plhd) col;
+  draw_polyhedron ~lw:lw plhd Graphics.black
 
 let draw_polynom ?(lw=1) pol col =
   set_color col;
@@ -168,71 +204,36 @@ let draw_polynom ?(lw=1) pol col =
 let draw_quadratic_curve ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
-  let open Point in
   let open Curve.Quadratic in
-  moveto (iof (start curve).x) (iof (start curve).y);
-  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
-  lineto (iof (ending curve).x) (iof (ending curve).y)
+  moveto_p (start curve);
+  List.iter lineto_p (points curve 50);
+  lineto_p (ending curve)
 
 let draw_cubic_curve ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
-  let open Point in
   let open Curve.Cubic in
-  moveto (iof (start curve).x) (iof (start curve).y);
-  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (points curve 50);
-  lineto  (iof (ending curve).x) (iof (ending curve).y)
+  moveto_p (start curve);
+  List.iter lineto_p (points curve 50);
+  lineto_p (ending curve)
 
 let draw_bspline ?(lw=1) curve col =
   set_color col;
   set_line_width lw;
-  let open Point in
   let open Curve.BSpline in
-  let a  = (points curve 200) in
-  moveto (iof (List.hd a).x) (iof (List.hd a).y);
-  List.iter (fun e -> lineto (iof e.x) (iof e.y)) (List.tl a);
+  let a = (points curve 200) in
+  moveto_p (List.hd a);
+  List.iter lineto_p (List.tl a);
   let c = Circle.make (List.hd a) 5. in
   fill_circle c red
-  (*lineto  (iof (ending curve).x) (iof (ending curve).y)*)
 
-let open_graph size_x size_y title =
-  let sx = size_x |> iof |> string_of_int
-  and sy = size_y |> iof |> string_of_int in
-  open_graph (" "^sx^"x"^sy);
-  set_window_title title
+(* string drawing *)
+let draw_string posx posy str col =
+  set_color col;
+  moveto posx posy;
+  draw_string str
 
-let fill_screen rgb =
-  set_color rgb;
-  fill_rect 0 0 (size_x ()) (size_y ())
-
-let clear () = fill_screen white
-
-let get_image size_x size_y =
-  let sx = size_x |> iof
-  and sy = size_y |> iof in
-  get_image 0 0 sx sy
-
-let red i = i / 0x10000
-let green i = (i / 0x100) mod 0x100
-let blue i = i mod 0x100
-
-let to_ppm img file_name =
-  let open Printf in
-  let arr = dump_image img in
-  let row = Array.length arr |> soi
-  and col = Array.length arr.(0) |> soi in
-  let oc = open_out file_name in
-  fprintf oc "%s\n" "P3";
-  fprintf oc "%s %s\n" col row;
-  fprintf oc "%s\n" "255";
-  Array.iter
-    (fun line ->
-      Array.iter
-	(fun e ->
-	  fprintf oc "%i %i %i " (red e) (green e) (blue e)
-	)
-	line;
-      fprintf oc "\n";
-    )
-    arr;
-  close_out oc
+let draw_string_at_point pt str col =
+  set_color col;
+  moveto_p pt;
+  Graphics.draw_string str

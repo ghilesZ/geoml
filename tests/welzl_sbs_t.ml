@@ -1,7 +1,7 @@
 open Geom
 open Circle
 
-let size_x = 1800. 
+let size_x = 1800.
 and size_y = 800.
 let padding = 100.
 and size = 250
@@ -9,7 +9,7 @@ and title = "Calculating the bounding circle of a point list"
 let cur = ref ((make Point.orig 0.),[],[],[])
 
 let of_two x y pt =
-  try 
+  try
     [((x,pt),y);((y,pt),x)]
     |> List.map (fun ((a,b),c) -> (([a;b],of_diameter a b),c))
     |> List.find (fun ((env,circle),inner) -> contains circle inner)
@@ -32,17 +32,17 @@ let update set pt =
   | [x] -> [x;pt],(of_diameter x pt)
   | [x;y] -> of_two x y pt
   | [x;y;z] -> of_three x y z pt
-  | _ -> assert false  
+  | _ -> assert false
 
 let mindisk (circle,set,computed,pts) =
   match pts with
   | [] -> (circle,set,computed,pts)
   | h::tl when contains circle h -> (circle,set,(h::computed),tl)
-  | h::tl -> 
+  | h::tl ->
      let (new_set,new_circle) = update set h in
      let new_bidule =
        List.filter (fun e -> List.mem e new_set |> not) (computed@pts)
-     in 
+     in
      (new_circle,new_set,[],new_bidule)
 
 let clear () = Drawing.fill_screen Graphics.white
@@ -65,20 +65,20 @@ let frame (circle,enveloppe,computed,other) =
     Drawing.fill_circle c (Graphics.rgb 255 120 50)
   with _ -> ());
   List.iter (fun e ->
-      let c = Circle.make e 5. in 
+      let c = Circle.make e 5. in
       Drawing.fill_circle c Graphics.black
   ) other;
-  List.iter (fun e -> 
-    let c = Circle.make e 5. in 
+  List.iter (fun e ->
+    let c = Circle.make e 5. in
     Drawing.fill_circle c (Graphics.rgb 180 180 180)
   ) computed;
-  List.iter (fun e -> 
-    let c = Circle.make e 5. in 
+  List.iter (fun e ->
+    let c = Circle.make e 5. in
     Drawing.fill_circle c (Graphics.rgb 255 79 0)
   ) enveloppe
 
 
-let save_ppm nb = 
+let save_ppm nb =
   let img = Drawing.get_image size_x size_y in
   Drawing.to_ppm img ("img/img"^(string_of_int nb))
 
@@ -93,10 +93,10 @@ let handler status =
     incr nb;
     frame !cur
   end
-      
-let loop state = 
+
+let loop state =
   Graphics.loop_at_exit [Graphics.Key_pressed] handler
-    
+
 let doit () =
   Random.self_init ();
   Drawing.open_graph size_x size_y title;
