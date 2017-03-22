@@ -41,8 +41,7 @@ module Poly_r = struct
     p1, p2, p3
 
   let frame (p1, p2, p3) =
-    Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
-
+    Drawing.draw_string 25 675 "few test on affine transformations" Graphics.black;
     Graphics.set_line_width 1;
     Drawing.draw_polygon p1 Graphics.red;
     Drawing.draw_polygon p2 Graphics.blue;

@@ -14,7 +14,7 @@ module Poly_r = struct
     p, rp
 
   let frame (p1, p2) =
-    Drawing.draw_string 25 675 "Press 'r' to generate a new triangle" Graphics.black;
+    Drawing.draw_string 25 675 "Press 'r' to generate a new redgular poolygon" Graphics.black;
     Drawing.draw_polygon p1 Graphics.green;
     Drawing.draw_regular p2 Graphics.blue
 

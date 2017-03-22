@@ -30,11 +30,11 @@ let rotation theta {dx;dy} =
   let x = dx *. c_t -. dy *. s_t and y = dx *. s_t +. dy *. c_t in
   {dx=x; dy=y}
 
-let dot_product ({dx=a;dy=b}:t) ({dx=c;dy=d}:t) = a*.c +. b*.d
-
-let scal_mult f ({dx;dy}:t) : t = make (f*.dx) (f*.dy)
+let dot_product v1 v2 = v1.dx *. v2.dx +. v1.dy *. v2.dy
 
 let determinant v1 v2 = v1.dx *. v2.dy -. v1.dy *. v2.dx
+
+let scal_mult f ({dx;dy}:t) : t = make (f*.dx) (f*.dy)
 
 let opposite v = scal_mult (-1.) v
 
@@ -48,18 +48,11 @@ let projection v1 v2 =
   scal_mult (1. /. magnitude_sq v2) (scal_mult (dot_product v1 v2) v2)
 
 let angle v1 v2 =
-  (* let v1 = normalize v1 *)
-  (* and v2 = normalize v2 in *)
-  (* dot_product v1 v2 |> acos *)
   let sens = make v2.dy (-.v2.dx) in
   let x = dot_product v1 v2 and y = dot_product v1 sens in
   atan2 y x
 
 let angle_deg v1 v2 = 57.2958 *. (angle v1 v2)
-
-(* let reflect v1 v2 = *)
-(*   let alpha = angle v1 v2 in *)
-(*   rotation (2. *. alpha) v1 *)
 
 let reflect a o =
   let b = projection a o in

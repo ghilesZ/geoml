@@ -2,8 +2,9 @@
     polygon (Does not handle complex polygon and polygon with
     holes) *)
 
-type t = private Point.t list 
+type t = private Point.t list
 type polygon = t
+
 
 val make : Point.t list -> t
 val first_point : t -> Point.t
@@ -26,9 +27,9 @@ val transform : Affine.t -> t -> t
 val bounding : Point.t list -> t
 val minmax_xy : t -> float * float * float * float
 
-(** returns the intersection point of a line and a polygon *)  
+(** returns the intersection point of a line and a polygon *)
 val intersect_line : t -> Line.t -> Point.t list
-  
+
 val contains : t -> Point.t -> bool
   (** Returns true if a polygon contains a point.
       Randolph Franklin code for raycasting *)

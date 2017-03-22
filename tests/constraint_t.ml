@@ -14,8 +14,8 @@ module Half = struct
     let c1 = Circle.make (Point.make (0.6*.size_x) (size_y/.2.)) 200.
     and c2 = Circle.make (Point.make (0.4*.size_x) (size_y/.2.)) 200.
     in
-    ((list_make (fun _ -> Circle.random_point_perimeter c1) 1000),
-    (list_make (fun _ -> Circle.random_point_perimeter c2) 1000))
+    ((list_make (fun _ -> Circle.random_point_perimeter c1) 100),
+    (list_make (fun _ -> Circle.random_point_perimeter c2) 100))
 
   let frame (l1,l2:t) =
     let p1 = Polygon.bounding l1 and p2 = Polygon.bounding l2 in

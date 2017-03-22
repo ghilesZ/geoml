@@ -16,7 +16,7 @@ let tests =[
    "regular_polygon";
    "triangulation";
    "bezier";
-   "intersetction";
+   "intersection";
    "bounding";
    "ellipse";
    "symetry";
@@ -43,7 +43,7 @@ let () =
   | Some "regular_polygon" -> Regular_polygon_t.Go.doit ()
   | Some "triangulation" -> Triangulation_t.Go.doit ()
   | Some "bezier" -> Bezier_t.Go.doit ()
-  | Some "intersetction" -> Intersetction_t.Go.doit ()
+  | Some "intersection" -> Intersetction_t.Go.doit ()
   | Some "bounding" -> Bounding_t.Go.doit ()
   | Some "ellipse" -> Ellipse_t.Go.doit ()
   | Some "symetry" -> Symetry_t.Go.doit ()

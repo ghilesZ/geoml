@@ -5,7 +5,9 @@ let print fmt = function
   | X(c) -> Format.fprintf fmt "x=%f" c
 
 type error = Parallel of t * t | Same_coordinates of Point.t
+
 exception Error of error
+
 let print_error fmt e =
   let open Format in
   match e with

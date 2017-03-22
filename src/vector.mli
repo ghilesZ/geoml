@@ -6,9 +6,10 @@ type t = private {
   	dy : float;
            }
 
-val null : t
-
 val make : float -> float -> t
+
+(** null vector *)
+val null : t
 
 val x_coord : t -> float
 
@@ -17,6 +18,7 @@ val y_coord : t -> float
 (** of_points a b returns the vector begining at a and landing at b *)
 val of_points : Point.t -> Point.t -> t
 
+(** returns the norm of a vector *)
 val magnitude : t -> float
 
 (** return a vector with same direction but with a norm equal to 1. *)
@@ -34,8 +36,10 @@ val determinant : t -> t -> float
 
 val opposite : t -> t
 
+(** vector addition *)
 val add : t -> t -> t
 
+(** vector substraction *)
 val substract : t -> t -> t
 
 (** move_to v p returns the translation of p according to the vector v *)
