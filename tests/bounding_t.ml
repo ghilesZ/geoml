@@ -16,7 +16,7 @@ module T = struct
 
   let frame v =
     Drawing.draw_string 25 25 "Press 'r' to generate a new cloud" Graphics.black;
-    Drawing.draw_polygon (Polygon.bounding v) Graphics.blue;
+    Drawing.draw_convex_polygon (Polygon.Convex.hull v) Graphics.blue;
     List.iter (fun e ->
         let c = Circle.make e 3. in
         Drawing.fill_circle c Graphics.black

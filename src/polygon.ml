@@ -2,42 +2,45 @@ type t = Point.t list
 
 type polygon = t
 
+exception Empty
+
 let make l = l
-let to_list l = l
+
+let to_list l : Point.t list = l
+
 let first_point = List.hd
 
 let fold f acc p =
   let rec aux acc = function
-  | [] -> acc
-  | [pt] -> f acc pt @@ List.hd p
-  | pt1 :: pt2 :: pg ->
-    aux (f acc pt1 pt2) (pt2 :: pg)
+    | [] -> acc
+    | [pt] -> f acc pt @@ List.hd p
+    | pt1 :: pt2 :: pg ->
+       aux (f acc pt1 pt2) (pt2 :: pg)
   in aux acc p
 
 let map = List.rev_map
 
 let fold_filter filter f acc p =
   let rec aux acc = function
-  | [] -> acc
-  | [pt] ->
-    let hd = List.hd p in
-    if not @@ filter pt hd then acc
-    else f acc pt hd
-  | pt1 :: pt2 :: pg ->
-    if not @@ filter pt1 pt2 then aux acc (pt2 :: pg)
-    else aux (f acc pt1 pt2) (pt2 :: pg)
+    | [] -> acc
+    | [pt] ->
+       let hd = List.hd p in
+       if not @@ filter pt hd then acc
+       else f acc pt hd
+    | pt1 :: pt2 :: pg ->
+       if not @@ filter pt1 pt2 then aux acc (pt2 :: pg)
+       else aux (f acc pt1 pt2) (pt2 :: pg)
   in aux acc p
 
 let fold_segments_pair f acc p =
-  let rec aux acc p' =
-    match p' with
+  let rec aux acc = function
     | [] | [_] -> acc
     | [v; v1] ->
       let hd = List.hd p in
       f (f acc v v1 hd)
         v1 hd List.(hd @@ tl p)
     | v1 :: v2 :: v3 :: p' ->
-      aux (f acc v1 v2 v3) (v2 :: v3 :: p')
+       aux (f acc v1 v2 v3) (v2 :: v3 :: p')
   in
   aux acc p
 
@@ -51,21 +54,25 @@ let area p =
       acc +. (p1.x *. p2.y -. p1.y *. p2.x)
   ) 0. p /. 2. |> abs_float
 
-let proj_x p = Point.(fold (
+let proj_x = function
+  | [] -> raise Empty
+  | p::t -> Point.(fold (
     fun (minx, maxx) current _ ->
       min current.x minx, max current.x maxx
-  ) ((List.hd p).x, (List.hd p).x) p)
+  ) (p.x, p.x) t)
 
-let proj_y p = Point.(fold (
+let proj_y = function
+  | [] -> raise Empty
+  | p::t -> Point.(fold (
     fun (miny, maxy) current _ ->
       min current.y miny, max current.y maxy
-  ) ((List.hd p).y, (List.hd p).y) p)
+  ) (p.y,p.y) t)
 
-let translate x y p =
-  List.map (Point.translate x y) p
+let translate x y =
+  List.map (Point.translate x y)
 
-let transform m p =
-  List.map (Point.transform m) p
+let transform m =
+  List.map (Point.transform m)
 
 let intersect_line p l =
   fold (fun acc p1 p2 ->
@@ -74,31 +81,6 @@ let intersect_line p l =
     | None -> acc
     | Some p -> p::acc
   ) [] p
-
-let bounding l =
-  match l with
-  | [] -> failwith "can't build convex envelop with no points"
-  | h::t ->
-     let p = List.fold_left min h t in
-     let ccw p pa pb = Vector.determinant (Vector.of_points p pa) (Vector.of_points p pb) in
-     let cmp p1 p2 =
-       if p1 = p then 1
-       else if p2 = p then -1
-       else
-         let ccw = ccw p p1 p2 in
-         if ccw < 0. then 1
-         else if ccw = 0. then 0
-         else -1
-     in
-     let rec graham_aux cl conv =
-       match cl,conv with
-       | ([],_) -> conv
-       | (h::t, a::b::tl) ->
-          let p = ccw b a h in
-          if p <= 0. then graham_aux cl (b::tl)
-          else graham_aux t (h::conv)
-       | (h::t,_) -> graham_aux t (h::conv)
-     in graham_aux (List.sort cmp l) [p]
 
 let minmax_xy p = Point.(fold (fun (minx, miny, maxx, maxy) current _ ->
     min current.x minx, min current.y miny, max current.x maxx, max current.y maxy
@@ -276,6 +258,40 @@ let triangulation p =
   in aux [] 0 ears
 
 
+module Convex = struct
+
+  type nonrec t = Point.t list
+
+  let to_list (l:t) = l
+
+  let fold = fold
+
+  let hull l =
+    match l with
+    | [] -> failwith "can't build convex envelop with no points"
+    | h::t ->
+       let p = List.fold_left min h t in
+       let ccw p pa pb = Vector.determinant (Vector.of_points p pa) (Vector.of_points p pb) in
+       let cmp p1 p2 =
+         if p1 = p then 1
+         else if p2 = p then -1
+         else
+           let ccw = ccw p p1 p2 in
+           if ccw < 0. then 1
+           else if ccw = 0. then 0
+           else -1
+       in
+       let rec graham_aux cl conv =
+         match cl,conv with
+         | ([],_) -> conv
+         | (h::t, a::b::tl) ->
+            let p = ccw b a h in
+            if p <= 0. then graham_aux cl (b::tl)
+            else graham_aux t (h::conv)
+         | (h::t,_) -> graham_aux t (h::conv)
+       in graham_aux (List.sort cmp l) [p]
+
+  let bounding = hull
 
 module Regular = struct
   type t = {
@@ -366,4 +382,5 @@ module Regular = struct
     }
 
 
+end
 end

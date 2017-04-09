@@ -13,9 +13,9 @@ module Poly_r = struct
 
   let new_val () =
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
-    let p1 = Polygon.Regular.to_randomized_polygon rp in
+    let p1 = Polygon.Convex.Regular.to_randomized_polygon rp in
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
-    let p2 = Polygon.Regular.to_randomized_polygon rp in
+    let p2 = Polygon.Convex.Regular.to_randomized_polygon rp in
     p1, p2,
     try Polygon.intersection_polygons p1 p2 with Line.Error e -> []
 

@@ -1,5 +1,5 @@
-(** This module provides basic functions for any concave or convexe
-    polygon (Does not handle complex polygon and polygon with
+(** This module provides basic functions for any concave, convex
+    and convex regular polygon (Does not handle complex polygon and polygon with
     holes) *)
 
 type t = private Point.t list
@@ -16,15 +16,12 @@ val fold : ('a -> Point.t -> Point.t -> 'a) -> 'a -> t -> 'a
 val fold_filter : (Point.t -> Point.t -> bool) -> ('b -> Point.t -> Point.t -> 'b) -> 'b -> t -> 'b
 (** Same function as [fold] but filters segments with the first argument *)
 
-val map : (Point.t -> Point.t) -> t -> t
-
 val perimeter : t -> float
 val area : t -> float
 val proj_x : t -> float * float
 val proj_y : t -> float * float
 val translate : float -> float -> t -> t
 val transform : Affine.t -> t -> t
-val bounding : Point.t list -> t
 val minmax_xy : t -> float * float * float * float
 
 (** returns the intersection point of a line and a polygon *)
@@ -43,6 +40,22 @@ val intersection_polygons : t -> t -> t list
     concave/convexe polygons clipping. Complexity is O(m*n). *)
 
 val triangulation : t -> (Point.t * Point.t * Point.t) list
+
+module Convex: sig
+
+  type nonrec t = private t
+
+  val to_list : t -> Point.t list
+
+  val fold : ('a -> Point.t -> Point.t -> 'a) -> 'a -> t -> 'a
+
+  (** hull pts returns the smallest convex polygon that contains all the points
+      in pts*)
+  val hull : Point.t list -> t
+
+  (** alias for hull *)
+  val bounding :  Point.t list -> t
+
 
 module Regular: sig
   (** Module for Regular polygons *)
@@ -73,4 +86,5 @@ module Regular: sig
   val contains : t -> Point.t -> bool
   val map : (Point.t -> Point.t) -> t -> t
 
+end
 end

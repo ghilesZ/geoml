@@ -30,11 +30,11 @@ val intersection : t -> t -> t
 val remove_redundancies : t -> t
 
 (** returns the polyhedron corresponding to the space defined by a polygon *)
-val of_polygon : Polygon.t -> t
+val of_polygon : Polygon.Convex.t -> t
 
 (** returns the polygon corresponding to the space defined by a polyhedron.
     raises a failure if the polyhedron is open *)
-val to_polygon : t -> Polygon.t
+val to_polygon : t -> Polygon.Convex.t
 
 (** returns the list of constraint of the polyhedron *)
 val get_constr : t -> Constraint.t list

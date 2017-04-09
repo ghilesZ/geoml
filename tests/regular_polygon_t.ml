@@ -6,11 +6,11 @@ module Poly_r = struct
   and size_y = 700.
   and title = "Random regular polygon"
 
-  type t = Polygon.t * Polygon.Regular.t
+  type t = Polygon.t * Polygon.Convex.Regular.t
 
   let new_val () =
     let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in
-    let p = Polygon.Regular.to_randomized_polygon rp in
+    let p = Polygon.Convex.Regular.to_randomized_polygon rp in
     p, rp
 
   let frame (p1, p2) =

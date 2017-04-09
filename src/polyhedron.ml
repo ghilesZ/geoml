@@ -80,7 +80,7 @@ let of_polygon p =
   let exception LT3 of Point.t list in
   try
     let arbitrary =
-      match Polygon.to_list p with
+      match Polygon.Convex.to_list p with
       | h1::h2::h3::_ -> Point.center h1 h2 |> Point.center h3
       | x -> raise (LT3 x)
     in
@@ -90,7 +90,7 @@ let of_polygon p =
       if Constraint.contains c1 arbitrary then c1 else
         Constraint.(make line Leq)
     in
-    Polygon.fold (fun acc p1 p2 ->
+    Polygon.Convex.fold (fun acc p1 p2 ->
         try (mk_constraint p1 p2)::acc
         with Line.Error _ -> acc
       ) [] p
@@ -111,7 +111,7 @@ let to_polygon cl =
            | Some (p1,_), Some (p2,_) -> p1::p2::acc
            | exception Emptyset -> acc)
         ) [] cl
-      |> Polygon.bounding
+      |> Polygon.Convex.hull
   with Exit -> failwith "can't convert an open polyhedron to a polygon"
 
 let get_constr p = p

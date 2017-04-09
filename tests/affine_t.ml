@@ -13,7 +13,7 @@ module Poly_r = struct
   let (!%) f = fun a b -> f b a
 
   let new_val () =
-    let open Polygon in
+    let open Polygon.Convex in
     (* let rp = (gen_regular 200. (size_x-.200.) 200. (size_y-.200.)) in *)
     let rp = Regular.make (Point.make 200. 200.) (Point.make 300. 300.) 4 in
     let p0 = Regular.to_polygon rp in

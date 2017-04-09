@@ -144,7 +144,7 @@ let draw_ellipse ?(lw=1) e col =
 
 let draw_regular ?(lw=1) rp col =
   let open Point in
-  let open Polygon.Regular in
+  let open Polygon.Convex.Regular in
   set_color col;
   draw_point ~lw:3 rp.center col;
   set_line_width lw;
@@ -170,6 +170,22 @@ let fill_polygon ?(lw=1) (p: Polygon.t) col =
   let pts_array = List.map point2pixel (Polygon.to_list p) |> Array.of_list in
   fill_poly pts_array
 
+let draw_convex_polygon ?(lw=1) (p: Polygon.Convex.t) col =
+  let open Point in
+  set_line_width lw;
+  set_color col;
+  let pts = Polygon.Convex.to_list p in
+  moveto_p Polygon.Convex.(List.hd pts);
+  List.iter (fun current -> lineto_p current) (List.tl pts)
+
+let fill_convex_polygon ?(lw=1) (p: Polygon.Convex.t) col =
+  let open Point in
+  set_line_width lw;
+  set_color col;
+  let pts_array = List.map point2pixel (Polygon.Convex.to_list p)
+                  |> Array.of_list in
+  fill_poly pts_array
+
 let draw_polyhedron ?(lw=1) polyhedron col =
   let open Polyhedron in
   List.iter (fun c -> draw_constraint ~lw:lw c col) (get_constr polyhedron)
@@ -182,10 +198,13 @@ let fill_polyhedron ?(lw=1) plhd col =
                       top_left_corner r;
                       top_right_corner r;
           ]) in
-  let screen_pol = Polygon.bounding s in
+  let screen_pol = Polygon.Convex.hull s in
   let plhd = intersection plhd (of_polygon screen_pol) in
-  if is_empty plhd |> not then fill_polygon ~lw:lw (to_polygon plhd) col;
-  draw_polyhedron ~lw:lw plhd Graphics.black
+  let plg = to_polygon plhd in
+    set_line_width lw;
+  set_color col;
+  let pts_array = List.map point2pixel (Polygon.Convex.to_list plg) |> Array.of_list in
+  fill_poly pts_array
 
 let draw_polynom ?(lw=1) pol col =
   set_color col;

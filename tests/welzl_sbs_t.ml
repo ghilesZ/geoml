@@ -78,16 +78,11 @@ let frame (circle,enveloppe,computed,other) =
   ) enveloppe
 
 
-let save_ppm nb =
-  let img = Drawing.get_image size_x size_y in
-  Drawing.to_ppm img ("img/img"^(string_of_int nb))
-
 let nb = ref 0
 
 let handler status =
   let open Graphics in
   if status.key = 'r' then begin
-    save_ppm !nb;
     clear ();
     cur := mindisk (!cur);
     incr nb;
