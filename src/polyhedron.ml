@@ -1,51 +1,62 @@
-(* TODO : change representation to a sorted list? *)
+(* FIXME : subline + redundancy check *)
 
 type t = Constraint.t list
+
+let print fmt plh =
+  List.iter (Format.fprintf fmt "%a\n" Constraint.print) plh
 
 (* subset of a line that satisfies a set of constraint *)
 (* None,None -> all the line *)
 (* Some (p,c),_ -> the subpart which satisfies the constraint c.
                  p is the intersection point *)
-type subline = (Point.t * Constraint.t option) * (Point.t * Constraint.t option)
+type subline = (Point.t * Constraint.t) option * (Point.t * Constraint.t) option
+
+let normalize ((f1,f2):subline) =
+  match f1,f2 with
+  | None,None -> None,None
+  | x, None | None, x -> x,None
+  | Some (p1,c1),Some (p2,c2) ->
+     (* we try to keep a normalized order *)
+     if (p1,c1) < (p2,c2) then Some(p1,c1), Some(p2,c2)
+     else Some(p2,c2), Some(p1,c1)
 
 exception Emptyset
 
-(* returns the subpart of l that satisfies cstrs.
-   raises Emptyset if no part l satisfies cstrs *)
-let subline l cstrs =
-  let update (f1,f2) next =
+let reduce_subline l (f1,f2) constr =
     try
-      let p = Line.intersection l (Constraint.get_border next) in
+      let p = Line.intersection l (Constraint.get_border constr) in
       match f1,f2 with
-      | None,None -> None,Some(p,next)
-      | Some (old_p,old_c), None | None,Some (old_p,old_c) ->
-         (match Constraint.contains old_c p, Constraint.contains next old_p with
-          |true,  true  -> Some(old_p,old_c), Some(p,next)
-          |true,  false -> Some(p,next),None
+      | None,None -> Some(p,constr),None
+      | Some (old_p,old_c), None ->
+         (match Constraint.contains old_c p, Constraint.contains constr old_p with
+          |true,  true  -> Some(p,constr),Some(old_p,old_c)
+          |true,  false -> Some(p,constr),None
           |false, true  -> Some(old_p,old_c),None
-          |false, false -> raise Emptyset
-         )
-      | Some (a), Some (b) ->
-         match List.filter (fun (p,c) -> Constraint.contains next p) [a;b] with
-         | [] -> raise Emptyset
-         | [x] -> Some x, Some (p,next)
-         | _ -> Some a, Some b
-    with Line.(Error (Parallel _)) ->
-      if Constraint.contains next (Line.arbitrary_point l) then f1,f2
+          |false, false -> raise Emptyset)
+      | None,Some (old_p,old_c) -> assert false
+      | Some (pa,ca), Some (pb,cb) ->
+         match Constraint.contains constr pa, Constraint.contains constr pb with
+         | false,false -> raise Emptyset
+         | true,false -> Some (pa,ca), Some (p,constr)
+         | false,true -> Some (p,constr), Some (pb,cb)
+         | _ -> f1,f2
+    with Line.(Error (Parallel (l1,l2))) ->
+      if Constraint.contains constr (Line.arbitrary_point l) then f1,f2
       else raise Emptyset
-  in
-  List.fold_left update (None,None) cstrs
+
+let subline (l:Line.t) (cstrs:Constraint.t list) : subline =
+  List.fold_left (reduce_subline l) (None,None) cstrs
 
 let fold_pairs f acc =
   let rec loop past acc = function
-  | [] -> acc
-  | h::t -> loop (h::past) (f acc h (List.rev_append past t)) t
+    | [] -> acc
+    | h::t -> loop (h::past) (f acc h (List.rev_append past t)) t
   in loop [] acc
 
-let is_closed c_l =
+let is_closed (c_l:Constraint.t list) =
   try fold_pairs (fun acc e rest ->
-          let line = Constraint.get_border e in
-          (match subline line rest with
+          let l = Constraint.get_border e in
+          (match subline l rest with
            | None,_ | _,None -> raise Exit
            | _ -> acc
            | exception Emptyset -> acc)
@@ -54,19 +65,37 @@ let is_closed c_l =
 
 let is_open c_l = is_closed c_l |> not
 
-(* check if c is redundant according to the constraint list c_l*)
+(* check if c is redundant according to the constraint list c_l *)
 let redundant c c_l =
-  let line = Constraint.get_border c in
-  try ignore (subline line c_l); false
-  with Emptyset -> true
+  try fold_pairs (fun acc e rest ->
+          let l = Constraint.get_border e in
+          (match subline l rest with
+           | x ->
+              (try
+                 let with_new_constraint = subline l (c::rest) in
+                 if (normalize x) = normalize with_new_constraint then acc
+                 else raise Exit
+               with Emptyset -> raise Exit)
+           | exception Emptyset -> acc)
+        ) true c_l
+  with Exit -> false
+
+let remove_redundancies cstrs =
+  let ( @ ) = List.rev_append in
+  let rec loop acc = function
+    | [] -> acc
+    | h::t ->
+       if redundant h (acc@t) then loop acc t
+       else loop (h::acc) t
+  in loop [] cstrs
 
 let is_empty = function
-  | [] -> false
-  | x -> let c = Constraint.(make Line.x_axis Constraint.Gt) in
-         redundant c x && redundant (Constraint.complementary c) x
-
-let remove_redundancies =
-  fold_pairs (fun acc e rest -> if redundant e rest then acc else (e::acc)) []
+  | [] | [_]-> false
+  | l ->
+     let x_neg = Constraint.(make (Line.make_y 1. 0.) Constraint.Gt)
+     and x_pos = Constraint.(make (Line.make_y 1. 0.) Constraint.Leq) in
+     let res = redundant x_neg l && redundant x_pos l in
+     res
 
 let make (cl:Constraint.t list) : t = cl
 
@@ -87,8 +116,11 @@ let of_polygon p =
     let mk_constraint p1 p2 =
       let line = Line.of_points p1 p2 in
       let c1 = Constraint.(make line Geq) in
-      if Constraint.contains c1 arbitrary then c1 else
-        Constraint.(make line Leq)
+      if Constraint.contains c1 arbitrary then c1
+      else
+        let c2 = Constraint.(make line Leq) in
+        if Constraint.contains c2 arbitrary then c2
+        else failwith "shoud not occur"
     in
     Polygon.Convex.fold (fun acc p1 p2 ->
         try (mk_constraint p1 p2)::acc
@@ -105,11 +137,12 @@ let of_polygon p =
 
 let to_polygon cl =
   try fold_pairs (fun acc e rest ->
-          let line = Constraint.get_border e in
-          (match subline line rest with
+          let l = Constraint.get_border e in
+          (match subline l rest with
            | None,_ | _,None -> raise Exit
            | Some (p1,_), Some (p2,_) -> p1::p2::acc
-           | exception Emptyset -> acc)
+           | exception _ -> acc
+          )
         ) [] cl
       |> Polygon.Convex.hull
   with Exit -> failwith "can't convert an open polyhedron to a polygon"

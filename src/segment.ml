@@ -25,7 +25,7 @@ let equation ((p1,p2):t) t =
     failwith "Segment.equation: parameter must be in [0. ; 1.]"
   else
     let open Point in
-    let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in 
+    let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in
     Point.translate (t*.dx) (t*.dy) p1
 
 let scale_y (p1,p2) f = make (Point.scale_y p1 f) (Point.scale_y p2 f)

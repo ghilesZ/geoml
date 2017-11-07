@@ -1,7 +1,7 @@
 type t = X of float | Y of float * float (** linear equation type *)
 
 let print fmt = function
-  | Y(a,b) -> Format.fprintf fmt "y=%fx +. %fb" a b
+  | Y(a,b) -> Format.fprintf fmt "y=%fx +. %f" a b
   | X(c) -> Format.fprintf fmt "x=%f" c
 
 type error = Parallel of t * t | Same_coordinates of Point.t
@@ -27,7 +27,7 @@ let x_axis = Y(0.,0.)
 let y_axis = X(0.)
 
 let is_vertical = function
-  | X(_) -> true
+  | X _ -> true
   | _ -> false
 
 let is_horizontal = function

@@ -27,7 +27,7 @@ let tests =[
    "random";
    "scale";
    "vector";
-   "polyhedron"
+   "polyhedra"
   ]
 
 let print_tests fmt tests = Format.pp_print_list

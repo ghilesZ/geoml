@@ -21,3 +21,5 @@ val complementary : t -> t
 val translate : float -> float -> t -> t
 
 val intersects : t -> t -> bool
+
+val print : Format.formatter -> t -> unit

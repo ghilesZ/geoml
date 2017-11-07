@@ -19,8 +19,9 @@ module Half = struct
       | _ -> Leq)
     in
     let cons() =
-      let point() = gen_point padding size_x padding size_y in
+      let point() = gen_point padding (size_x-.padding) padding (size_y-.padding) in
       let line = Line.of_points (point()) (point()) in
+      Drawing.draw_line line Graphics.blue;
       Constraint.(make line (comp()))
     in
     Polyhedron.make (list_make (fun _ -> cons()) 3)

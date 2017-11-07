@@ -199,12 +199,16 @@ let fill_polyhedron ?(lw=1) plhd col =
                       top_right_corner r;
           ]) in
   let screen_pol = Polygon.Convex.hull s in
-  let plhd = intersection plhd (of_polygon screen_pol) in
-  let plg = to_polygon plhd in
-    set_line_width lw;
-  set_color col;
-  let pts_array = List.map point2pixel (Polygon.Convex.to_list plg) |> Array.of_list in
-  fill_poly pts_array
+  let screen_phd = of_polygon screen_pol in
+  let plhd = intersection plhd screen_phd in
+  if not (Polyhedron.is_empty plhd) then begin
+      let plg = to_polygon plhd in
+      set_line_width lw;
+      set_color col;
+      let pts_array = List.map point2pixel (Polygon.Convex.to_list plg) |> Array.of_list in
+      fill_poly pts_array
+    end
+  else Format.printf "empty polyhedron : %a\n%!" Polyhedron.print plhd
 
 let draw_polynom ?(lw=1) pol col =
   set_color col;

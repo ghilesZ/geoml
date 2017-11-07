@@ -38,3 +38,6 @@ val to_polygon : t -> Polygon.Convex.t
 
 (** returns the list of constraint of the polyhedron *)
 val get_constr : t -> Constraint.t list
+
+(** prints the list of constraint of the polyhedron *)
+val print : Format.formatter -> t -> unit

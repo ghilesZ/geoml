@@ -15,6 +15,18 @@ let compf = function
 
 type t = Line.t * comp
 
+let print fmt ((l,cmp):t) =
+  let comp_to_string (c:comp) =
+    match c with
+    | Lt -> "<"
+    | Gt -> ">"
+    | Leq -> "<="
+    | Geq -> ">="
+  in
+  let open Line in
+  let (a,b,c) = Line.get_coeff l in
+  Format.fprintf fmt "%fx + %fy + %f %s 0" a b c (comp_to_string cmp)
+
 let make l comp : t =
   (l,comp)
 
@@ -23,10 +35,15 @@ let get_border (l,_) = l
 let get_comp (_,c) = c
 
 let contains ((l,comp):t) p =
-  let open Point in
   let (a,b,c) = Line.get_coeff l in
-  let value = a *. p.x +. b *. p.y +. c in
-  (compf comp) value 0.
+  let value =
+    let open Point in
+    a *. p.x +. b *. p.y +. c
+  in
+  let res = (compf comp) value 0. in
+  (* if res then Format.printf "point %a statisfies %a\n%!" Point.print p print cstr *)
+  (* else Format.printf "point %a does not statisfies %a\n%!" Point.print p print cstr; *)
+  res
 
 (**contains c p returns true if the point p is in the half-space defined by c*)
 let translate dx dy ((l,comp):t) =
