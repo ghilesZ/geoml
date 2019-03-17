@@ -18,8 +18,6 @@ let fold f acc p =
        aux (f acc pt1 pt2) (pt2 :: pg)
   in aux acc p
 
-let map = List.rev_map
-
 let fold_filter filter f acc p =
   let rec aux acc = function
     | [] -> acc
@@ -212,20 +210,6 @@ let compute_ears h p =
       else n + 1, AngleSet.add (v2, angle) acc
     ) (0, AngleSet.empty) p
 
-
-let print_pt_name htbl fmt pt =
-  try Format.fprintf fmt "%s" @@ Hashtbl.find htbl pt with
-  | Not_found -> Format.fprintf fmt "%a" Point.print pt
-
-
-let create_names p =
-  let t = Hashtbl.create 19 in
-  let cpt = ref 64 in
-  List.iter (
-    fun pt -> incr cpt;
-      Hashtbl.add t pt (Format.sprintf "%c" (Char.chr !cpt))) p; t
-
-
 let triangulation p =
   let htbl = Hashtbl.create 19 in
   let _, ears = compute_ears htbl p in
@@ -373,7 +357,7 @@ module Convex = struct
         (fun current next ->
           (0. > Point.determinant current next rp.center)
           = (0. > Point.determinant current next pt)
-        ) (fun nth _ current next -> nth = rp.edges) true rp
+        ) (fun nth _ _ _ -> nth = rp.edges) true rp
 
     let map f rp =
       { rp with
