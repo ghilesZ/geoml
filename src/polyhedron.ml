@@ -33,14 +33,14 @@ let reduce_subline l (f1,f2) constr =
           |true,  false -> Some(p,constr),None
           |false, true  -> Some(old_p,old_c),None
           |false, false -> raise Emptyset)
-      | None,Some (old_p,old_c) -> assert false
+      | None,Some (_,_) -> assert false
       | Some (pa,ca), Some (pb,cb) ->
          match Constraint.contains constr pa, Constraint.contains constr pb with
          | false,false -> raise Emptyset
          | true,false -> Some (pa,ca), Some (p,constr)
          | false,true -> Some (p,constr), Some (pb,cb)
          | _ -> f1,f2
-    with Line.(Error (Parallel (l1,l2))) ->
+    with Line.(Error (Parallel (_,_))) ->
       if Constraint.contains constr (Line.arbitrary_point l) then f1,f2
       else raise Emptyset
 

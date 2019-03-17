@@ -61,7 +61,7 @@ let x_from_y l y =
 
 let y_from_x l x =
   match l with
-  | X(c) -> raise (Error (Parallel(l,(make_x x))))
+  | X(_) -> raise (Error (Parallel(l,(make_x x))))
   | Y(a,b) -> a *. x +. b
 
 let contains (l:t) (p:Point.t) =
@@ -91,7 +91,7 @@ let translate dx dy (l:t) =
 let parallel l1 l2 =
   match l1,l2 with
   | X(_), X(_) -> true
-  | Y(a,_),Y(b,_) when a = b -> true
+  | Y(a,_),Y(b,_) -> a = b
   | _ -> false
 
 let intersects l1 l2 = parallel l1 l2 |> not
@@ -116,8 +116,8 @@ let perpendicular l1 l2 =
 let perpendicular_of_line l p =
   let open Point in
   match l with
-  | Y(0.,b) -> X(p.x)
-  | Y(a,b)  ->
+  | Y(0.,_) -> X(p.x)
+  | Y(a,_)  ->
      let coeff = (-.1.) /. a in
      let ord = p.y -. coeff *. p.x in
      Y(coeff,ord)
@@ -126,10 +126,10 @@ let perpendicular_of_line l p =
 let parallel_of_line l p =
   let open Point in
   match l with
-  | Y(a,b) ->
+  | Y(a,_) ->
      let ord = p.y -. a *. p.x in
      Y(a,ord)
-  | X(x) -> X(p.x)
+  | X(_) -> X(p.x)
 
 let orth_proj l p =
   perpendicular_of_line l p |> intersection l
@@ -140,4 +140,4 @@ let point_bissection p1 p2 =
 let arbitrary_point l =
   match l with
   | X(c) -> Point.make c 0.
-  | Y(a,b) -> Point.make 0. b
+  | Y(_,b) -> Point.make 0. b

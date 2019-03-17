@@ -36,16 +36,16 @@ let scale_y t f =
 let translate dx dy (tr:t) : t =
   tri_map (Point.translate dx dy) tr
 
-let transform m = tri_map (Point.transform m)
+let transform t m : t = tri_map (Point.transform m) t
 
 let point_reflection  p (tr:t) : t =
   tri_map (fun e -> Point.point_reflection p e) tr
 
 (** tests if a point is in a triangle with barycentric coordinates *)
 let contains (({Point.x=ax;Point.y=ay},
-	       {Point.x=bx;Point.y=by},
-	       {Point.x=cx;Point.y=cy}):t)
-              ({Point.x=px;Point.y=py}:Point.t) =
+	             {Point.x=bx;Point.y=by},
+	             {Point.x=cx;Point.y=cy}):t)
+      ({Point.x=px;Point.y=py}:Point.t) =
   let l1 =
     ((by -. cy) *. (px -. cx) +. (cx -. bx) *. (py -. cy)) /.
     ((by -. cy) *. (ax -. cx) +. (cx -. bx) *. (ay -. cy))
@@ -132,6 +132,3 @@ let random_point ((a,b,c):t) : Point.t =
   let bc = Vector.of_points b c and bp = Vector.of_points b p in
   if (Vector.determinant bc bp) *. Vector.determinant bc ab < 0. then p
   else Point.point_reflection (Point.center b c) p
-
-let print fmt ((a,b,c) : t) =
-  Format.fprintf fmt "%a, %a, %a" Point.print a Point.print b Point.print c

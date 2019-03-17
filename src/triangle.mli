@@ -2,8 +2,6 @@
 
 type t = private Point.t * Point.t * Point.t
 
-val print : Format.formatter -> t -> unit
-
 (** tri_map f t applies function f in turn to all the points of t and
     stores the results in a new triangle that is returned. *)
 val tri_map : (Point.t -> Point.t) -> t -> t
@@ -12,6 +10,9 @@ val tri_exists : (Point.t -> bool) -> t -> bool
 val tri_find : (Point.t -> bool) -> t -> Point.t
 val tri_forall : (Point.t -> bool) -> t -> bool
 val tri_iter : (Point.t -> unit) -> t -> unit
+
+(** affine transformation of a triangle *)
+val transform : (t -> Affine.t -> t)
 
 val make : Point.t -> Point.t -> Point.t -> t
 val extr1 : t -> Point.t

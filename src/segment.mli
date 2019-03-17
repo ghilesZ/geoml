@@ -11,6 +11,8 @@ val extr2 : t -> Point.t
 
 val center : t -> Point.t
 
+val equation : t -> float -> Point.t
+
 (** returns the square size of a segment *)
 val sq_size : t -> float
 

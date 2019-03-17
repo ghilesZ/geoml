@@ -23,9 +23,9 @@ let rotate_angle (c:t) p f =
 let contains (c:t) p =
   Point.sq_distance c.center p <= (c.radius*.c.radius)
 
-let area ({radius}:t) = pi *. radius *. radius
+let area ({radius;_}:t) = pi *. radius *. radius
 
-let perimeter ({radius}:t) = 2. *. pi *. radius
+let perimeter ({radius;_}:t) = 2. *. pi *. radius
 
 let proj_x (c:t) = let open Point in (c.center.x-.c.radius,c.center.x+.c.radius)
 
@@ -35,38 +35,34 @@ let intersects (c1:t) (c2:t) =
   (Point.sq_distance c1.center c2.center) < (c1.radius +. c2.radius) ** 2.
 
 (** line_intersection takes a circle and line and returns the list of the
-    intersection points. (can be [], [a] or [a,b]
- *)
+    intersection points. (can be [], [a] or [a,b] *)
 let intersect_line (c:t) (l:Line.t) =
   let cx = c.center.Point.x and cy = c.center.Point.y in
   let open Line in
   match l with
-  | Y(a,b) ->
+  | X(x) ->
+     let a = x-.cx in
+     Math.solve 1. 0. (a*.a -. c.radius*.c.radius)
+     |> List.map (fun y -> Point.make x y |> Point.translate 0. cy)
+  | _ ->
      (* we go to origin *)
      let l_2 = translate (-.cx) (-.cy) l in
      let a,b = (match l_2 with Y(a,b) -> a,b | _ -> assert false) in
-    (* we solve the equation at the origin for x*)
-    (* x² + y² = r²   and   y = ax+b
+     (* we solve the equation at the origin for x*)
+     (* x² + y² = r²   and   y = ax+b
        => x² + (ax + b)² = r²
        => x² + a²x² + 2abx + b² = r²
        => (a²+1)x² + 2abx + b²-r² = 0 *)
-    Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. c.radius*.c.radius)
+     Math.solve (a*.a+.1.) (2.*.a*.b) (b*.b -. c.radius*.c.radius)
      (* we calculate the associated y*)
-  |> List.map (fun x -> Point.make x (a*.x+.b))
-    (* we translate the result to the first coordinates*)
-  |> List.map (Point.translate cx cy)
-  | X(x) ->
-    let a = x-.cx in
-    Math.solve 1. 0. (a*.a -. c.radius*.c.radius)
-  |> List.map (fun y -> Point.make x y)
-  |> List.map (Point.translate 0. cy)
+     (* and translate back the result to the first coordinates*)
+     |> List.map (fun x -> Point.make x (a*.x+.b) |> Point.translate cx cy)
 
 let segment_intersection c (s:Segment.t) =
   Segment.to_line s |> intersect_line c |> List.filter (Segment.contains s)
 
 (** tangent c p returns the tangent of circle c going through point p.
-    p must lie on c's boundary
- *)
+    p must lie on c's boundary *)
 let tangent {center;_} p =
   Line.perpendicular_of_line (Line.of_points center p) p
 
@@ -103,7 +99,7 @@ let bounding (pts : Point.t list) : t =
     try
       [((x,pt),y);((y,pt),x)]
       |> List.map (fun ((a,b),c) -> (([a;b],of_diameter a b),c))
-      |> List.find (fun ((env,circle),inner) -> contains circle inner)
+      |> List.find (fun ((_,circle),inner) -> contains circle inner)
       |> fst
     with Not_found -> ([x;y;pt],(circumscribed x y pt))
   in
@@ -111,7 +107,7 @@ let bounding (pts : Point.t list) : t =
     let found =
       [((x,y),z); ((x,z),y); ((y,z),x)]
       |> List.map (fun ((a,b),c) -> ((of_two a b pt),c))
-      |> List.filter (fun ((e,c),inner) -> contains c inner)
+      |> List.filter (fun ((_,c),inner) -> contains c inner)
       |> List.map fst
     in
     List.fold_left (fun (e1,c1) (e2,c2) ->
@@ -130,7 +126,7 @@ let bounding (pts : Point.t list) : t =
     | [] -> circle
     | h::tl when contains circle h || List.mem h set ->
        mindisk l circle set tl
-    | h::tl ->
+    | h::_ ->
        let (new_set,new_circle) = update set h in
        List.filter (fun e -> List.mem e new_set |> not) l |>
        mindisk l new_circle new_set

@@ -23,7 +23,6 @@ val rotate : t -> Point.t -> float -> t
     rotation center and f a angle in degree *)
 val rotate_angle : t -> Point.t -> float -> t
 
-val print : Format.formatter -> t -> unit
 val contains : t -> Point.t -> bool
 
 val area : t -> float
@@ -33,6 +32,10 @@ val perimeter : t -> float
 val proj_x : t -> float * float
 
 val proj_y : t -> float * float
+
+(** tangent c p returns the tangent of circle c going through point p.
+    p must lie on c's boundary, otherwise behaviour is unspecified *)
+val tangent : t -> Point.t -> Line.t
 
 val intersects : t -> t -> bool
 

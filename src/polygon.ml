@@ -96,7 +96,7 @@ let contains p pt =
 
 
 let segments_intersection_points crossing p1 p2 =
-  let minx1, miny1, maxx1, maxy1 = minmax_xy p1 in
+  let minx1, _, maxx1, maxy1 = minmax_xy p1 in
   let minx2, miny2, maxx2, maxy2 = minmax_xy p2 in
   let update h default f cpl newitem =
     let res =
@@ -188,7 +188,7 @@ let intersection_polygons p1 p2 =
         insert_intersection_points crossing crosslink
           enterings_p2 (start_inside_p1) p2
       in begin match p1, p2 with
-        | [a; b], _ | _, [a; b] -> [inters]
+        | [_; _], _ | _, [_; _] -> [inters]
         | _ -> build_clip newp1 newp2 crosslink [] !enterings_p2
       end
 (* ################################################################## *)
@@ -196,7 +196,6 @@ let intersection_polygons p1 p2 =
 
 (* Polygon triangulation ############################################ *)
 module AngleSet = Set.Make (struct
-    open Point
     type t = Point.t * float
     let compare (pt1, angle1) (pt2, angle2) =
       if pt1 = pt2 then 0
@@ -229,7 +228,7 @@ let create_names p =
 
 let triangulation p =
   let htbl = Hashtbl.create 19 in
-  let n, ears = compute_ears htbl p in
+  let _, ears = compute_ears htbl p in
   let rec aux acc nb ears =
     if AngleSet.is_empty ears then acc else
       try

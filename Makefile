@@ -1,6 +1,6 @@
-all: tests
-
-# If you want to build using ocp-build instead of ocamlbuild, uncomment these lines
+################################# ocp-build ###############################
+# If you want to build using ocp-build instead of dune, uncomment these lines
+#	all: tests
 
 # building using ocp-build
 # OCP = ocp-build
@@ -17,39 +17,64 @@ all: tests
 
 # clean:
 # 	@rm -rf _obuild
+######################### end of ocp-build ################################
 
 
+############################# ocamlbuild ##################################
 
-# building using ocamlbuild
-OCB_FLAGS = -use-ocamlfind
-OCB       = ocamlbuild $(OCB_FLAGS) -I src
-OCBTEST   = ocamlbuild $(OCB_FLAGS) -package graphics -lflags '-I .'
+# If you want to build using ocamlbuild instead of dune, uncomment these lines
+# OCB_FLAGS = -use-ocamlfind
+# OCB       = ocamlbuild $(OCB_FLAGS) -I src
+# OCBTEST   = ocamlbuild $(OCB_FLAGS) -package graphics -lflags '-I .'
 
-TESTS_SRCS   = $(wildcard tests/runtest.ml)
-TESTS_BYTE   = $(patsubst %.ml,tests/%_t.byte,$(TESTS_SRCS))
-TESTS_NATIVE = $(patsubst %.ml,tests/%_t.native,$(TESTS_SRCS))
+# TESTS_SRCS   = $(wildcard tests/runtest.ml)
+# TESTS_BYTE   = $(patsubst %.ml,tests/%_t.byte,$(TESTS_SRCS))
+# TESTS_NATIVE = $(patsubst %.ml,tests/%_t.native,$(TESTS_SRCS))
+
+#	all: tests
+
+# clean:
+# 				$(OCB) -clean
+
+# native:
+# 				$(OCB) geom.cmxa
+
+# byte:
+# 				$(OCB) geom.cma
+
+# tests: $(TESTS_BYTE)
+
+# tests.native: $(TESTS_NATIVE)
+
+# tests/%_t.native: %.ml
+# 				$(OCBTEST) $(basename $<).native
+
+# tests/%_t.byte: %.ml
+# 				$(OCBTEST) $(basename $<).byte
+
+# doc:
+# 				ocamlbuild geom.docdir/index.html
+
+
+# .PHONY: 	all clean tests
+########################## end of ocamlbuild ##############################
+
+########################## Frontend to dune ##############################
+.PHONY: default build install uninstall test clean
+
+default: build
+
+build:
+	dune build src/geoml.cma
+
+test:
+	dune runtest -f
+
+install:
+	dune install
+
+uninstall:
+	dune uninstall
 
 clean:
-				$(OCB) -clean
-
-native:
-				$(OCB) geom.cmxa
-
-byte:
-				$(OCB) geom.cma
-
-tests: $(TESTS_BYTE)
-
-tests.native: $(TESTS_NATIVE)
-
-tests/%_t.native: %.ml
-				$(OCBTEST) $(basename $<).native
-
-tests/%_t.byte: %.ml
-				$(OCBTEST) $(basename $<).byte
-
-doc:
-				ocamlbuild geom.docdir/index.html
-
-
-.PHONY: 	all clean tests
+	dune clean
