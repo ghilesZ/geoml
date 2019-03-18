@@ -1,6 +1,8 @@
 type t = Point.t * Point.t
 
-let make (p1:Point.t) (p2:Point.t) : t = (p1,p2)
+let make (p1:Point.t) (p2:Point.t) : t =
+  if p1 = p2 then invalid_arg "Segment.make: points should be different"
+  else (p1,p2)
 
 module Tbl = Hashtbl.Make (struct
     type t = Point.t * Point.t

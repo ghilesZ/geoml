@@ -19,7 +19,9 @@ let tri_forall f ((pa,pb,pc):t) = (f pa) && (f pb) && (f pc)
 
 let tri_iter f ((pa,pb,pc):t) = f pa; f pb; f pc
 
-let make p1 p2 p3 : t= (p1,p2,p3)
+let make p1 p2 p3 : t =
+  if p1 = p2 || p2 = p3 || p3 = p1 then invalid_arg "Triange.make: points should be all different"
+  else (p1,p2,p3)
 
 let extr1 ((p1,_,_):t) = p1
 
@@ -41,7 +43,7 @@ let transform t m : t = tri_map (Point.transform m) t
 let point_reflection  p (tr:t) : t =
   tri_map (fun e -> Point.point_reflection p e) tr
 
-(** tests if a point is in a triangle with barycentric coordinates *)
+(* tests if a point is in a triangle with barycentric coordinates *)
 let contains (({Point.x=ax;Point.y=ay},
 	             {Point.x=bx;Point.y=by},
 	             {Point.x=cx;Point.y=cy}):t)

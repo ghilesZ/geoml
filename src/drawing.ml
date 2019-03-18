@@ -1,4 +1,4 @@
-open Geom
+open Geoml
 open Graphics
 
 (* conversion utilities *)
@@ -127,7 +127,6 @@ let fill_circle ?(lw=1) c col =
   fill_circle x y (c.radius |> iof)
 
 let draw_triangle ?(lw=1) t col =
-  let open Triangle in
   let (a,b,c) = Triangle.segments t in
   List.iter (fun e -> draw_segment ~lw:lw e col) [a;b;c]
 
@@ -143,43 +142,38 @@ let draw_ellipse ?(lw=1) e col =
   draw_ellipse x y (iof (big_axis e)) (iof (small_axis e))
 
 let draw_regular ?(lw=1) rp col =
-  let open Point in
   let open Polygon.Convex.Regular in
   set_color col;
   draw_point ~lw:3 rp.center col;
   set_line_width lw;
   moveto_p rp.fst;
   fold_stop (fun _ _ -> true)
-    (fun nth _ current next ->
+    (fun _ _ current next ->
        draw_point ~lw:3 current col;
        set_line_width lw;
        lineto_p next
     ) () rp
 
 let draw_polygon ?(lw=1) (p: Polygon.t) col =
-  let open Point in
   set_line_width lw;
   set_color col;
   moveto_p Polygon.(first_point p);
-  Polygon.fold (fun _ current -> lineto_p) () p
+  Polygon.fold (fun _ _ -> lineto_p) () p
 
 let fill_polygon ?(lw=1) (p: Polygon.t) col =
-  let open Point in
   set_line_width lw;
   set_color col;
   let pts_array = List.map point2pixel (Polygon.to_list p) |> Array.of_list in
   fill_poly pts_array
 
 let draw_convex_polygon ?(lw=1) (p: Polygon.Convex.t) col =
-  let open Point in
   set_line_width lw;
   set_color col;
   let pts = Polygon.Convex.to_list p in
-  moveto_p Polygon.Convex.(List.hd pts);
+  moveto_p (List.hd pts);
   List.iter (fun current -> lineto_p current) (List.tl pts)
 
 let fill_convex_polygon ?(lw=1) (p: Polygon.Convex.t) col =
-  let open Point in
   set_line_width lw;
   set_color col;
   let pts_array = List.map point2pixel (Polygon.Convex.to_list p)
@@ -213,7 +207,6 @@ let fill_polyhedron ?(lw=1) plhd col =
 let draw_polynom ?(lw=1) pol col =
   set_color col;
   set_line_width lw;
-  let open Point in
   let open Polynom in
   let step = 5.
   and cur = ref 5. in

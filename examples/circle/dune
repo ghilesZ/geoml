@@ -1,0 +1,4 @@
+(executable
+(name circum_incircle)
+(modules circum_incircle)
+(libraries geoml))
