@@ -10,8 +10,8 @@ let list_make f s =
   in aux [] s
 
 let gen_point xmin xmax ymin ymax =
-  let x = xmin +. (foi (Random.int (int_of_float (xmax-.xmin))))
-  and y = ymin +. (foi (Random.int (int_of_float (ymax-.ymin)))) in
+  let x = xmin +. (foi (Random.int (iof (xmax-.xmin))))
+  and y = ymin +. (foi (Random.int (iof (ymax-.ymin)))) in
   Point.make x y
 
 let gen_triangle xmin xmax ymin ymax =

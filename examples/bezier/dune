@@ -1,0 +1,8 @@
+(executable
+(name bezier)
+(modules bezier)
+(libraries geoml))
+
+(alias
+ (name   runtest)
+ (action (run %{exe:bezier.exe})))
