@@ -1,13 +1,9 @@
 open Geoml
 
-(*************** Drawing utilities ******************)
-
-
-
-(*************** Random utilities *******************)
 let iof = int_of_float
 let foi = float_of_int
 
+(*************** Random utilities *******************)
 let gen_point xmin xmax ymin ymax =
   let x = xmin +. (foi (Random.int (int_of_float (xmax-.xmin))))
   and y = ymin +. (foi (Random.int (int_of_float (ymax-.ymin)))) in
@@ -20,11 +16,10 @@ let gen_triangle xmin xmax ymin ymax =
   in Triangle.make p1 p2 p3
 
 
-(****************************************************)
-
+(****************** Main example **********************)
 let size_x = 800.
-and size_y = 700.
-and title = "Calculating the circumscribed circle and the incircle of a triangle"
+let size_y = 700.
+let title = "Calculating the circumscribed circle and the incircle of a triangle"
 
 let new_val () = gen_triangle 200. (size_x-.200.) 200. (size_y-.200.)
 

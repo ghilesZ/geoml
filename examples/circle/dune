@@ -2,3 +2,7 @@
 (name circum_incircle)
 (modules circum_incircle)
 (libraries geoml))
+
+(alias
+ (name   runtest)
+ (action (run %{exe:circum_incircle.exe})))
