@@ -1,8 +1,6 @@
 type t = Point.t * Point.t
 
-let make (p1:Point.t) (p2:Point.t) : t =
-  if p1 = p2 then invalid_arg "Segment.make: points should be different"
-  else (p1,p2)
+let make (p1:Point.t) (p2:Point.t) : t = (p1,p2)
 
 module Tbl = Hashtbl.Make (struct
     type t = Point.t * Point.t
@@ -24,7 +22,7 @@ let center (p1,p2) = Point.center p1 p2
 
 let equation ((p1,p2):t) t =
   if t < 0. || t > 1. then
-    failwith "Segment.equation: parameter must be in [0. ; 1.]"
+    invalid_arg "Segment.equation: parameter must be in [0. ; 1.]"
   else
     let open Point in
     let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in

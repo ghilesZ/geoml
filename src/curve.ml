@@ -133,30 +133,30 @@ module BSpline = struct
       let rec s1 j d x = (x -. knots.(j-1)) /. (knots.(j+d-1) -. knots.(j-1)) *. bspl j (d-1) x
       and s2 j d x =(knots.(j+d) -. x)/.(knots.(j+d) -. knots.(j)) *. bspl (j+1) (d-1) x
       and bspl j d x =
-	if j < 0 || j >= d then 0.
-	else if d = 0
-	then (if knots.(j-1) <= x && x <= knots.(j) then 1. else 0.)
-	else
-	  if knots.(j-1) = knots.(j+d)
-	  then 0.
-	  else if knots.(j-1) < knots.(j+d-1) && knots.(j) = knots.(j+d)
-	  then s1 j d x
-	  else if knots.(j-1) = knots.(j+d-1) &&  knots.(j) < knots.(j+d)
-	  then s2 j d x
-	  else (s1 j d x)+.(s2 j d x)
+	      if j < 0 || j >= d then 0.
+	      else if d = 0
+	      then (if knots.(j-1) <= x && x <= knots.(j) then 1. else 0.)
+	      else
+	        if knots.(j-1) = knots.(j+d)
+	        then 0.
+	        else if knots.(j-1) < knots.(j+d-1) && knots.(j) = knots.(j+d)
+	        then s1 j d x
+	        else if knots.(j-1) = knots.(j+d-1) &&  knots.(j) < knots.(j+d)
+	        then s2 j d x
+	        else (s1 j d x)+.(s2 j d x)
       in
       let (xs,_) =
 	      (List.map Point.x_coord control),(List.map Point.y_coord control)
       and n = (List.length control)
       in
       let x = Math.float_sum 1 n (fun i ->
-	let p = List.nth xs (i-1) in
-	(bspl i n t) *. p
-      )
+	                let p = List.nth xs (i-1) in
+	                (bspl i n t) *. p
+                )
       and y = Math.float_sum 1 n (fun i ->
-	let p = List.nth xs (i-1) in
-	(bspl i n t) *. p
-      )
+	                let p = List.nth xs (i-1) in
+	                (bspl i n t) *. p
+                )
       in
       Point.make x y
 

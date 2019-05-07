@@ -4,5 +4,5 @@
 (libraries geoml))
 
 (alias
- (name   runtest)
+ (name   default)
  (action (run %{exe:intersection.exe})))
