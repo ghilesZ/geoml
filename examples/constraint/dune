@@ -1,0 +1,8 @@
+(executable
+(name constraint)
+(modules constraint)
+(libraries geoml))
+
+(alias
+ (name   runtest)
+ (action (run %{exe:constraint.exe})))

@@ -1,0 +1,8 @@
+(executable
+(name polyhedra)
+(modules polyhedra)
+(libraries geoml))
+
+(alias
+ (name   runtest)
+ (action (run %{exe:polyhedra.exe})))

@@ -1,0 +1,8 @@
+(executable
+(name bounding)
+(modules bounding)
+(libraries geoml))
+
+(alias
+ (name   runtest)
+ (action (run %{exe:bounding.exe})))

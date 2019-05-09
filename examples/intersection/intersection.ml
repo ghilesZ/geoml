@@ -9,7 +9,6 @@ let gen_point xmin xmax ymin ymax =
   and y = ymin +. (foi (Random.int (int_of_float (ymax-.ymin)))) in
   Point.make x y
 
-
 (****************** Main example **********************)
 let size_x = 800.
 let size_y = 700.

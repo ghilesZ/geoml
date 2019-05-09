@@ -243,7 +243,7 @@ let triangulation p =
 
 module Convex = struct
 
-  type nonrec t = Point.t list
+  type t = Point.t list
 
   let to_list (l:t) = l
 
