@@ -22,7 +22,7 @@ let center (p1,p2) = Point.center p1 p2
 
 let equation ((p1,p2):t) t =
   if t < 0. || t > 1. then
-    failwith "Segment.equation: parameter must be in [0. ; 1.]"
+    invalid_arg "Segment.equation: parameter must be in [0. ; 1.]"
   else
     let open Point in
     let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in

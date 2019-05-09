@@ -1,4 +1,3 @@
-open Geoml
 open Graphics
 
 (* conversion utilities *)
