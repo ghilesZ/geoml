@@ -4,5 +4,5 @@
 (libraries geoml))
 
 (alias
- (name   runtest)
+ (name   dune)
  (action (run %{exe:polyhedra.exe})))

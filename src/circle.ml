@@ -2,7 +2,10 @@ open Math
 
 type t = {center:Point.t; radius:float}
 
-let make center radius : t= {center;radius}
+let make center radius : t =
+  if radius >= 0. then
+    {center;radius}
+  else invalid_arg "Circle.make:radius should be positive or zero"
 
 let center {center;_} = center
 

@@ -19,7 +19,10 @@ module Tbl = Hashtbl.Make (struct
 
 let orig = make 0. 0.
 
-let center {x;y} {x=a;y=b} = make ((a+.x) /. 2.) ((b+.y) /. 2.)
+let center {x;y} {x=x';y=y'} =
+  let newx = if x > x' then x' +. (x-.x')/.2. else x +. (x' -. x)/.2.
+  and newy = if y > y' then y' +. (y-.y')/.2. else y +. (y' -. y)/.2.
+  in make newx newy
 
 let determinant a b c =
   (b.x -. a.x) *. (c.y -. a.y) -. (b.y -. a.y) *. (c.x -. a.x)

@@ -127,6 +127,24 @@ let centroid ((a,b,c):t) =
   Line.intersection bl al
 
 let random_point ((a,b,c):t) : Point.t =
+  (* let rand_ab = Random.float 1. in
+   * let rand_ac = Random.float 1. in
+   * (\* Overflow resilient generation *\)
+   * let randab_x = if a.x > b.x then ((a.x -. b.x) *. rand_ab +. b.x)
+   *                else ((b.x -. a.x) *. rand_ab +. a.x) in
+   * let randab_y = if a.y > b.y then ((a.y -. b.y) *. rand_ab +. b.y)
+   *                else ((b.y -. a.y) *. rand_ab +. a.y) in
+   * let vec_ab = Vector.make randab_x randab_y in
+   * let randac_x = if a.x > c.x then ((a.x -. c.x) *. rand_ac +. c.x)
+   *                else ((c.x -. a.x) *. rand_ac +. a.x) in
+   * let randac_y = if a.y > c.y then ((a.y -. c.y) *. rand_ac +. c.y)
+   *                else ((c.y -. a.y) *. rand_ac +. a.y) in
+   * let vec_ac = Vector.make randac_x randac_y in
+   * let p = Vector.move_to (Vector.add vec_ab vec_ac) a in
+   * let bc = Vector.of_points b c
+   * and bp = Vector.of_points b p in
+   * if (Vector.determinant bc bp) *. Vector.determinant bc vec_ab < 0. then p
+   * else Point.point_reflection (Point.center b c) p *)
   let ab = Vector.of_points a b and ac = Vector.of_points a c in
   let randab = Vector.scal_mult (Random.float 1.) ab
   and randac = Vector.scal_mult (Random.float 1.) ac in
