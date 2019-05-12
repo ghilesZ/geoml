@@ -45,8 +45,8 @@ let circle_contains () =
 
 let triangle_contains () =
   let r = Triangle.make Point.orig
-            (Point.make max_float max_float)
-            (Point.make min_float max_float)
+            (Point.make 100. 100.)
+            (Point.make (-100.) 100.)
   in
   let f_gen() =Triangle.random_point r in
   random_contains_inside f_gen (Triangle.contains r) "Triangle"
