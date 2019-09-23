@@ -3,4 +3,4 @@
 (library
   (public_name geoml)
   (name geoml)
-  (libraries graphics))
+  (libraries graphics zarith))

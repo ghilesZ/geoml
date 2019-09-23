@@ -1,61 +1,67 @@
-(**
-    The module for the euclidean vector manipulation.
-*)
-type t = private {
-  	dx : float;
-  	dy : float;
-           }
+(** The module for the euclidean vector manipulation. *)
+module Make:
+functor (A : Arith.T)
+          (P:Signatures.Point_Sig with type arith = A.t)-> sig
 
-val make : float -> float -> t
+  type arith
+  type point
 
-(** null vector *)
-val null : t
+  type t = {
+  	  dx : arith;
+  	  dy : arith;
+    }
 
-val x_coord : t -> float
+  val make : arith -> arith -> t
 
-val y_coord : t -> float
+  (** null vector *)
+  val null : t
 
-(** of_points a b returns the vector begining at a and landing at b *)
-val of_points : Point.t -> Point.t -> t
+  val x_coord : t -> arith
 
-(** returns the norm of a vector *)
-val magnitude : t -> float
+  val y_coord : t -> arith
 
-(** return a vector with same direction but with a norm equal to 1. *)
-val normalize : t -> t
+  (** of_points a b returns the vector begining at a and landing at b *)
+  val of_points : point -> point -> t
 
-val rotation : float -> t -> t
+  (** returns the norm of a vector *)
+  val magnitude : t -> arith
 
-(** dot product of two vectors *)
-val dot_product : t -> t -> float
+  (** return a vector with same direction but with a norm equal to 1. *)
+  val normalize : t -> t
 
-(** scalar product of two vectors*)
-val scal_mult : float -> t -> t
+  val rotation : arith -> t -> t
 
-val determinant : t -> t -> float
+  (** dot product of two vectors *)
+  val dot_product : t -> t -> arith
 
-val opposite : t -> t
+  (** scalar product of two vectors*)
+  val scal_mult : arith -> t -> t
 
-(** vector addition *)
-val add : t -> t -> t
+  val determinant : t -> t -> arith
 
-(** vector substraction *)
-val substract : t -> t -> t
+  val opposite : t -> t
 
-(** move_to v p returns the translation of p according to the vector v *)
-val move_to : t -> Point.t -> Point.t
+  (** vector addition *)
+  val add : t -> t -> t
 
-(** projection v1 v2 returns the projection of v1 on v2*)
-val projection : t -> t -> t
+  (** vector substraction *)
+  val substract : t -> t -> t
 
-(** returns the angle between two vectors*)
-val angle : t -> t -> float
+  (** move_to v p returns the translation of p according to the vector v *)
+  val move_to : t -> point -> point
 
-(** compute the angle in radians *)
-val angle_deg : t -> t -> float
-(** compute the angle in degrees *)
+  (** projection v1 v2 returns the projection of v1 on v2*)
+  val projection : t -> t -> t
 
-(** reflect a b returns the reflected vector of a according to b *)
-val reflect : t -> t -> t
+  (** returns the angle between two vectors*)
+  val angle : t -> t -> arith
 
-val print : Format.formatter -> t -> unit
+  (** compute the angle in radians *)
+  val angle_deg : t -> t -> arith
+  (** compute the angle in degrees *)
+
+  (** reflect a b returns the reflected vector of a according to b *)
+  val reflect : t -> t -> t
+
+  val print : Format.formatter -> t -> unit
+end
