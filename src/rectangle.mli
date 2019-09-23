@@ -1,59 +1,70 @@
 (** This module provides the basic operations over rectangles *)
+module Make: functor
+  (A:Arith.T)
+  (P:Signatures.Point_Sig   with type arith = A.t)
+  (L:Signatures.Line_sig    with type point = P.t and type arith = A.t)
+  (S:Signatures.Segment_sig with type point = P.t and type line = L.t) -> sig
 
-type t = private Point.t * float * float
-(** rectangle type *)
+  type arith
+  type point
+  type line
+  type segment
 
-val make : Point.t -> float -> float -> t
-(** make p w h, returns a rectangle where p is the bottom-left 
+  type t = point * arith * arith
+  (** rectangle type *)
+
+  val make : point -> arith -> arith -> t
+  (** make p w h, returns a rectangle where p is the bottom-left
     corner of the rectangle, w its width and h its height *)
-  
- val of_diagonal : Point.t -> Point.t -> t
-(**  of_diagonal p1 p2, builds the rectangle where p1p2 is its diagonal 
+
+  val of_diagonal : point -> point -> t
+  (**  of_diagonal p1 p2, builds the rectangle where p1p2 is its diagonal
      (the bounding rectangle of the two points)*)
 
-val scale_x : t -> float -> t
-val scale_y : t -> float -> t
-  
-(** scale on both axis *)
-val scale : t -> float -> t
+  val scale_x : t -> arith -> t
+  val scale_y : t -> arith -> t
 
-val bottom_left_corner : t -> Point.t
-val bottom_right_corner : t -> Point.t
-val top_right_corner : t -> Point.t
-val top_left_corner : t -> Point.t
+  (** scale on both axis *)
+  val scale : t -> arith -> t
 
-val translate : float -> float -> t -> t
-val point_reflection : Point.t -> t -> t
-val contains : t -> Point.t -> bool
-val area : t -> float
-val perimeter : t -> float
-val proj_x : t -> float * float
-val proj_y : t -> float * float
+  val bottom_left_corner : t -> point
+  val bottom_right_corner : t -> point
+  val top_right_corner : t -> point
+  val top_left_corner : t -> point
 
-val intersects : t -> t -> bool
-(** determines whether or not two rectangles intersect *)
+  val translate : arith -> arith -> t -> t
+  val point_reflection : point -> t -> t
+  val contains : t -> point -> bool
+  val area : t -> arith
+  val perimeter : t -> arith
+  val proj_x : t -> arith * arith
+  val proj_y : t -> arith * arith
 
-val intersect_line : t -> Line.t -> Point.t list
-(** returns the intersection points of a rectangle and a line.
+  val intersects : t -> t -> bool
+  (** determines whether or not two rectangles intersect *)
+
+  val intersect_line : t -> line -> point list
+  (** returns the intersection points of a rectangle and a line.
     returns [] if they don't intersect.*)
 
-val segments : t -> Segment.t list
-(** returns a list of length 4 containing the segments of the rectangle*)
-  
-val is_square : t -> bool
-(** tests if the sides of the rectangle have same length *)
-  
-val encompass : t -> Point.t -> t
-(** given a rectangle and point, returns the smallest rectangle that contains the point and the rectangle given as parameters *)
+  val segments : t -> segment list
+  (** returns a list of length 4 containing the segments of the rectangle*)
 
-val bounding : Point.t list -> t
-(** given a list of point, returns the smallest rectangle that contains all the points of the list *)
+  val is_square : t -> bool
+  (** tests if the sides of the rectangle have same length *)
 
-val centroid : t -> Point.t
-(** returns the gravity center of a rectangle*)
+  val encompass : t -> point -> t
+  (** given a rectangle and point, returns the smallest rectangle that contains the point and the rectangle given as parameters *)
 
-val random_point : t -> Point.t
-(** returns a randomly and uniformly chosen point of the rectangle *)
+  val bounding : point list -> t
+  (** given a list of point, returns the smallest rectangle that contains all the points of the list *)
 
-val print : Format.formatter -> t -> unit  
-(** printer *)
+  val centroid : t -> point
+  (** returns the gravity center of a rectangle*)
+
+  val random_point : t -> point
+  (** chooses randomly and uniformly a point inside the rectangle *)
+
+  val print : Format.formatter -> t -> unit
+  (** printer *)
+end

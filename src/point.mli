@@ -1,51 +1,56 @@
 (** Module for 2d points manipulation *)
+module Make:
+functor (A : Arith.T)
+        (Aff:Signatures.Affine_Sig with type arith = A.t)-> sig
 
-type t = private {
-  	x : float;
-  	y : float;
-}
+  type arith
+  type affine
 
-val make : float -> float -> t
+  type t = {
+  	  x : arith;
+  	  y : arith;
+    }
 
-val ( % ) : float -> float -> t
+  val make : arith -> arith -> t
 
-type point = t
+  val ( % ) : arith -> arith -> t
 
-module Tbl: Hashtbl.S with type key = t
+  type point = t
 
-val orig : t
+  val orig : t
 
-val center : t -> t -> t
+  val center : t -> t -> t
 
-val determinant : t -> t -> t -> float
+  val determinant : t -> t -> t -> arith
 
-val iso_barycenter : t list -> t
+  val iso_barycenter : t list -> t
 
-val barycenter : (t * float) list -> t
+  val barycenter : (t * arith) list -> t
 
-val sq_distance : t -> t -> float
+  val sq_distance : t -> t -> arith
 
-val distance : t -> t -> float
+  val distance : t -> t -> arith
 
-val x_coord : t -> float
+  val x_coord : t -> arith
 
-val y_coord : t -> float
+  val y_coord : t -> arith
 
-val scale_x : t -> float -> t
+  val scale_x : t -> arith -> t
 
-val scale_y : t -> float -> t
+  val scale_y : t -> arith -> t
 
-val translate : float -> float -> t -> t
+  val translate : arith -> arith -> t -> t
 
-val transform : Affine.t -> t -> t
+  val transform : affine -> t -> t
 
-(** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
-val point_reflection : t -> t -> t
+  (** point reflection. reflection p1 p2 returns the symerical point of p2 with respect to p1 *)
+  val point_reflection : t -> t -> t
 
-(** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in radian *)
-val rotate : t -> t -> float -> t
+  (** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in radian *)
+  val rotate : t -> t -> arith -> t
 
-(** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in degree *)
-val rotate_angle : t -> t -> float -> t
+  (** point rotation. rotate p1 p2 f returns the rotation point of p2 with p1 as center and f a angle in degree *)
+  val rotate_angle : t -> t -> arith -> t
 
-val print : Format.formatter -> t -> unit
+  val print : Format.formatter -> t -> unit
+end
