@@ -28,4 +28,4 @@ let int_sum i n f =
 
 let pi = 4.0 *. atan 1.
 
-let deg_to_rad x = x *. 0.0174533
+let deg_to_rad = 0.0174533

@@ -1,88 +1,81 @@
-module Make
-         (A:Arith.T)
-         (P:Signatures.Point_Sig with type arith = A.t)
-         (L:Signatures.Line_sig with type point = P.t) = struct
+type t = Point.t * Point.t
 
-  type arith = A.t
-  type affine = P.affine
-  type point = P.t
-  type line = L.t
+let make (p1:Point.t) (p2:Point.t) : t = (p1,p2)
 
-  type t = point * point
+module Tbl = Hashtbl.Make (struct
+    type t = Point.t * Point.t
+    let equal (a1,b1) (a2, b2) = a1 == a2 && b1 == b2
+    let hash = Hashtbl.hash
+  end)
 
-  let make (p1:point) (p2:point) : t = (p1,p2)
+let extr1 ((p1,_):t) : Point.t = p1
 
-  let extr1 ((p1,_):t) : point = p1
+let extr2 ((_,p2):t) : Point.t = p2
 
-  let extr2 ((_,p2):t) : point = p2
+let sq_size ((p1,p2):t) = Point.sq_distance p1 p2
 
-  let sq_size ((p1,p2):t) = P.sq_distance p1 p2
+let size ((p1,p2):t) = Point.distance p1 p2
 
-  let size ((p1,p2):t) = P.distance p1 p2
+let map f (p1, p2) = (f p1, f p2)
 
-  let map f (p1, p2) = (f p1, f p2)
+let center (p1,p2) = Point.center p1 p2
 
-  let center (p1,p2) = P.center p1 p2
+let equation ((p1,p2):t) t =
+  if t < 0. || t > 1. then
+    invalid_arg "Segment.equation: parameter must be in [0. ; 1.]"
+  else
+    let open Point in
+    let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in
+    Point.translate (t*.dx) (t*.dy) p1
 
-  open A
+let scale_y (p1,p2) f = make (Point.scale_y p1 f) (Point.scale_y p2 f)
 
-  let equation (p1,p2) t =
-    if t < zero || t > one then
-      invalid_arg "Segment.equation: parameter must be in [0. ; 1.]"
-    else
-      let open P in
-      let (dx,dy) = (p2.x -. p1.x),(p2.y -. p1.y) in
-      P.translate (t*.dx) (t*.dy) p1
+let scale_x (p1, p2) f = make (Point.scale_x p1 f) (Point.scale_x p2 f)
 
-  let scale_y (p1,p2) f = make (P.scale_y p1 f) (P.scale_y p2 f)
+let translate dx dy = map (Point.translate dx dy)
 
-  let scale_x (p1, p2) f = make (P.scale_x p1 f) (P.scale_x p2 f)
+let transform m = map Point.(transform m)
 
-  let translate dx dy = map (P.translate dx dy)
+let to_line ((p1,p2):t) = Line.of_points p1 p2
 
-  let transform m = map P.(transform m)
+let contains ((a,b):t) p =
+  Point.sq_distance a p +. Point.sq_distance p b =  Point.sq_distance a b
 
-  let to_line (p1,p2) = L.of_points p1 p2
+let proj_x ((a,b):t) =
+  let open Point in
+  if a.x > b.x then b.x,a.x
+  else a.x,b.x
 
-  let contains (a,b) p =
-    P.sq_distance a p +. P.sq_distance p b =  P.sq_distance a b
+let proj_y ((a,b):t) =
+  let open Point in
+  if a.y > b.y then b.y,a.y
+  else a.y,b.y
 
-  let proj_x (a,b) =
-    let open P in
-    if a.x > b.x then b.x,a.x
-    else a.x,b.x
+let intersects ((a1, b1 as s1):t) (s2:t) =
+  let open Point in
+  try
+    let p = Line.intersection (to_line s1) (to_line s2)
+    and sqd = sq_distance a1 b1 in
+    sq_distance a1 p <= sqd && sq_distance b1 p <= sqd
+  with
+  | Line.Error Line.Parallel(_) -> false
 
-  let proj_y (a,b) =
-    let open P in
-    if a.y > b.y then b.y,a.y
-    else a.y,b.y
+let intersection ((a1, b1 as s1):t) (s2:t) =
+  let open Point in
+  try
+    let p = Line.intersection (to_line s1) (to_line s2)
+    and sqd = sq_distance a1 b1 in
+    if sq_distance a1 p < sqd && sq_distance b1 p < sqd
+    then Some p else None
+  with
+  | Line.Error Line.Parallel(_) -> None
 
-  let intersects (a1, b1 as s1) s2 =
-    let open P in
-    try
-      let p = L.intersection (to_line s1) (to_line s2)
-      and sqd = sq_distance a1 b1 in
-      sq_distance a1 p <= sqd && sq_distance b1 p <= sqd
-    with
-    | L.(Error(Parallel(_))) -> false
-
-  let intersection ((a1, b1 as s1)) s2 =
-    let open P in
-    try
-      let p = L.intersection (to_line s1) (to_line s2)
-      and sqd = sq_distance a1 b1 in
-      if sq_distance a1 p < sqd && sq_distance b1 p < sqd
-      then Some p else None
-    with
-    | L.(Error (Parallel(_))) -> None
-
-  let intersect_line ((p1,p2) as s) l =
-    let open P in
-    try
-      let p = L.intersection l (to_line s)
-      and sqd = sq_distance p1 p2 in
-      if sq_distance p1 p <= sqd && sq_distance p2 p <= sqd
-      then Some p else None
-    with
-    | L.(Error(Parallel(_))) -> None
-end
+let intersect_line (((p1,p2) as s):t) l =
+  let open Point in
+  try
+    let p = Line.intersection l (to_line s)
+    and sqd = sq_distance p1 p2 in
+    if sq_distance p1 p <= sqd && sq_distance p2 p <= sqd
+    then Some p else None
+  with
+  | Line.Error Line.Parallel(_) -> None
