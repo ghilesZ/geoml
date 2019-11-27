@@ -125,7 +125,7 @@ let insert_intersection_points crossing crosslink entering start_inside l = snd 
       try
         let vs = Segment.Tbl.find crossing (cur, next) in
         let vs = Common.List.split_concat_sorted
-            (fun v1 v2 -> Pervasives.compare
+            (fun v1 v2 -> compare
                 (Point.sq_distance cur v1)
                 (Point.sq_distance cur v2)) vs
         in
