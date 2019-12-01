@@ -63,14 +63,22 @@ let intersects ((a1, b1 as s1):t) ((a2,b2 as s2):t) =
   | Line.Error Line.Parallel(_) -> false
 
 let intersection ((a1, b1 as s1):t) ((a2,b2 as s2):t) =
+  let approx_lt eps n1 n2 =
+    n1 < n2 &&
+    (Float.abs n2 -. n1)  > eps
+  in
   let open Point in
   try
     let p = Line.intersection (to_line s1) (to_line s2)
     and sqd = sq_distance a1 b1 
     and sqd2 = sq_distance a2 b2 in
-    if sq_distance a1 p < sqd && sq_distance b1 p < sqd &&
-       sq_distance a2 p < sqd2 && sq_distance b2 p < sqd2
-    then Some p else None
+    let eps = 1.0E-8 in
+      let ale = approx_lt eps in
+      if ale (sq_distance a1 p) sqd &&
+         ale (sq_distance b1 p) sqd &&
+         ale (sq_distance a2 p) sqd2 &&
+         ale (sq_distance b2 p) sqd2 
+      then Some p else None
   with
   | Line.Error Line.Parallel(_) -> None
 
