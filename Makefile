@@ -62,10 +62,10 @@
 ########################## Frontend to dune ##############################
 .PHONY: default build install uninstall test clean
 
-default: build
+default: build doc
 
 build:
-	dune build src/geoml.cma
+	dune build
 
 test:
 	dune runtest -f
@@ -78,3 +78,8 @@ uninstall:
 
 clean:
 	dune clean
+
+doc:
+	dune build @doc
+	mkdir -p docs/
+	cp -r _build/default/_doc/_html/geoml/* docs/

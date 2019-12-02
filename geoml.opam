@@ -1,0 +1,25 @@
+opam-version: "2.0"
+maintainer: "Ghiles Ziat <ghiles.ziat@lip6.fr>"
+authors: [
+  "Ghiles Ziat <ghiles.ziat@lip6.fr>"
+  "Rémy Besognet El Sibaïe"
+]
+homepage: "https://github.com/ghilesZ/geoml"
+bug-reports: "https://github.com/ghilesZ/geoml/issues"
+dev-repo: "git+https://github.com/ghilesZ/geoml"
+license: "MIT"
+build: [
+  ["dune" "subst"] {pinned}
+  ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
+  ["dune" "build" "-p" name "-j" jobs] {with-test}
+]
+
+depends: [
+  "ocaml" {>= "4.04.0"}
+  "dune"  {>= "1.11"}
+  "odoc" {with-doc}
+  "qcheck" {with-test}
+]
+
+synopsis: "Geoml: 2D Geometry library for OCaml"
+description: "Geoml is a 2D geometry for OCaml that provides basic euclidean geometry types (point, line, circle ...) and useful operations over those types. Computations are made using floatting poinr precision"

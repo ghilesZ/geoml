@@ -31,16 +31,11 @@ It also implements several cool algorithms :
 * Ear-clipping Algorithm for Polygon triangulation (Mei, Tipper & Xu)
 
 You can see some examples of application in the **tests** directory (You'll need **Graphics**)
+
 ##### Build
 - The library : **make**
 - The documentation : **make doc**
 - The tests : **make tests**
-
-##### Compile
-- bytecode: **ocamlc** geom.cma your_files.ml
-- native code: **ocamlopt** geom.cmxa your_files.ml
-
-*PS: you'll have to open the Geom module to access the sub-modules (Point, Line ... etc)*
 
 ##### Current
 GeoML is currently still in developpement, and have not been tested -nor proved,
