@@ -9,10 +9,10 @@ val print : Format.formatter -> t -> unit
 (** printer *)
 
 val to_string : t -> string
-(** to string*)
+(** to string *)
 
 type error = | Parallel of t * t
-	     | Same_coordinates of Point.t
+	           | Same_coordinates of Point.t
 (** the type of errors *)
 
 exception Error of error
@@ -22,26 +22,26 @@ val print_error : Format.formatter -> error -> unit
 (** error printer*)
 
 val make : float -> float -> float -> t
-(** make a b c returns a line with an equation of the form: ax + by + c = 0*)
+(** [make a b c] builds a line of equation: ax + by + c = 0*)
 
 val make_x : float -> t
-(** make_x a returns a line with an equation of the form: x = a*)
+(** [make_x a] builds a line of equation: x = a*)
 
 val make_y : float -> float -> t
-(** make_y a b returns a line with an equation of the form: y = ax + b *)
+(** [make_y a b] builds a line of equation: y = ax + b *)
 
 val x_axis : t
-(** returns the horizontal line of equation: y = 0*)
+(** the horizontal line of equation: y = 0*)
 
 val y_axis : t
-(** returns the vertical line of equation: x = 0*)
+(** the vertical line of equation: x = 0*)
 
 val of_points : Point.t -> Point.t -> t
-(** of_points p1 p2 builds the line that goes through p1 and p2.
-    It raises Error(Same_coordinates) if p1 and p2 have the same coordinates *)
+(** [of_points p1 p2] builds the line that goes through the points p1 and p2.
+    It raises [Error(Same_coordinates)] if [p1 = p2] *)
 
 val is_vertical : t -> bool
-(** is_vertical l, returns true if l has an equation of the form: x=cst,
+(** [is_vertical l], is [true] if l has an equation of the form: x=cst,
     where cst is a constant float*)
 
 val is_horizontal: t -> bool
@@ -98,7 +98,8 @@ val orth_proj : t -> Point.t -> Point.t
 (** orth_proj l p, returns the orthogonal projection of p on l*)
 
 val point_bissection : Point.t -> Point.t -> t
-(** point_bissection p1 p2 returns the line l that bissects the segment p1p2 in its center*)
+(** [point_bissection p1 p2] builds the line [l] that bissects the
+   segment p1p2 in its center. It Raises [Error(Same_coordinates)] if [p1 = p2] *)
 
 val arbitrary_point : t -> Point.t
-(** returns an arbitrary point that is on the line *)
+(** [arbitrary_point l] chooses an aribitrary point [p] such that [contains l p] is true *)

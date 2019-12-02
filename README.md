@@ -37,8 +37,8 @@ You can see some examples of application in the **tests** directory (You'll need
 - The tests : **make tests**
 
 ##### Documentation
-You can build locally the documentation by doing `make doc`, or cnsult
-the online [documentation](https://ghilesz.github.io/geoml/).
+You can build locally the documentation by doing `make doc`, or consult
+the online [documentation](https://ghilesz.github.io/geoml/geoml/index.html).
 
 
 ##### Current
