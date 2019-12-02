@@ -34,8 +34,12 @@ You can see some examples of application in the **tests** directory (You'll need
 
 ##### Build
 - The library : **make**
-- The documentation : **make doc**
 - The tests : **make tests**
+
+##### Documentation
+You can build locally the documentation by doing `make doc`, or cnsult
+the online [documentation](https://ghilesz.github.io/geoml/).
+
 
 ##### Current
 GeoML is currently still in developpement, and have not been tested -nor proved,
