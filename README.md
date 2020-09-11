@@ -1,11 +1,11 @@
-# GeoML
+# Geoml
 
-GeoMl is 2D geometry library for Ocaml. It focuses on euclidean geometry
+Geoml is 2D geometry library for Ocaml. It focuses on euclidean geometry
 and provides basic types and operations over geometric shapes.
 Here an example showing a way to construct geometrically a golden rectangle from four points defining a square:
-```ocaml
-  open Geom
-  ...
+```OCaml
+  open Geoml
+  
   let gold_rect (a,b,c,d) =
     let e = Point.center a b and ab = Line.of_points a b in
     let circ = Point.distance e c |> Circle.make e in
@@ -42,7 +42,7 @@ the online [documentation](https://ghilesz.github.io/geoml/geoml/index.html).
 
 
 ##### Current
-GeoML is currently still in developpement, and have not been tested
+Geoml is currently still in developpement, and have not been tested
 -nor proved, nor model-checked nor analyzed ... but you know what we
 say about well typed program ;) -. Thereby, you might find some weird
 behaviors or failures. Feel free to let us know or report an issue
