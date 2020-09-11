@@ -1,7 +1,8 @@
-B /home/ziat/.opam/4.07.0/lib/ocaml
-B ../../_build/default/examples/constraint/.constraint.eobjs
-B ../../_build/default/src/.geoml.objs
-S /home/ziat/.opam/4.07.0/lib/ocaml
+EXCLUDE_QUERY_DIR
+B /home/ziat/.opam/4.08.0/lib/ocaml
+B ../../_build/default/examples/constraint/.constraint.eobjs/byte
+B ../../_build/default/src/.geoml.objs/byte
+S /home/ziat/.opam/4.08.0/lib/ocaml
 S .
 S ../../src
-FLG -w @a-4-29-40-41-42-44-45-48-58-59-60-40 -strict-sequence -strict-formats -short-paths -keep-locs
+FLG -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs

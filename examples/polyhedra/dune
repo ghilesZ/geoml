@@ -1,8 +1,0 @@
-(executable
-(name polyhedra)
-(modules polyhedra)
-(libraries geoml))
-
-(alias
- (name   dune)
- (action (run %{exe:polyhedra.exe})))

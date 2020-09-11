@@ -1,14 +1,13 @@
-type t = Point.t list
-
+type t = Point.t list (* should be non empty *)
 type polygon = t
 
 exception Empty
 
-let make l = l
+let make (l:Point.t list) : t = l
 
 let to_list l : Point.t list = l
 
-let first_point = List.hd
+let first_point : t -> Point.t = List.hd
 
 let fold f acc p =
   let rec aux acc = function
@@ -42,12 +41,12 @@ let fold_segments_pair f acc p =
   in
   aux acc p
 
-let perimeter p =
+let perimeter (p:t) : float =
   fold Point.(fun acc p1 p2 ->
       acc +. distance p1 p2
     ) 0. p
 
-let area p =
+let area (p:t) : float =
   fold Point.(fun acc p1 p2 ->
       acc +. (p1.x *. p2.y -. p1.y *. p2.x)
   ) 0. p /. 2. |> abs_float
@@ -67,10 +66,10 @@ let proj_y = function
   ) (p.y,p.y) t)
 
 let translate x y =
-  List.map (Point.translate x y)
+  List.rev_map (Point.translate x y)
 
 let transform m =
-  List.map (Point.transform m)
+  List.rev_map (Point.transform m)
 
 let intersect_line p l =
   fold (fun acc p1 p2 ->
@@ -102,8 +101,7 @@ let segments_intersection_points crossing p1 p2 =
     in Segment.Tbl.add h cpl (f newitem res)
   in
   if maxx1 < minx2 || maxy1 < miny2
-     || maxx2 < minx1 || maxy2 < miny2 then
-    []
+     || maxx2 < minx1 || maxy2 < miny2 then []
   else
     let update seg1 v seg2 =
       let u seg = update crossing [] (fun e ol -> e :: ol) seg v in
@@ -119,7 +117,6 @@ let segments_intersection_points crossing p1 p2 =
 
 
 (* Weiler Atherton #####################################################  *)
-
 let insert_intersection_points crossing crosslink entering start_inside l = snd @@ fold (
     fun (inside, acc) cur next ->
       try
