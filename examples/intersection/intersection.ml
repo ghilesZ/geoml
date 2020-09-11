@@ -50,17 +50,12 @@ let frame (c1,c2,l) =
   Drawing.draw_circle c1 Graphics.red;
   Drawing.draw_circle c2 Graphics.red;
   Drawing.draw_line l Graphics.blue;
-  List.iter (fun e ->
-      let c = Circle.make e 5. in
-      Drawing.fill_circle c (Graphics.rgb 200 100 200))
+  List.iter (fun e -> Drawing.fill_circle (Circle.make e 5.) (Graphics.black))
     (work (c1,c2,l));
   List.iter (fun e ->
-      let c = Circle.make e 5. in
-      Drawing.fill_circle c (Graphics.rgb 255 165 0))
+      Drawing.fill_circle (Circle.make e 5.) (Graphics.blue))
     (work2 c1);
-  List.iter (fun e ->
-      let c = Circle.make e 5. in
-      Drawing.fill_circle c (Graphics.rgb 255 165 0))
+  List.iter (fun e -> Drawing.fill_circle (Circle.make e 5.) (Graphics.red))
     (work2 c2)
 
 (****** Window and event handling *****)
@@ -76,10 +71,7 @@ let handler status =
 let loop () =
   Graphics.loop_at_exit [Graphics.Key_pressed] handler
 
-let doit () =
-  Random.self_init ();
+let main =
   Drawing.open_graph size_x size_y title;
   new_val () |> frame;
   loop ()
-
-let () = doit()
