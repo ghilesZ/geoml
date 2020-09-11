@@ -27,6 +27,10 @@ let l_intersec() =
 
 (*********************************************************************************)
 
+(****)
+(* test of the property (contains x (random x)) *)
+(****)
+
 let random_contains_inside f_gen f_in modulename =
   for _ = 0 to 100000 do
     let p = f_gen() in
@@ -45,8 +49,8 @@ let circle_contains () =
 
 let triangle_contains () =
   let r = Triangle.make Point.orig
-            (Point.make max_float max_float)
-            (Point.make min_float max_float)
+            (Point.make (-1000000.) (0.))
+            (Point.make (-1000000.) (1000000.))
   in
   let f_gen() =Triangle.random_point r in
   random_contains_inside f_gen (Triangle.contains r) "Triangle"
