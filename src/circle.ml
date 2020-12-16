@@ -62,7 +62,10 @@ let intersect_line (c:t) (l:Line.t) =
      |> List.map (fun x -> Point.make x (a*.x+.b) |> Point.translate cx cy)
 
 let segment_intersection c (s:Segment.t) =
-  Segment.to_line s |> intersect_line c |> List.filter (Segment.contains s)
+      let (a,b)= s in
+      let ab = Vector.of_points a b in
+      let dab2 = Point.sq_distance a b in
+      Segment.to_line s |> intersect_line c |> List.filter (fun p-> let dp = Vector.dot_product ab (Vector.of_points a p) in 0. <= dp && dp <= dab2)
 
 (** tangent c p returns the tangent of circle c going through point p.
     p must lie on c's boundary *)
