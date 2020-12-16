@@ -39,7 +39,7 @@ let transform m = map Point.(transform m)
 let to_line ((p1,p2):t) = Line.of_points p1 p2
 
 let contains ((a,b):t) p =
-  Point.sq_distance a p +. Point.sq_distance p b =  Point.sq_distance a b
+  Point.distance a p +. Point.distance p b =  Point.distance a b
 
 let proj_x ((a,b):t) =
   let open Point in
