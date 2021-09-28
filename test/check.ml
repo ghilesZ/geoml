@@ -46,22 +46,25 @@ let random_contains_inside f_gen f_in modulename =
   done
 
 let rectangle_contains () =
+  let st = Random.get_state () in
   let r = Rectangle.make Point.orig max_float max_float in
-  let f_gen () = Rectangle.random_point r in
+  let f_gen () = Rectangle.random_point st r in
   random_contains_inside f_gen (Rectangle.contains r) "Rectangle"
 
 let circle_contains () =
+  let st = Random.get_state () in
   let r = Circle.make Point.orig max_float in
-  let f_gen () = Circle.random_point r in
+  let f_gen () = Circle.random_point st r in
   random_contains_inside f_gen (Circle.contains r) "Circle"
 
 let triangle_contains () =
+  let st = Random.get_state () in
   let r =
     Triangle.make Point.orig
       (Point.make (-1000000.) 0.)
       (Point.make (-1000000.) 1000000.)
   in
-  let f_gen () = Triangle.random_point r in
+  let f_gen () = Triangle.random_point st r in
   random_contains_inside f_gen (Triangle.contains r) "Triangle"
 
 let constructors =

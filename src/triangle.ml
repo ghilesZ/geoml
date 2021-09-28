@@ -121,9 +121,9 @@ let centroid ((a, b, c) : t) =
   let al = Line.of_points bc a and bl = Line.of_points ac b in
   Line.intersection bl al
 
-let random_point ((a, b, c) : t) : Point.t =
+let random_point st ((a, b, c) : t) : Point.t =
   let ab = Vector.of_points a b and ac = Vector.of_points a c in
-  let r1 = Random.float 1. in
-  let r2 = Random.float 1. in
+  let r1 = Random.State.float st 1. in
+  let r2 = Random.State.float st 1. in
   let r1, r2 = if r1 +. r2 <= 1. then (r1, r2) else (1. -. r1, 1. -. r2) in
   Vector.(move_to (add (scal_mult r1 ab) (scal_mult r2 ac))) a
