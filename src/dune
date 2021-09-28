@@ -2,5 +2,4 @@
 
 (library
   (public_name geoml)
-  (name geoml)
-  (libraries graphics))
+  (name geoml))

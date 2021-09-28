@@ -7,5 +7,4 @@ module Line = Line
 module Constraint = Constraint
 module Polygon = Polygon
 module Polyhedron = Polyhedron
-module Drawing = Drawing
 module Vector = Vector

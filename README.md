@@ -1,6 +1,6 @@
 # Geoml
 
-Geoml is 2D geometry library for Ocaml. It focuses on euclidean geometry
+Geoml is 2D geometry library for OCaml. It focuses on euclidean geometry
 and provides basic types and operations over geometric shapes.
 Here an example showing a way to construct geometrically a golden rectangle from four points defining a square:
 ```OCaml
@@ -52,4 +52,6 @@ Polyhedron, Curve, Ellipse, Shape ...** modules are not quite ready to
 be used and you should not rely on the code in it.
 
 
-You are also welcome to contact any member of the developpement team if you want to suggest a feature you think it may be cool to have in GeoML.
+You are also welcome to contact any member of the developpement team
+if you want to report a bug or suggest a feature you think it may be
+cool to have in GeoML.

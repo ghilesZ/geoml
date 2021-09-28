@@ -1,7 +1,7 @@
 (executable
 (name intersection)
 (modules intersection)
-(libraries geoml))
+(libraries geoml drawing))
 
 (alias
  (name   default)
