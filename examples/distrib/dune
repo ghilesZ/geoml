@@ -2,7 +2,3 @@
 (name distrib)
 (modules distrib)
 (libraries geoml drawing))
-
-(alias
- (name   default)
- (action (run %{exe:distrib.exe})))

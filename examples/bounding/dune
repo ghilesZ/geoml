@@ -1,8 +1,4 @@
 (executable
 (name bounding)
 (modules bounding)
-(libraries geoml))
-
-(alias
- (name   default)
- (action (run %{exe:bounding.exe})))
+(libraries geoml drawing))

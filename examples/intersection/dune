@@ -2,7 +2,3 @@
 (name intersection)
 (modules intersection)
 (libraries geoml drawing))
-
-(alias
- (name   default)
- (action (run %{exe:intersection.exe})))

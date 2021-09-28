@@ -1,8 +1,4 @@
 (executable
 (name circum_incircle)
 (modules circum_incircle)
-(libraries geoml))
-
-(alias
- (name   default)
- (action (run %{exe:circum_incircle.exe})))
+(libraries geoml drawing))

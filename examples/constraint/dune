@@ -1,8 +1,4 @@
 (executable
 (name constraint)
 (modules constraint)
-(libraries geoml))
-
-(alias
- (name   default)
- (action (run %{exe:constraint.exe})))
+(libraries geoml drawing))

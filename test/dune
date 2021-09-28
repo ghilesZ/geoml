@@ -1,4 +1,4 @@
-(executables
+(tests
  (libraries alcotest geoml)
  (modules   check)
  (names     check))
@@ -6,4 +6,4 @@
 (alias
  (name    runtest)
  (deps    (:test check.exe))
- (action  (run %{test})))
+)
