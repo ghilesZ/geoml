@@ -43,7 +43,7 @@ the online [documentation](https://ghilesz.github.io/geoml/geoml/index.html).
 
 ##### Current
 Geoml is currently still in developpement, and have not been tested
--nor proved, nor model-checked nor analyzed ... but you know what we
+-nor proved, nor model-checked nor analyzed ... but you know what they
 say about well typed program ;) -. Thereby, you might find some weird
 behaviors or failures. Feel free to let us know or report an issue
 about it.  The modules **Point, Line, Rectangle, Vector, Triangle,

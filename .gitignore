@@ -25,3 +25,6 @@ setup.log
 
 # Dune generated files
 *.install
+
+# ocamlformat conf file
+.ocamlformat

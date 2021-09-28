@@ -1,7 +1,7 @@
 (executable
 (name distrib)
 (modules distrib)
-(libraries geoml))
+(libraries geoml drawing))
 
 (alias
  (name   default)
