@@ -1,5 +1,3 @@
-open Math
-
 type t = {center: Point.t; radius: float}
 
 let make center radius : t =
@@ -12,8 +10,7 @@ let radius {radius; _} = radius
 
 let translate dx dy (c : t) = {c with center= Point.translate dx dy c.center}
 
-let point_reflection p (c : t) =
-  {c with center= Point.point_reflection p c.center}
+let reflection p (c : t) = {c with center= Point.reflection p c.center}
 
 let rotate (c : t) p f = {c with center= Point.rotate c.center p f}
 
@@ -22,9 +19,9 @@ let rotate_angle (c : t) p f =
 
 let contains (c : t) p = Point.sq_distance c.center p <= c.radius *. c.radius
 
-let area ({radius; _} : t) = pi *. radius *. radius
+let area ({radius; _} : t) = Math.pi *. radius *. radius
 
-let perimeter ({radius; _} : t) = 2. *. pi *. radius
+let perimeter ({radius; _} : t) = 2. *. Math.pi *. radius
 
 let proj_x (c : t) =
   let open Point in
@@ -149,13 +146,13 @@ let bounding (pts : Point.t list) : t =
   | h :: tl -> mindisk pts (make h 0.) [h] tl
 
 let random_point st (c : t) : Point.t =
-  let theta = Random.State.float st pi *. 2.
+  let theta = Random.State.float st Math.pi *. 2.
   and r = Random.State.float st (c.radius *. c.radius) |> sqrt in
   let x = r *. cos theta and y = r *. sin theta in
   Point.(make (c.center.x +. x) (c.center.y +. y))
 
 let random_point_perimeter st (c : t) : Point.t =
-  let theta = Random.State.float st pi *. 2. and r = c.radius in
+  let theta = Random.State.float st Math.pi *. 2. and r = c.radius in
   let x = r *. cos theta and y = r *. sin theta in
   Point.(make (c.center.x +. x) (c.center.y +. y))
 

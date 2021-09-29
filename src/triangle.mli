@@ -41,7 +41,7 @@ val scale_y : t -> float -> t
 
 val translate : float -> float -> t -> t
 
-val point_reflection : Point.t -> t -> t
+val reflection : Point.t -> t -> t
 
 val contains : t -> Point.t -> bool
 (** tests if a point is in a triangle with barycenter method *)

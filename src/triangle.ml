@@ -35,22 +35,20 @@ let translate dx dy (tr : t) : t = tri_map (Point.translate dx dy) tr
 
 let transform t m : t = tri_map (Point.transform m) t
 
-let point_reflection p (tr : t) : t =
-  tri_map (fun e -> Point.point_reflection p e) tr
+let reflection p (tr : t) : t = tri_map (Point.reflection p) tr
 
 (* tests if a point is in a triangle with barycentric coordinates *)
-let contains
-    (( {Point.x= ax; Point.y= ay}
-     , {Point.x= bx; Point.y= by}
-     , {Point.x= cx; Point.y= cy} ) :
-      t) ({Point.x= px; Point.y= py} : Point.t) =
-  let l1 =
-    (((by -. cy) *. (px -. cx)) +. ((cx -. bx) *. (py -. cy)))
-    /. (((by -. cy) *. (ax -. cx)) +. ((cx -. bx) *. (ay -. cy)))
-  and l2 =
-    (((cy -. ay) *. (px -. cx)) +. ((ax -. cx) *. (py -. cy)))
-    /. (((by -. cy) *. (ax -. cx)) +. ((cx -. bx) *. (ay -. cy)))
-  in
+let contains (Point.({x= ax; y= ay}, {x= bx; y= by}, {x= cx; y= cy}) : t)
+    Point.{x= px; y= py} =
+  let bcy = by -. cy in
+  let cbx = cx -. bx in
+  let acx = ax -. cx in
+  let acy = ay -. cy in
+  let pcx = px -. cx in
+  let pcy = py -. cy in
+  let den = (bcy *. acx) +. (cbx *. acy) in
+  let l1 = ((bcy *. pcx) +. (cbx *. pcy)) /. den
+  and l2 = (((cy -. ay) *. pcx) +. (acx *. pcy)) /. den in
   let l3 = 1. -. l1 -. l2 in
   l3 > 0. && l3 < 1. && l2 > 0. && l2 < 1. && l1 > 0. && l1 < 1.
 

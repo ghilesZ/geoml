@@ -18,17 +18,17 @@ val scale_y : t -> float -> t
 val scale : t -> float -> t
 (** scale on both axis *)
 
-val bottom_left_corner : t -> Point.t
+val bottom_left : t -> Point.t
 
-val bottom_right_corner : t -> Point.t
+val bottom_right : t -> Point.t
 
-val top_right_corner : t -> Point.t
+val top_right : t -> Point.t
 
-val top_left_corner : t -> Point.t
+val top_left : t -> Point.t
 
 val translate : float -> float -> t -> t
 
-val point_reflection : Point.t -> t -> t
+val reflection : Point.t -> t -> t
 
 val contains : t -> Point.t -> bool
 

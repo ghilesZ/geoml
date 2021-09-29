@@ -11,13 +11,13 @@ let of_diagonal p1 p2 : t =
   in
   (make x y, w, h)
 
-let bottom_left_corner ((p, _, _) : t) = p
+let bottom_left ((p, _, _) : t) = p
 
-let bottom_right_corner ((p, w, _) : t) = Point.translate w 0. p
+let bottom_right ((p, w, _) : t) = Point.translate w 0. p
 
-let top_right_corner ((p, w, h) : t) = Point.translate w h p
+let top_right ((p, w, h) : t) = Point.translate w h p
 
-let top_left_corner ((p, _, h) : t) = Point.translate 0. h p
+let top_left ((p, _, h) : t) = Point.translate 0. h p
 
 let scale_x ((p, w, h) : t) f = (Point.scale_x p f, w *. f, h)
 
@@ -27,8 +27,8 @@ let scale r f = scale_y (scale_x r f) f
 
 let translate dx dy ((p, w, h) : t) : t = (Point.translate dx dy p, w, h)
 
-let point_reflection pivot ((p, w, h) : t) =
-  let r = make (Point.point_reflection pivot p) w h in
+let reflection pivot ((p, w, h) : t) =
+  let r = make (Point.reflection pivot p) w h in
   translate (-.w) (-.h) r
 
 let contains ((p, w, h) : t) (pt : Point.t) =
@@ -41,11 +41,11 @@ let perimeter ((_, w, h) : t) = 2. *. (w +. h)
 
 let proj_x r =
   let open Point in
-  ((bottom_left_corner r).x, (bottom_right_corner r).x)
+  ((bottom_left r).x, (bottom_right r).x)
 
 let proj_y r =
   let open Point in
-  ((bottom_left_corner r).y, (top_right_corner r).y)
+  ((bottom_left r).y, (top_right r).y)
 
 let intersects (s1 : t) (s2 : t) =
   let a, b = proj_x s1 and c, d = proj_x s2 in
@@ -55,10 +55,10 @@ let intersects (s1 : t) (s2 : t) =
   else false
 
 let segments (r : t) =
-  let s1 = Segment.make (bottom_right_corner r) (bottom_left_corner r)
-  and s2 = Segment.make (bottom_left_corner r) (top_left_corner r)
-  and s3 = Segment.make (top_left_corner r) (top_right_corner r)
-  and s4 = Segment.make (top_right_corner r) (bottom_right_corner r) in
+  let s1 = Segment.make (bottom_right r) (bottom_left r)
+  and s2 = Segment.make (bottom_left r) (top_left r)
+  and s3 = Segment.make (top_left r) (top_right r)
+  and s4 = Segment.make (top_right r) (bottom_right r) in
   [s1; s2; s3; s4]
 
 let is_square ((_, w, h) : t) = w = h
@@ -74,17 +74,12 @@ let bounding (pts : Point.t list) : t =
   match pts with
   | [x] -> (x, 0., 0.)
   | x :: tl -> List.fold_left encompass (x, 0., 0.) tl
-  | [] -> invalid_arg "can't build a bounding rectangle with an empty list"
+  | [] -> invalid_arg "bounding rectangle with an empty list"
 
 let intersect_line r l =
-  let inter =
-    segments r
-    |> List.map (fun e -> Segment.intersect_line e l)
-    |> List.filter (fun e -> e <> None)
-  in
-  match inter with [Some a; Some b] -> [a; b] | _ -> []
+  segments r |> List.filter_map (fun e -> Segment.intersect_line e l)
 
-let centroid r = top_right_corner r |> Point.center (bottom_left_corner r)
+let centroid r = top_right r |> Point.center (bottom_left r)
 
 let random_point st ((p, w, h) : t) =
   let open Point in

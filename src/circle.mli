@@ -10,7 +10,7 @@ val radius : t -> float
 
 val translate : float -> float -> t -> t
 
-val point_reflection : Point.t -> t -> t
+val reflection : Point.t -> t -> t
 
 val rotate : t -> Point.t -> float -> t
 (** radian rotation. rotate c p f returns the rotated circle of c with p as
