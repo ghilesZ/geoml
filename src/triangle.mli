@@ -24,16 +24,16 @@ val make : Point.t -> Point.t -> Point.t -> t
     least two points are equal*)
 
 val extr1 : t -> Point.t
-(** returns an arbitrary vertice of the triangle. The vertice returned is
-    different than the one returned by extr2 and extr3.*)
+(** returns a vertice of the triangle. The vertice returned is different than
+    the one returned by extr2 and extr3.*)
 
 val extr2 : t -> Point.t
-(** returns an arbitrary vertice of the triangle. The vertice returned is
-    different than the one returned by extr1 and extr3.*)
+(** returns a vertice of the triangle. The vertice returned is different than
+    the one returned by extr1 and extr3.*)
 
 val extr3 : t -> Point.t
-(** returns an arbitrary vertice of the triangle. The vertice returned is
-    different than the one returned by extr1 and extr2.*)
+(** returns a vertice of the triangle. The vertice returned is different than
+    the one returned by extr1 and extr2.*)
 
 val scale_x : t -> float -> t
 
@@ -44,7 +44,13 @@ val translate : float -> float -> t -> t
 val reflection : Point.t -> t -> t
 
 val contains : t -> Point.t -> bool
-(** tests if a point is in a triangle with barycenter method *)
+(** tests if a point is in a triangle *)
+
+val rotate : t -> Point.t -> float -> t
+(** rotation, angle in radian *)
+
+val rotate_angle : t -> Point.t -> float -> t
+(** rotation, angle in degree *)
 
 val area : t -> float
 
@@ -68,7 +74,7 @@ val is_right : t -> bool
 
 val points : t -> Point.t * Point.t * Point.t
 
-val as_points : Point.t * Point.t * Point.t -> t
+val of_points : Point.t * Point.t * Point.t -> t
 
 val angles : t -> float * float * float
 

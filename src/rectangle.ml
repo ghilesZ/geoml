@@ -39,20 +39,16 @@ let area ((_, w, h) : t) = w *. h
 
 let perimeter ((_, w, h) : t) = 2. *. (w +. h)
 
-let proj_x r =
-  let open Point in
-  ((bottom_left r).x, (bottom_right r).x)
+let proj_x r = Point.((bottom_left r).x, (bottom_right r).x)
 
-let proj_y r =
-  let open Point in
-  ((bottom_left r).y, (top_right r).y)
+let proj_y r = Point.((bottom_left r).y, (top_right r).y)
 
 let intersects (s1 : t) (s2 : t) =
   let a, b = proj_x s1 and c, d = proj_x s2 in
-  if a < d && b > c then
-    let a, b = proj_y s1 and c, d = proj_y s2 in
-    a < d && b > c
-  else false
+  a < d && b > c
+  &&
+  let a, b = proj_y s1 and c, d = proj_y s2 in
+  a < d && b > c
 
 let segments (r : t) =
   let s1 = Segment.make (bottom_right r) (bottom_left r)
@@ -64,11 +60,12 @@ let segments (r : t) =
 let is_square ((_, w, h) : t) = w = h
 
 let encompass (p1, w, h) p2 =
-  let l = min (Point.x_coord p1) (Point.x_coord p2)
-  and t = max (Point.y_coord p1 +. h) (Point.y_coord p2)
-  and r = max (Point.x_coord p1 +. w) (Point.x_coord p2)
-  and b = min (Point.y_coord p1) (Point.y_coord p2) in
-  (Point.make l b, r -. l, t -. b)
+  Point.(
+    let l = min p1.x p2.x
+    and t = max (p1.y +. h) p2.y
+    and r = max (p1.x +. w) p2.x
+    and b = min p1.y p2.y in
+    (make l b, r -. l, t -. b))
 
 let bounding (pts : Point.t list) : t =
   match pts with

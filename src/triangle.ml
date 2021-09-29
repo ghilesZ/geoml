@@ -1,6 +1,6 @@
 type t = Point.t * Point.t * Point.t
 
-let as_points t = t
+let of_points = Fun.id
 
 let tri_map f ((pa, pb, pc) : t) = (f pa, f pb, f pc)
 
@@ -34,6 +34,12 @@ let scale_y t f = tri_map (fun e -> Point.scale_y e f) t
 let translate dx dy (tr : t) : t = tri_map (Point.translate dx dy) tr
 
 let transform t m : t = tri_map (Point.transform m) t
+
+let rotate (tr : t) p alpha : t =
+  tri_map (fun p' -> Point.rotate p p' alpha) tr
+
+let rotate_angle (tr : t) p alpha : t =
+  tri_map (fun p' -> Point.rotate_angle p p' alpha) tr
 
 let reflection p (tr : t) : t = tri_map (Point.reflection p) tr
 

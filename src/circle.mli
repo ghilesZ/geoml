@@ -13,12 +13,11 @@ val translate : float -> float -> t -> t
 val reflection : Point.t -> t -> t
 
 val rotate : t -> Point.t -> float -> t
-(** radian rotation. rotate c p f returns the rotated circle of c with p as
-    rotation center and f a angle in radian *)
+(** radian rotation. [rotate c p f] returns the rotated circle of [c] with
+    [p] as rotation center and [f] a angle in radian *)
 
 val rotate_angle : t -> Point.t -> float -> t
-(** degree rotation. rotate c p f returns the rotated circle of c with p as
-    rotation center and f a angle in degree *)
+(** Same as rotate but the angle is given in degree *)
 
 val contains : t -> Point.t -> bool
 

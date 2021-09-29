@@ -69,8 +69,6 @@ let segment_intersection c (s : Segment.t) =
          let dp = Vector.dot_product ab (Vector.of_points a p) in
          0. <= dp && dp <= dab2)
 
-(** tangent c p returns the tangent of circle c going through point p. p must
-    lie on c's boundary *)
 let tangent {center; _} p =
   Line.perpendicular_of_line (Line.of_points center p) p
 
