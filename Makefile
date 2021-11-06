@@ -6,7 +6,7 @@ build:
 	dune build
 
 test:
-	dune runtest -f
+	@dune runtest --force -j1 --no-buffer
 
 install:
 	dune install

@@ -1,3 +1,5 @@
+type distance = float
+
 val float_sum : int -> int -> (int -> float) -> float
 
 val int_sum : int -> int -> (int -> int) -> int

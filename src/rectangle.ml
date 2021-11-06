@@ -1,8 +1,8 @@
-type t = Point.t * float * float
+type t = Point.t * Math.distance * Math.distance
 
 let make p w h : t = (p, w, h)
 
-let of_diagonal p1 p2 : t =
+let of_diagonal (p1 : Point.t) (p2 : Point.t) : t =
   let open Point in
   let x, w =
     if p1.x < p2.x then (p1.x, p2.x -. p1.x) else (p2.x, p1.x -. p2.x)
@@ -19,9 +19,11 @@ let top_right ((p, w, h) : t) = Point.translate w h p
 
 let top_left ((p, _, h) : t) = Point.translate 0. h p
 
-let scale_x ((p, w, h) : t) f = (Point.scale_x p f, w *. f, h)
+let scale_x ((p, w, h) : t) (f : Math.distance) : t =
+  (Point.scale_x p f, w *. f, h)
 
-let scale_y ((p, w, h) : t) f = (Point.scale_y p f, w, h *. f)
+let scale_y ((p, w, h) : t) (f : Math.distance) : t =
+  (Point.scale_y p f, w, h *. f)
 
 let scale r f = scale_y (scale_x r f) f
 
@@ -35,15 +37,15 @@ let contains ((p, w, h) : t) (pt : Point.t) =
   let open Point in
   p.x < pt.x && pt.x < p.x +. w && p.y < pt.y && pt.y < p.y +. h
 
-let area ((_, w, h) : t) = w *. h
+let area ((_, w, h) : t) : Math.distance = w *. h
 
-let perimeter ((_, w, h) : t) = 2. *. (w +. h)
+let perimeter ((_, w, h) : t) : Math.distance = 2. *. (w +. h)
 
 let proj_x r = Point.((bottom_left r).x, (bottom_right r).x)
 
 let proj_y r = Point.((bottom_left r).y, (top_right r).y)
 
-let intersects (s1 : t) (s2 : t) =
+let intersects (s1 : t) (s2 : t) : bool =
   let a, b = proj_x s1 and c, d = proj_x s2 in
   a < d && b > c
   &&
@@ -59,7 +61,7 @@ let segments (r : t) =
 
 let is_square ((_, w, h) : t) = w = h
 
-let encompass (p1, w, h) p2 =
+let encompass ((p1, w, h) : t) (p2 : Point.t) : t =
   Point.(
     let l = min p1.x p2.x
     and t = max (p1.y +. h) p2.y

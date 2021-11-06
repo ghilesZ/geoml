@@ -79,9 +79,9 @@ let random_generation =
   ; ("Circle.random_point", `Slow, circle_contains)
   ; ("Triangle.random_point", `Slow, triangle_contains) ]
 
-let () =
-  Random.self_init () ;
-  Alcotest.run "test suite"
-    [ ("constructors", constructors)
-    ; ("operations", operations)
-    ; ("random", random_generation) ]
+(* let () =
+ *   Random.self_init () ;
+ *   Alcotest.run "test suite"
+ *     [ ("constructors", constructors)
+ *     ; ("operations", operations)
+ *     ; ("random", random_generation) ] *)

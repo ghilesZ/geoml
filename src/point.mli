@@ -1,6 +1,6 @@
 (** Module for 2d points manipulation *)
 
-type t = private {x: float; y: float}
+type t = {x: float; y: float}
 
 val make : float -> float -> t
 

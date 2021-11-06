@@ -1,21 +1,23 @@
-(** solve a b c returns the list of the solutions for
-    ax² + bx + c = 0 *)
+type distance = (float[@satisfying fun f -> f >=. 0.])
+
+(** solve a b c returns the list of the solutions for ax² + bx + c = 0 *)
 let solve a b c =
-  let delta = b*.b -. 4. *. a *. c in
+  let delta = (b *. b) -. (4. *. a *. c) in
   if delta < 0. then []
   else
     let racine_delta = sqrt delta in
-    let sol1 = (-.b -. racine_delta) /. (2.*.a) in
+    let sol1 = (-.b -. racine_delta) /. (2. *. a) in
     if delta = 0. then [sol1]
-    else let sol2 = (-.b +. racine_delta) /. (2.*.a) in [sol1;sol2]
-
+    else
+      let sol2 = (-.b +. racine_delta) /. (2. *. a) in
+      [sol1; sol2]
 
 (** float sum from i to n, f(i) *)
 let float_sum i n f =
   let res = ref 0. in
   for cpt = i to n do
     res := !res +. f cpt
-  done;
+  done ;
   !res
 
 (** integer sum from i to n, f(i) *)
@@ -23,7 +25,7 @@ let int_sum i n f =
   let res = ref 0 in
   for cpt = i to n do
     res := !res + f cpt
-  done;
+  done ;
   !res
 
 let pi = 4.0 *. atan 1.

@@ -1,6 +1,8 @@
-type t = {center: Point.t; radius: float}
+open Math
 
-let make center radius : t =
+type t = {center: Point.t; radius: distance}
+
+let make (center : Point.t) (radius : distance) : t =
   if radius >= 0. then {center; radius}
   else invalid_arg "Circle.make:radius should be positive or zero"
 
@@ -8,7 +10,8 @@ let center {center; _} = center
 
 let radius {radius; _} = radius
 
-let translate dx dy (c : t) = {c with center= Point.translate dx dy c.center}
+let translate (dx : float) (dy : float) (c : t) : t =
+  {c with center= Point.translate dx dy c.center}
 
 let reflection p (c : t) = {c with center= Point.reflection p c.center}
 
@@ -19,9 +22,9 @@ let rotate_angle (c : t) p f =
 
 let contains (c : t) p = Point.sq_distance c.center p <= c.radius *. c.radius
 
-let area ({radius; _} : t) = Math.pi *. radius *. radius
+let area ({radius; _} : t) = pi *. radius *. radius
 
-let perimeter ({radius; _} : t) = 2. *. Math.pi *. radius
+let perimeter ({radius; _} : t) = 2. *. pi *. radius
 
 let proj_x (c : t) =
   let open Point in
@@ -72,9 +75,13 @@ let segment_intersection c (s : Segment.t) =
 let tangent {center; _} p =
   Line.perpendicular_of_line (Line.of_points center p) p
 
-let intersection (c : t) (c' : t) =
-  let c1_c2 = Line.of_points c.center c'.center in
-  let p = Point.barycenter [(c.center, c.radius); (c'.center, c'.radius)] in
+let intersection ({center= c1; radius= r1} as c : t)
+    ({center= c2; radius= r2} : t) =
+  let c1_c2 = Line.of_points c1 c2 in
+  let v = Vector.of_points c1 c2 in
+  let d = Vector.magnitude_sq v in
+  let v' = Vector.scal_mult (0.5 *. ((r1 *. r1) -. (r2 *. r2)) /. d) v in
+  let p = Vector.move_to v' (Point.center c1 c2) in
   let l = Line.perpendicular_of_line c1_c2 p in
   intersect_line c l
 

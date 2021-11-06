@@ -1,3 +1,5 @@
+open Math
+
 type t = {x: float; y: float}
 
 let make x y : t = {x; y}
@@ -42,11 +44,11 @@ let barycenter weighted_pts =
   in
   aux weighted_pts 0. 0. 0.
 
-let sq_distance ({x= a; y= b} : t) ({x= c; y= d} : t) =
+let sq_distance ({x= a; y= b} : t) ({x= c; y= d} : t) : distance =
   let diffX = a -. c and diffY = b -. d in
   (diffX *. diffX) +. (diffY *. diffY)
 
-let distance ({x= a; y= b} : t) ({x= c; y= d} : t) =
+let distance ({x= a; y= b} : t) ({x= c; y= d} : t) : distance =
   sq_distance {x= a; y= b} {x= c; y= d} |> sqrt
 
 let x_coord (p : t) = p.x

@@ -18,8 +18,7 @@ depends: [
   "ocaml" {>= "4.04.0"}
   "dune"  {>= "1.11"}
   "odoc" {with-doc}
-  "qcheck" {with-test}
 ]
 
 synopsis: "Geoml: 2D Geometry library for OCaml"
-description: "Geoml is a 2D geometry for OCaml that provides basic euclidean geometry types (point, line, circle ...) and useful operations over those types. Computations are made using floatting poinr precision"
+description: "Geoml is a 2D geometry for OCaml that provides basic euclidean geometry types (point, line, circle ...) and useful operations over those types. Computations are made using floatting point precision"
