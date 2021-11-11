@@ -22,3 +22,10 @@ depends: [
 
 synopsis: "Geoml: 2D Geometry library for OCaml"
 description: "Geoml is a 2D geometry for OCaml that provides basic euclidean geometry types (point, line, circle ...) and useful operations over those types. Computations are made using floatting point precision"
+url {
+  src: "https://github.com/ghilesZ/geoml/archive/v0.1.tar.gz"
+  checksum: [
+    "md5=5a131322110244d55415b62bf9e7856f"
+    "sha512=d40068c3800049d8f118e3ec005bfe1b927adf04926cc6e520520976ecd3a2a138efa021d397fad142ab45441179f29b1dcaac40314419143888a2c6d2e395a6"
+  ]
+}
