@@ -3,6 +3,4 @@
 (library
   (public_name geoml)
   (name geoml)
-  (preprocess (pps ppx_testify -- -nb %{env:NB=10000}))
-  (inline_tests (backend ppx_testify))
 )
