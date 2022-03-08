@@ -49,7 +49,7 @@ let sq_distance ({x= a; y= b} : t) ({x= c; y= d} : t) : distance =
   (diffX *. diffX) +. (diffY *. diffY)
 
 let distance ({x= a; y= b} : t) ({x= c; y= d} : t) : distance =
-  sq_distance {x= a; y= b} {x= c; y= d} |> sqrt
+  hypot (a -. c) (b -. d)
 
 let x_coord (p : t) = p.x
 
