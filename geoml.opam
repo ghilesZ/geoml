@@ -9,16 +9,18 @@ homepage: "https://github.com/ghilesZ/geoml"
 bug-reports: "https://github.com/ghilesZ/geoml/issues"
 dev-repo: "git+https://github.com/ghilesZ/geoml"
 license: "MIT"
+
 build: [
-  ["dune" "subst"] {dev}
+  ["dune" "build" "-p" name "-j" jobs]
   ["dune" "build" "@doc" "-p" name "-j" jobs] {with-doc}
-  ["dune" "build" "-p" name "-j" jobs] {with-test}
+  ["dune" "build" "@runtest" "-p" name "-j" jobs] {with-test}
 ]
 
 depends: [
   "ocaml" {>= "4.08.0"}
   "dune"  {>= "2.4"}
   "odoc" {with-doc}
+  "alcotest" {with-test}
 ]
 
 synopsis: "Geoml: 2D Geometry library for OCaml"

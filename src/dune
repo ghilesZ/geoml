@@ -1,6 +1,7 @@
 (include_subdirs unqualified)
 
 (library
-  (public_name geoml)
-  (name geoml)
+ (wrapped false)
+ (public_name geoml)
+ (name geoml)
 )
