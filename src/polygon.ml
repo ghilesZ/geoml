@@ -115,7 +115,6 @@ let segments_intersection_points crossing p1 p2 =
               v :: inters
           ) inters p2) [] p1
 
-
 (* Weiler Atherton #####################################################  *)
 let insert_intersection_points crossing crosslink entering start_inside l = snd @@ fold (
     fun (inside, acc) cur next ->
